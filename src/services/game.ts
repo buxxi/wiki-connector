@@ -1,6 +1,6 @@
 import WikipediaService from "./wikipedia";
-import { unique, findAll, findParents, findLink } from "../util/graph";
-import Article, { ArticleState } from "../domain/article";
+import { unique, findAll, findParents, findLink, type NodeId } from "../util/graph";
+import Article, { ArticleState, toArticleId } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { levenshteinDistance } from "@/util/text";
 
@@ -32,11 +32,12 @@ class Game {
     }
 
     async guess(title: string) : Promise<Result> {
-        //TODO: don't care about case and non alpha numeric here for title
-        let fromArticles = this._findConnections(this.root, title);
+        let loadArticleId = toArticleId(title);
+        let fromArticles = findParents(this.root, loadArticleId);
 
         if (fromArticles.length > 0) {
-            let toArticle = await this._loadArticle(title, ArticleState.FOUND);
+            let loadTitle = fromArticles.flatMap(art => art.links).find(art => art.id() == loadArticleId)!.title;
+            let toArticle = await this._loadArticle(loadTitle, ArticleState.FOUND);
 
             //Connect the ones that linked to this new article
             for (let fromArticle of fromArticles) {
@@ -66,18 +67,19 @@ class Game {
     }
 
     autoCompleteSuggestions(title: string) : string[] {
-        let tolerance = Math.floor(title.length / AUTOCOMPLETE_TOLERANCE_RATIO);
+        let matchNodeId = toArticleId(title);
+        let tolerance = Math.floor(matchNodeId.length / AUTOCOMPLETE_TOLERANCE_RATIO);
 
-        let notFound = unique(this.root, a => !a.found()).map(a => a.title);
-        var matches = notFound.filter(a => levenshteinDistance(a, title) <= tolerance);
+        let notFound = unique(this.root, a => !a.found());
+        var matches = notFound.filter(a => levenshteinDistance(a.id(), matchNodeId) <= tolerance);
         matches = [...new Set(matches)];
-        matches.sort((a, b) => levenshteinDistance(a, title) - levenshteinDistance(b, title));
+        matches.sort((a, b) => levenshteinDistance(a.id(), matchNodeId) - levenshteinDistance(b.id(), matchNodeId));
 
         if (matches.length > AUTOCOMPLETE_SUGGESTIONS) {
             matches = matches.slice(0, AUTOCOMPLETE_SUGGESTIONS);
         }
 
-        return matches;
+        return matches.map(a => a.title);
     }
 
     async _loadArticle(title: string, state: ArticleState) : Promise<Article> {
@@ -85,7 +87,8 @@ class Game {
             throw new Error("Game not started");
         }
         let [thumbnail, links] = await Promise.all([this.wikipedia.getThumbnail(title), this.wikipedia.getAllLinks(title)]);
-        let connectedLinks = findAll(this.root, links, (notFound) => new Article(notFound, "", [], 0, ArticleState.NOT_FOUND));
+        let connectedLinks : Article[] = findAll(this.root, links.map(link => toArticleId(link)))
+            .map((link, i) => link != undefined ? link : new Article(links[i], "" , [], 0, ArticleState.NOT_FOUND));
         let article = new Article(title, thumbnail, connectedLinks, links.length, state);
 
         return article;
@@ -111,7 +114,6 @@ class Game {
         console.log(link);
         if (link != undefined) {
             for (let art of link) {
-                console.log(art.title + " => " + art.state);
                 if (art.state == ArticleState.FOUND) {
                     art.state = ArticleState.CORRECT;
                 }
@@ -140,7 +142,7 @@ class Game {
   
         for (var i = 0; i < foundArticles.length; i++) {
             let e = foundArticles[i];
-            let links = e.links.map(l => foundArticles.find(al => al.title == l.title)).filter(e => e != undefined);
+            let links = e.links.map(l => foundArticles.find(al => al.id() == l.id())).filter(e => e != undefined);
             foundArticles[i] = new Article(e.title, e.thumbnail, links, e.linkCount, e.state);
         }
 
@@ -151,10 +153,6 @@ class Game {
 
         //TODO: implement me again, previous attempt was way too slow
         return undefined;
-    }
-
-    _findConnections(article: Article, title: string) : Article[] {
-        return findParents(article, title);
     }
 
     _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<string[]> {

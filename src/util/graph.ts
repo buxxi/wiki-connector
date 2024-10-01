@@ -1,10 +1,14 @@
-type GraphNode<T> = {
-    id() : string;
+export type GraphNode<T> = {
+    id() : NodeId;
     connections() : T[];
 }
 
+export type NodeId = Brand<string, "NodeId">
+
 type Predicate<T> = (e : T) => boolean;
-type NotFoundHandler<T> = (e : string) => T;
+
+type Brand<K, T> = K & { __brand: T }
+
 
 export function unique<T extends GraphNode<T>>(root: T, predicate: Predicate<T>) : T[] {
     let checkIds: string[] = [];
@@ -32,18 +36,18 @@ export function unique<T extends GraphNode<T>>(root: T, predicate: Predicate<T>)
     return result;
 }
 
-export function findParents<T extends GraphNode<T>>(root: T, childId: string) : T[] {
+export function findParents<T extends GraphNode<T>>(root: T, childId: NodeId) : T[] {
     return unique(root, parent => parent.connections().map(c => c.id()).includes(childId));
 }
 
-export function findAll<T extends GraphNode<T>>(root: T, ids: string[], notFound : NotFoundHandler<T>) : T[] {
+export function findAll<T extends GraphNode<T>>(root: T, ids: NodeId[]) : (T | undefined)[] {
     let cache = new Map();
     for (let item of unique(root, e => true)) {
         cache.set(item.id(), item);
     };
     return ids.map(id => {
         let found = cache.get(id);
-        return found != undefined ? found : notFound(id);
+        return found;
     });
 }
 

@@ -1,3 +1,6 @@
+import type { NodeId } from "@/util/graph";
+import { alphaNumericOnly } from "@/util/text";
+
 export enum ArticleState {
     ROOT = "ROOT",
     NOT_FOUND = "NOT_FOUND",
@@ -22,8 +25,8 @@ class Article {
         this.state = state;
     }
 
-    id() : string {
-        return this.title;
+    id() : NodeId {
+        return toArticleId(this.title);
     }
 
     connections() : Article[] {
@@ -33,6 +36,10 @@ class Article {
     found() : boolean {
         return this.state == ArticleState.FOUND || this.state == ArticleState.BOMB || this.state == ArticleState.START;
     }
+}
+
+export function toArticleId(input: string) : NodeId {
+    return alphaNumericOnly(input) as NodeId;
 }
 
 export default Article;
