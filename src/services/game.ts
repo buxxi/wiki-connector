@@ -1,5 +1,5 @@
 import WikipediaService from "./wikipedia";
-import { unique, resolveLink, findAll, findParents } from "../util/graph";
+import { unique, findAll, findParents, findLink } from "../util/graph";
 import Article, { ArticleState } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { levenshteinDistance } from "@/util/text";
@@ -59,6 +59,7 @@ class Game {
             }
 
             this._updateBombLinks();
+            this._updateCorrectLinks();
         }
 
         return this._generateResult();
@@ -104,6 +105,20 @@ class Game {
         } while (changes);
     }
 
+    _updateCorrectLinks() : void {
+        let start = this.root.links.filter(art => art.state == ArticleState.START);
+        let link = findLink(start);
+        console.log(link);
+        if (link != undefined) {
+            for (let art of link) {
+                console.log(art.title + " => " + art.state);
+                if (art.state == ArticleState.FOUND) {
+                    art.state = ArticleState.CORRECT;
+                }
+            }
+        }
+    }
+
     _generateResult() : Result {
         let foundLinks = this._onlyFoundLinks();
         let startingArticles = foundLinks.filter(article => article.state == ArticleState.START);
@@ -133,6 +148,7 @@ class Game {
     }
 
     _findCompleteSingleConnection(foundArticles: Article[]) : Article[] | undefined {
+
         //TODO: implement me again, previous attempt was way too slow
         return undefined;
     }

@@ -47,9 +47,16 @@ export function findAll<T extends GraphNode<T>>(root: T, ids: string[], notFound
     });
 }
 
-export function resolveLink<T extends GraphNode<T>>(from: T, to: T) : T[] | undefined {
+export function findLink<T extends GraphNode<T>>(all: T[]) : T[] | undefined {
     let checkIds: string[] = [];
     let queue: T[][] = [];
+
+    if (all.length != 2) {
+        throw new Error("Only nodes supported for now");
+    }
+
+    let from = all[0];
+    let to = all[1];
 
     queue.push([from]);
     

@@ -18,7 +18,7 @@ type Position = {
 
 type DrawFunction = (context : CanvasRenderingContext2D) => void;
 
-type LineColor = "black" | "orangered";
+type LineColor = "black" | "orangered" | "yellowgreen";
 
 const props = defineProps<{
     nodes: GraphNode[]
@@ -137,8 +137,8 @@ class DomGraph {
             let toIndex = props.nodes.map(e => e.title).indexOf(link[1].title);
             let fromNode = graph.value!.nodes[fromIndex];
             let toNode = graph.value!.nodes[toIndex];
-            let isBomb = props.nodes[fromIndex].state == ArticleState.BOMB || props.nodes[toIndex].state == ArticleState.BOMB;
-            return new DomGraphLine(fromNode, toNode, isBomb ? "orangered" : "black");
+            let color = lineColor(props.nodes[fromIndex], props.nodes[toIndex]);
+            return new DomGraphLine(fromNode, toNode, color);
         });
     }
 
@@ -176,7 +176,17 @@ onUpdated(() => {
     graph.value!.reposition();
 });
 
-function nodeStyle(node: GraphNode) {
+function lineColor(from: GraphNode, to: GraphNode) : LineColor {
+    if (from.state == ArticleState.BOMB || to.state == ArticleState.BOMB) {
+        return "orangered";
+    } else if (from.state == ArticleState.CORRECT || to.state == ArticleState.CORRECT) {
+        return "yellowgreen";
+    } else {
+        return "black";
+    }
+}
+
+function nodeStyle(node: GraphNode) : string {
     switch (node.state) {
         case ArticleState.ROOT:
         case ArticleState.NOT_FOUND:
@@ -186,6 +196,8 @@ function nodeStyle(node: GraphNode) {
             return 'start';
         case ArticleState.BOMB:
             return 'bomb';
+        case ArticleState.CORRECT:
+            return 'correct';
     }
 }
 

@@ -3,7 +3,8 @@ export enum ArticleState {
     NOT_FOUND = "NOT_FOUND",
     START = "START",
     FOUND = "FOUND",
-    BOMB = "BOMB"
+    BOMB = "BOMB",
+    CORRECT = "CORRECT"
 }
 
 class Article {
