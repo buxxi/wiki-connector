@@ -172,7 +172,6 @@ class WikipediaService {
         let m = /(.*?):.*/;
         let r = m.exec(page);
         if (r != null) {
-            //TODO: read from config
             if (config.blacklist.prefix.includes(r[1])) {
                 return false;
             } else {

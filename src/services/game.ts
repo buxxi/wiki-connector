@@ -159,7 +159,12 @@ class Game {
     _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<string[]> {
         switch(gameMode) {
             case GameMode.Curated:
-                return Promise.resolve(config.curated);
+                switch (this.wikipedia!.language) {
+                    case "sv":
+                        return Promise.resolve(config.curated.sv);
+                    case "en":
+                        return Promise.resolve(config.curated.en);
+                }
             case GameMode.Random:
                 return this.wikipedia!.getRandom(startArticleCount);
             case GameMode.Popular:
