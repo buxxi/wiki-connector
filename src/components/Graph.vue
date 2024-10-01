@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onUpdated, onMounted, onUnmounted, ref } from "vue";
-import Node from "./Node.vue";
+import Node, { type NodeEvent } from "./Node.vue";
 import { ArticleState } from "@/domain/article";
 
 export type GraphNode = {
@@ -108,15 +108,15 @@ class DomGraph {
     }
 
     draw(drawFunction: DrawFunction) : void {
+        this.context.reset();
         drawFunction(this.context);
         this.elem.style.backgroundImage = `url(${this.canvas.toDataURL()})`;
     }
 
     resize() {
-        //TODO: this doesn't really work right now
         this.canvas.width = this.width();
         this.canvas.height = this.height();
-        this.context = this.canvas.getContext("2d")!;    
+        this.context.reset();
     }
 
     recreateNodesAndLines() {
@@ -158,6 +158,7 @@ class DomGraph {
 }
 
 function resized() {
+    graph.value!.resize();
     graph.value!.recreateNodesAndLines();
     graph.value!.reposition();
 }
@@ -201,15 +202,24 @@ function nodeStyle(node: GraphNode) : string {
     }
 }
 
+function dragNode(node: GraphNode, e: NodeEvent) : void {
+    graph.value!.nodes[props.nodes.indexOf(node)].setPosition({ x: e.x, y: e.y});
+    graph.value!.reposition();
+}
+
+function onDragOver(event: MouseEvent) {
+    event.preventDefault();
+}
+
 //TODO: draw lines in different color on node hover
 //TODO: have some way to debug the graph on node click
 
 </script>
 
 <template>
-    <div id="graph">
+    <div id="graph" @dragover="onDragOver">
         <ul>
-            <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" v-for="node in nodes"/>
+            <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
         </ul>
     </div>
 </template>
