@@ -1,6 +1,6 @@
 <script setup lang="ts">
     export type NodeEvent = {
-        target: EventTarget;
+        target: EventTarget | undefined;
         x: number;
         y: number;
     };

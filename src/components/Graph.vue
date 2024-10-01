@@ -18,7 +18,7 @@ type Position = {
 
 type DrawFunction = (context : CanvasRenderingContext2D) => void;
 
-type LineColor = "black" | "orangered" | "yellowgreen";
+type LineColor = "black" | "orangered" | "yellowgreen" | "silver";
 
 const props = defineProps<{
     nodes: GraphNode[]
@@ -90,6 +90,7 @@ class DomGraph {
     context: CanvasRenderingContext2D;
     nodes: DOMGraphNode[] = [];
     lines: DomGraphLine[] = [];
+    highlightNode: GraphNode | undefined;
 
     constructor() {
         this.elem = document.querySelector("#graph")!;
@@ -178,6 +179,9 @@ onUpdated(() => {
 });
 
 function lineColor(from: GraphNode, to: GraphNode) : LineColor {
+    if (from.title == graph.value!.highlightNode?.title || to.title == graph.value!.highlightNode?.title) {
+        return "silver";
+    }
     if (from.state == ArticleState.BOMB || to.state == ArticleState.BOMB) {
         return "orangered";
     } else if (from.state == ArticleState.CORRECT || to.state == ArticleState.CORRECT) {
@@ -211,6 +215,12 @@ function onDragOver(event: MouseEvent) {
     event.preventDefault();
 }
 
+function onHover(node: GraphNode, e: NodeEvent) : void {
+    graph.value!.highlightNode = e.target != undefined ? node : undefined;
+    graph.value!.recreateNodesAndLines();
+    graph.value!.drawLines();
+}
+
 //TODO: draw lines in different color on node hover
 //TODO: have some way to debug the graph on node click
 
@@ -219,7 +229,7 @@ function onDragOver(event: MouseEvent) {
 <template>
     <div id="graph" @dragover="onDragOver">
         <ul>
-            <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
+            <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
         </ul>
     </div>
 </template>
