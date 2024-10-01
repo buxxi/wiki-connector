@@ -1,3 +1,5 @@
+import config from "@/config";
+
 const RANDOM_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&list=random&format=json&rnnamespace=0&rnlimit={count}&origin=*';
 const POPULAR_URL = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/{language}.wikipedia/all-access/{year}/{month}/{day}';
 const LINKS_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&titles={title}&prop=links&pllimit=max&format=json&origin=*';
@@ -164,14 +166,14 @@ class WikipediaService {
     }
 
     _filterPages(page: string): boolean {
-        if (page == 'Main_Page') {
+        if (config.blacklist.articles.includes(page)) {
             return false;
         }
         let m = /(.*?):.*/;
         let r = m.exec(page);
         if (r != null) {
             //TODO: read from config
-            if (['Portal', 'Special', 'Help', 'File', 'Wikipedia', 'Template', 'Category', 'Template talk'].includes(r[1])) {
+            if (config.blacklist.prefix.includes(r[1])) {
                 return false;
             } else {
                 // nothing for now

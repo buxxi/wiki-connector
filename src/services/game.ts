@@ -3,6 +3,7 @@ import { unique, findAll, findParents, findLink, type NodeId } from "../util/gra
 import Article, { ArticleState, toArticleId } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { levenshteinDistance } from "@/util/text";
+import config from '@/config.ts';
 
 export enum GameMode {
     Curated = "curated",
@@ -158,7 +159,7 @@ class Game {
     _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<string[]> {
         switch(gameMode) {
             case GameMode.Curated:
-                return Promise.resolve(["Bamse", "Red panda", "Bee"]); //TODO: read these from a config file instead
+                return Promise.resolve(config.curated);
             case GameMode.Random:
                 return this.wikipedia!.getRandom(startArticleCount);
             case GameMode.Popular:
