@@ -5,6 +5,6 @@
 
 <template>
   <dialog open>
-    <h1>GameLost!</h1>
+    <h1>GameWon!</h1>
   </dialog>
 </template>

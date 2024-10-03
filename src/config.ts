@@ -1,7 +1,7 @@
 export default {
     curated: {
-        en: ["Bamse", "Red panda", "Bee"],
-        sv: ["Bamse", "Kattbjörn", "Bin"]
+        en: ["Bamse", "Red panda", "Bee", "Saturn"],
+        sv: ["Bamse", "Kattbjörn", "Bin", "Saturnus"]
     },
     blacklist: {
         articles: ['Main_Page'],

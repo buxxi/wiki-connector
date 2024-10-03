@@ -41,13 +41,16 @@ async function startGame() {
       </fieldset>
       <fieldset>
         <label for="articles">Articles</label>
-        <select id="articles" v-model="articles" disabled>
+        <select id="articles" v-model.number="articles">
           <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
         </select>
       </fieldset>
       <fieldset>
         <label for="bombs">Bombs</label>
-        <select id="bombs" v-model="bombs">
+        <select id="bombs" v-model.number="bombs">
           <option value="0">0</option>
           <option value="1">1</option>
           <option value="2">2</option>

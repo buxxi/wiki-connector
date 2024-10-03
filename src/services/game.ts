@@ -1,7 +1,7 @@
 import WikipediaService from "./wikipedia";
 import { unique, findAll, findParents, findLink, type NodeId } from "../util/graph";
 import Article, { ArticleState, toArticleId } from "../domain/article";
-import Result, { ResultType } from "../domain/result";
+import Result from "../domain/result";
 import { levenshteinDistance } from "@/util/text";
 import config from '@/config.ts';
 
@@ -59,9 +59,6 @@ class Game {
                     toArticleLink.links[toIndex] = toArticle;
                 }
             }
-
-            this._updateBombLinks();
-            this._updateCorrectLinks();
         }
 
         return this._generateResult();
@@ -95,47 +92,9 @@ class Game {
         return article;
     }
 
-    _updateBombLinks() : void {
-        let foundLinks = unique(this.root, a => a.found());
-        var changes = false;
-        do {
-            changes = false;
-            for (let bomb of foundLinks.filter(a => a.state == ArticleState.BOMB)) {
-                for (let link of bomb.links.filter(a => a.state == ArticleState.FOUND)) {
-                    link.state = ArticleState.BOMB;
-                    changes = true;
-                }
-            }
-        } while (changes);
-    }
-
-    _updateCorrectLinks() : void {
-        let start = this.root.links.filter(art => art.state == ArticleState.START);
-        let link = findLink(start);
-        console.log(link);
-        if (link != undefined) {
-            for (let art of link) {
-                if (art.state == ArticleState.FOUND) {
-                    art.state = ArticleState.CORRECT;
-                }
-            }
-        }
-    }
-
     _generateResult() : Result {
         let foundLinks = this._onlyFoundLinks();
-        let startingArticles = foundLinks.filter(article => article.state == ArticleState.START);
-        let connectedToBomb = startingArticles.map(article => article.links.find(a => a.state == ArticleState.BOMB) != undefined).reduce((a, b) => a || b, false);
-        if (connectedToBomb) {
-            return new Result(foundLinks, ResultType.LOST);
-        }
-
-        let singleConnection = this._findCompleteSingleConnection(foundLinks);
-        if (singleConnection == undefined) {
-            return new Result(foundLinks, ResultType.ONGOING);
-        } else {
-            return new Result(singleConnection, ResultType.WON);
-        }
+        return Result.from(foundLinks);
     }
 
     _onlyFoundLinks() : Article[] {
@@ -150,20 +109,14 @@ class Game {
         return foundArticles;
     }
 
-    _findCompleteSingleConnection(foundArticles: Article[]) : Article[] | undefined {
-
-        //TODO: implement me again, previous attempt was way too slow
-        return undefined;
-    }
-
     _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<string[]> {
         switch(gameMode) {
             case GameMode.Curated:
                 switch (this.wikipedia!.language) {
                     case "sv":
-                        return Promise.resolve(config.curated.sv);
+                        return Promise.resolve(config.curated.sv.slice(0, startArticleCount));
                     case "en":
-                        return Promise.resolve(config.curated.en);
+                        return Promise.resolve(config.curated.en.slice(0, startArticleCount));
                 }
             case GameMode.Random:
                 return this.wikipedia!.getRandom(startArticleCount);
