@@ -10,6 +10,17 @@ export enum ArticleState {
     CORRECT = "CORRECT"
 }
 
+function _connect(art1: Article, art2: Article) {
+    let fromIndex = art1.links.findIndex(e => e.id() == art2.id());
+
+    if (fromIndex == -1) {
+        art1.links.push(art2);
+    } else {
+        art1.links[fromIndex] = art2;
+    }
+}
+
+
 class Article {
     title: string;
     thumbnail: string;
@@ -35,6 +46,11 @@ class Article {
 
     found() : boolean {
         return this.state == ArticleState.FOUND || this.state == ArticleState.BOMB || this.state == ArticleState.START;
+    }
+
+    connect(article : Article) {
+        _connect(this, article);
+        _connect(article, this);
     }
 }
 

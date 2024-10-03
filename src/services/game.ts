@@ -13,6 +13,11 @@ export enum GameMode {
 
 export type Language = "se" | "en";
 
+type LoadResult = {
+    article: Article;
+    links: string[];
+}
+
 const AUTOCOMPLETE_SUGGESTIONS = 3;
 const AUTOCOMPLETE_TOLERANCE_RATIO = 3;
 const ROOT_NAME = "#ROOT";
@@ -24,9 +29,10 @@ class Game {
     async start(language: Language, startArticleCount: number, bombCount: number, gameMode: GameMode) : Promise<Result> {
         this.wikipedia = new WikipediaService(language);
         let titles = await this._loadStartingArticles(gameMode, startArticleCount + bombCount);
-        let articles = await Promise.all(titles.map((title, index) => this._loadArticle(title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
-        for (let article of articles) {
-            this.root.links.push(article);
+        let loadResults = await Promise.all(titles.map((title, index) => this._loadArticle(title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
+        for (let loadResult of loadResults) {
+            this.root.connect(loadResult.article);
+            this._connect(loadResult.article, loadResult.links);
         }
 
         return this._generateResult();
@@ -38,26 +44,12 @@ class Game {
 
         if (fromArticles.length > 0) {
             let loadTitle = fromArticles.flatMap(art => art.links).find(art => art.id() == loadArticleId)!.title;
-            let toArticle = await this._loadArticle(loadTitle, ArticleState.FOUND);
+            let loadResult = await this._loadArticle(loadTitle, ArticleState.FOUND);
 
             //Connect the ones that linked to this new article
             for (let fromArticle of fromArticles) {
-                let fromIndex = fromArticle.links.findIndex(e => e.id() == toArticle.id());
- 
-                if (fromIndex == -1) {
-                    fromArticle.links.push(toArticle);
-                } else {
-                    fromArticle.links[fromIndex] = toArticle;
-                }
-            }
-            //Connect links that the new article links to but possibly does link back
-            for (let toArticleLink of toArticle.links.filter(link => link.found())) {
-                let toIndex = toArticleLink.links.findIndex(e => e.id() == toArticle.id());
-                if (toIndex == -1) {
-                    toArticleLink.links.push(toArticle);
-                } else {
-                    toArticleLink.links[toIndex] = toArticle;
-                }
+                fromArticle.connect(loadResult.article);
+                this._connect(loadResult.article, loadResult.links);
             }
         }
 
@@ -80,16 +72,15 @@ class Game {
         return matches.map(a => a.title);
     }
 
-    async _loadArticle(title: string, state: ArticleState) : Promise<Article> {
+    async _loadArticle(title: string, state: ArticleState) : Promise<LoadResult> {
         if (this.wikipedia == undefined) {
             throw new Error("Game not started");
         }
         let [thumbnail, links] = await Promise.all([this.wikipedia.getThumbnail(title), this.wikipedia.getAllLinks(title)]);
-        let connectedLinks : Article[] = findAll(this.root, links.map(link => toArticleId(link)))
-            .map((link, i) => link != undefined ? link : new Article(links[i], "" , [], 0, ArticleState.NOT_FOUND));
-        let article = new Article(title, thumbnail, connectedLinks, links.length, state);
 
-        return article;
+        let article = new Article(title, thumbnail, [], links.length, state);
+
+        return { article: article, links : links };
     }
 
     _generateResult() : Result {
@@ -98,15 +89,23 @@ class Game {
     }
 
     _onlyFoundLinks() : Article[] {
-        let foundArticles = unique(this.root, a => a.found());
-  
+        let foundArticles = unique(this.root, a => a.found()).map(e => new Article(e.title, e.thumbnail, e.links, e.linkCount, e.state));
+
         for (var i = 0; i < foundArticles.length; i++) {
             let e = foundArticles[i];
             let links = e.links.map(l => foundArticles.find(al => al.id() == l.id())).filter(e => e != undefined);
-            foundArticles[i] = new Article(e.title, e.thumbnail, links, e.linkCount, e.state);
-        }
+            foundArticles[i].links = links; 
+        } 
 
         return foundArticles;
+    }
+
+    _connect(fromArticle: Article, links: string[]) : void {
+        let toArticles : Article[] = findAll(this.root, links.map(link => toArticleId(link)))
+            .map((link, i) => link != undefined ? link : new Article(links[i], "" , [], 0, ArticleState.NOT_FOUND));
+        for (let toArticle of toArticles) {
+            fromArticle.connect(toArticle);
+        }
     }
 
     _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<string[]> {
