@@ -184,7 +184,7 @@ function lineColor(from: GraphNode, to: GraphNode) : LineColor {
     }
     if (from.state == ArticleState.BOMB || to.state == ArticleState.BOMB) {
         return "orangered";
-    } else if (from.state == ArticleState.CORRECT && to.state == ArticleState.CORRECT) {
+    } else if ((from.state == ArticleState.CORRECT || from.state == ArticleState.START) && (to.state == ArticleState.CORRECT || to.state == ArticleState.START)) {
         return "yellowgreen";
     } else {
         return "black";

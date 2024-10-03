@@ -67,7 +67,9 @@ function _updateCorrectLinks(foundLinks: Article[]) : Article[] {
     let singleConnection = _findCompleteSingleConnection(foundLinks); 
     if (singleConnection != undefined) {
         for (let article of singleConnection) {
-            article.state = ArticleState.CORRECT;
+            if (article.state == ArticleState.FOUND) {
+                article.state = ArticleState.CORRECT;
+            }
         }
     }
     return foundLinks;

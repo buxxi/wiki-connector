@@ -93,8 +93,8 @@ class Game {
 
         for (var i = 0; i < foundArticles.length; i++) {
             let e = foundArticles[i];
-            let links = e.links.map(l => foundArticles.find(al => al.id() == l.id())).filter(e => e != undefined);
-            foundArticles[i].links = links; 
+            let links: (Article |undefined)[] = e.links.map(l => foundArticles.find(al => al.id() == l.id()));
+            foundArticles[i].links = links.filter(e => e != undefined).map(e => e!); 
         } 
 
         return foundArticles;
