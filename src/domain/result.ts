@@ -65,8 +65,10 @@ function _updateBombLinks(foundLinks: Article[]) : Article[] {
 
 function _updateCorrectLinks(foundLinks: Article[]) : Article[] {
     let singleConnection = _findCompleteSingleConnection(foundLinks); 
-    if (!singleConnection) {
-        return foundLinks;
+    if (singleConnection != undefined) {
+        for (let article of singleConnection) {
+            article.state = ArticleState.CORRECT;
+        }
     }
     return foundLinks;
 }
@@ -90,9 +92,9 @@ class Result {
 
         let connectedCorrect = foundLinks.find(art => art.state == ArticleState.CORRECT) != undefined;
         if (connectedCorrect) {
-            return new Result(foundLinks, ResultType.ONGOING);
-        } else {
             return new Result(foundLinks, ResultType.WON);
+        } else {
+            return new Result(foundLinks, ResultType.ONGOING);
         }
     }
 }
