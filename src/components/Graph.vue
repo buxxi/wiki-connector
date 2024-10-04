@@ -94,7 +94,7 @@ class DomGraph {
 
     constructor() {
         this.elem = document.querySelector("#graph")!;
-        this.canvas = document.createElement("canvas");
+        this.canvas = this.elem.querySelector("canvas")!;
         this.canvas.width = this.width();
         this.canvas.height = this.height();
         this.context = this.canvas.getContext("2d")!;
@@ -111,7 +111,6 @@ class DomGraph {
     draw(drawFunction: DrawFunction) : void {
         this.context.reset();
         drawFunction(this.context);
-        this.elem.style.backgroundImage = `url(${this.canvas.toDataURL()})`;
     }
 
     resize() {
@@ -221,13 +220,13 @@ function onHover(node: GraphNode, e: NodeEvent) : void {
     graph.value!.drawLines();
 }
 
-//TODO: draw lines in different color on node hover
 //TODO: have some way to debug the graph on node click
 
 </script>
 
 <template>
     <div id="graph" @dragover="onDragOver">
+        <canvas></canvas>
         <ul>
             <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
         </ul>
