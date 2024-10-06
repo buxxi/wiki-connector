@@ -2,6 +2,7 @@
 import { onUpdated, onMounted, onUnmounted, ref } from "vue";
 import Node, { type NodeEvent } from "./Node.vue";
 import { ArticleState } from "@/domain/article";
+import { Vector2 } from 'three';
 
 export type GraphNode = {
     title: string;
@@ -24,7 +25,13 @@ const props = defineProps<{
     nodes: GraphNode[]
 }>();
 
+const NODE_FORCE_FIELD_SIZE = 150;
+const BORDER_FORCE_FIELD_SIZE = 64;
+const MOVE_SLOW_RATIO = 1.25;
+
 const graph = ref<DomGraph | undefined>(undefined);
+
+var lastDraw : (number | undefined) = undefined;
 
 class DomGraphLine {
     from: DOMGraphNode;
@@ -60,9 +67,11 @@ class DomGraphLine {
 
 class DOMGraphNode {
     elem: HTMLElement;
+    force: Vector2;
 
-    constructor(elem : HTMLElement) {
+    constructor(elem : HTMLElement, force: Vector2 | undefined) {
         this.elem = elem;
+        this.force = force != undefined ? force : new Vector2(0, 0);
     }
 
     setPosition(position: Position) {
@@ -123,7 +132,7 @@ class DomGraph {
         let graphWidth = this.width();
         let graphHeight = this.height();
 
-        graph.value!.nodes = [...document.querySelectorAll(".node")].map(node => new DOMGraphNode(node as HTMLElement));
+        graph.value!.nodes = [...document.querySelectorAll(".node")].map((node, i) => new DOMGraphNode(node as HTMLElement, graph.value!.nodes[i]?.force));
         for (let node of graph.value!.nodes) {
             if (node.getPosition() == undefined) {
                 //TODO: not random
@@ -142,9 +151,53 @@ class DomGraph {
         });
     }
 
-    reposition() {
-        //TODO: make all nodes have forces pushing the others away from them and run this a few times in a loop
+    reposition(delta: number) {
+        this.calculateForces(this.width(), this.height());
+        this.moveNodes(delta);
         this.drawLines();
+    }
+
+    moveNodes(delta: number) {
+        for (let node of this.nodes) {
+            if (node.force.x != 0 && node.force.y != 0) {
+                let dir = node.force.clone().multiplyScalar(delta);
+                let pos = node.getPosition()!;
+                node.setPosition({ x : pos.x + dir.x , y : pos.y + dir.y });
+                node.force.sub(node.force.clone().multiplyScalar(MOVE_SLOW_RATIO * delta));
+            }
+            
+        }    
+    }
+
+    calculateForces(width: number, height: number) {
+        for (let i in this.nodes) {
+            let node = this.nodes[i];
+            var force = new Vector2(0, 0);
+            let position = node.getPosition()!;
+            if (position.x < BORDER_FORCE_FIELD_SIZE) {
+                force = force.add(new Vector2(1, 0));
+            } else if (position.x > width - BORDER_FORCE_FIELD_SIZE) {
+                force = force.add(new Vector2(-1, 0));
+            }
+            if (position.y < BORDER_FORCE_FIELD_SIZE) {
+                force = force.add(new Vector2(0, 1));
+            } else if (position.y > height - BORDER_FORCE_FIELD_SIZE) {
+                force = force.add(new Vector2(0, -1));
+            }
+            for (let j in this.nodes) {
+                if (i == j) {
+                    continue;
+                }
+                let otherNode = this.nodes[j];
+                let otherPosition = otherNode.getPosition()!;
+                let diffForce = new Vector2(position.x - otherPosition.x, position.y - otherPosition.y);
+                if (diffForce.length() < NODE_FORCE_FIELD_SIZE) {
+                    force = force.add(diffForce.normalize());
+                }
+            }
+            force = force.normalize();
+            node.force = node.force.add(force);
+        }
     }
 
     drawLines() {
@@ -160,21 +213,32 @@ class DomGraph {
 function resized() {
     graph.value!.resize();
     graph.value!.recreateNodesAndLines();
-    graph.value!.reposition();
+}
+
+function drawLoop() {
+    if (lastDraw != undefined) {
+        let before = lastDraw;
+        lastDraw = new Date().getTime();
+        let delta = (lastDraw - before) / 1000;
+        graph.value?.reposition(delta);
+        window.requestAnimationFrame(drawLoop);
+    }
 }
 
 onMounted(() => {
     graph.value = new DomGraph();
     window.addEventListener("resize", resized);
+    lastDraw = new Date().getTime();
+    drawLoop();
 });
 
 onUnmounted(() => {
     window.removeEventListener("resize", resized);
+    lastDraw = undefined;
 });
 
 onUpdated(() => {
     graph.value!.recreateNodesAndLines();
-    graph.value!.reposition();
 });
 
 function lineColor(from: GraphNode, to: GraphNode) : LineColor {
@@ -207,7 +271,6 @@ function nodeStyle(node: GraphNode) : string {
 
 function dragNode(node: GraphNode, e: NodeEvent) : void {
     graph.value!.nodes[props.nodes.indexOf(node)].setPosition({ x: e.x, y: e.y});
-    graph.value!.reposition();
 }
 
 function onDragOver(event: MouseEvent) {
