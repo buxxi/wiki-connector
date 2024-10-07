@@ -2,6 +2,7 @@
 import type Result from '@/domain/result.ts';
 import Game, { GameMode, type Language } from '../services/game.ts';
 import { Difficulty, getDifficultySetting } from '@/domain/difficulty.ts';
+import { useI18n } from 'vue-i18n';
 
 
 const emit = defineEmits<{
@@ -11,6 +12,11 @@ const emit = defineEmits<{
 const language = defineModel<string>('language', { default: 'en'});
 const type = defineModel<string>('type', { default : 'curated'});
 const difficulty = defineModel<number>('difficulty', { default : 0});
+const i18n = useI18n();
+
+function languageChanged() {
+  i18n.locale.value = language.value;
+}
 
 async function startGame() {
   let game = new Game();
@@ -25,27 +31,27 @@ async function startGame() {
 <template>
   <dialog open>
     <form>
-      <h1>Wiki connector</h1>
+      <h1>{{ $t('title') }}</h1>
       <div>
         <section class="settings">
-          <h2>Settings</h2>
+          <h2>{{ $t('settings') }}</h2>
           <fieldset>
-            <label for="language">Language</label>
-            <select id="language" v-model="language">
-              <option value="en">🇺🇸 English</option>
-              <option value="sv">🇸🇪 Swedish</option>
+            <label for="language">{{ $t('language.select') }}</label>
+            <select id="language" v-model="language" @change="languageChanged">
+              <option value="en">🇺🇸 {{ $t('language.en') }}</option>
+              <option value="sv">🇸🇪 {{ $t('language.sv') }}</option>
             </select>
           </fieldset>
           <fieldset>
-            <label for="type">Type</label>
+            <label for="type">{{ $t('gameMode.select') }}</label>
             <select id="type" v-model="type">
-              <option value="curated">Curated</option>
-              <option value="random">Random</option>
-              <option value="popular">Popular</option>
+              <option value="curated">{{ $t('gameMode.curated') }}</option>
+              <option value="random">{{ $t('gameMode.random') }}</option>
+              <option value="popular">{{ $t('gameMode.popular') }}</option>
             </select>
           </fieldset>
           <fieldset>
-            <label for="difficulty">Difficulty</label>
+            <label for="difficulty">{{ $t('difficulty') }}</label>
             <input id="difficulty" type="range" list="difficulties" min="0" max="4" v-model.number="difficulty"/>
             <span class="difficulty-smiley">{{ getDifficultySetting(difficulty).smiley }}</span>
             
@@ -55,15 +61,12 @@ async function startGame() {
           </fieldset>
         </section>
         <section class="rules">
-          <h2>How to play</h2>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam a rhoncus ex. <b>{{  getDifficultySetting(difficulty).articles }}</b><br/>
-            Cras venenatis efficitur nulla quis consequat <b>{{  getDifficultySetting(difficulty).bombs }}</b>. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.<br/>
-            Fusce hendrerit tempus nisi, in congue urna. Sed pretium magna ac ex semper pharetra. Pellentesque sit amet rutrum metus. 
+          <h2>{{ $t('instructions.title') }}</h2>
+          <p>{{ $t('instructions.text', { articles: getDifficultySetting(difficulty).articles, bombs: getDifficultySetting(difficulty).bombs }) }}
           </p>
         </section>
       </div>
-      <input type="button" value="Start" @click.prevent="startGame"/>
+      <input type="button" :value="$t('button.start')" @click.prevent="startGame"/>
     </form>
   </dialog>
 </template>

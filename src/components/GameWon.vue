@@ -5,6 +5,6 @@
 
 <template>
   <dialog open>
-    <h1>GameWon!</h1>
+    <h1>{{ $t('won.title') }}</h1>
   </dialog>
 </template>

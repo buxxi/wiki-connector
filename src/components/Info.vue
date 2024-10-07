@@ -10,15 +10,15 @@
 <template>
     <div id="info">
         <form>
-            <input type="button" id="restart" value="Restart"/>
+            <input type="button" id="restart" :value="$t('button.restart')"/>
         </form>
         <div>
             <dl>
-                <dt>Found articles</dt>
+                <dt>{{ $t('info.found') }}</dt>
                 <dd>{{ found }}</dd>
             </dl>
             <dl>
-                <dt>Possible links</dt>
+                <dt>{{ $t('info.possible') }}</dt>
                 <dd>{{ possible }}</dd>
             </dl>
         </div>

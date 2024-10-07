@@ -4,6 +4,6 @@
 
 <template>
   <dialog open>
-    <h1>GameLost!</h1>
+    <h1>{{ $t('lost.title') }}</h1>
   </dialog>
 </template>

@@ -38,6 +38,6 @@
 <template>
     <div :class="['node', style]" :style="{backgroundImage: 'url(' + thumbnail + ')'}" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
         <h3 :title="title">{{ title }}</h3>
-        <p :title="`Has ${linkCount} connections to other articles`">{{ linkCount }}</p>
+        <p :title="$t('article.connections', {linkCount: linkCount})">{{ linkCount }}</p>
     </div>
 </template>

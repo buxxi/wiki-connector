@@ -110,6 +110,7 @@ dialog {
   }
   div {
     display : flex;
+    margin: 1em 0;
   }
 }
 
@@ -122,7 +123,7 @@ dialog {
     align-items: center;
     label {
       font-weight: bold;
-      width : 5em;
+      width : 8em;
     }
     .difficulty-smiley {
       font-size: 2em;
