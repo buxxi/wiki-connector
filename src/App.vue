@@ -3,6 +3,7 @@
   import GameSetup from './components/GameSetup.vue';
   import GameWon from './components/GameWon.vue';
   import GameLost from './components/GameLost.vue';
+  import Background from './components/Background.vue';
 
   import { nextTick, reactive, ref } from 'vue';
   import type Game from './services/game';
@@ -35,6 +36,7 @@
 
 <template>
   <main>
+    <Background/>
     <GameSetup @started="gameStarted" v-if="gameState.value == 'NOT_STARTED'"/>
     <GameRunning @won="gameWon" @lost="gameLost" ref="gameComponent" v-if="gameState.value != 'NOT_STARTED'"/>
     <GameWon v-if="gameState.value == GameState.WON"/>
