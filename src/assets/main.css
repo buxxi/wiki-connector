@@ -1,3 +1,21 @@
+@keyframes zoom {
+  from {
+    transform: scale(10);
+  } 
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  from {
+    padding-left : -1em;
+  } 
+  to {
+    padding-left: 1em;
+  }
+}
+
 html {
   font-family: Ubuntu;
   background-color: gray;
@@ -39,6 +57,9 @@ html {
 input.user-guess {
   z-index: 2;
   background-color: transparent;
+  &.shake {
+    animation: 0.1s ease normal 5 shake;
+  }
 }
 
 
@@ -151,6 +172,7 @@ dialog {
   background-size: cover;
   background-position: center center;
   box-shadow: 1px 1px 10px black, inset 1px 1px 10px black;
+  animation: 0.5s ease normal zoom;
   
   &.start {
     border-color: yellowgreen;

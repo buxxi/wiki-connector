@@ -42,15 +42,17 @@ class Game {
         let loadArticleId = toArticleId(title);
         let fromArticles = findParents(this.root, loadArticleId);
 
-        if (fromArticles.length > 0) {
-            let loadTitle = fromArticles.flatMap(art => art.links).find(art => art.id() == loadArticleId)!.title;
-            let loadResult = await this._loadArticle(loadTitle, ArticleState.FOUND);
+        if (fromArticles.length == 0) {
+            throw new Error("No matches for title: " + title);
+        }
 
-            //Connect the ones that linked to this new article
-            for (let fromArticle of fromArticles) {
-                fromArticle.connect(loadResult.article);
-                this._connect(loadResult.article, loadResult.links);
-            }
+        let loadTitle = fromArticles.flatMap(art => art.links).find(art => art.id() == loadArticleId)!.title;
+        let loadResult = await this._loadArticle(loadTitle, ArticleState.FOUND);
+
+        //Connect the ones that linked to this new article
+        for (let fromArticle of fromArticles) {
+            fromArticle.connect(loadResult.article);
+            this._connect(loadResult.article, loadResult.links);
         }
 
         return this._generateResult();

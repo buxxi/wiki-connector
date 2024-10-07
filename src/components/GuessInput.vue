@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, reactive } from 'vue';
+    import { computed, reactive, ref } from 'vue';
 
     const props = defineProps<{
         suggestions: string[]
@@ -9,10 +9,12 @@
         (e: 'guess', value: string): void
     }>();
     defineExpose({
-        clear: clearGuess
+        clear: clearGuess,
+        invalidInput: shake
     });
     const guess = defineModel<string>('guess');
     const index = reactive({value: 0});
+    const classes = ref<string[]>(['user-guess']);
 
     const autocomplete = computed(() => {
         const suggestions = props.suggestions;
@@ -28,6 +30,15 @@
 
     function clearGuess() {
         guess.value = "";
+    }
+
+    function shake() {
+        classes.value.push('shake');
+    }
+
+    function shakeEnd() {
+        let i = classes.value.indexOf('shake');
+        classes.value.splice(i);
     }
 
     function performAutocomplete() {
@@ -50,7 +61,6 @@
     function makeGuess() {
         if (guess.value != undefined) {
             emit('guess', guess.value);
-            clearGuess();
         }
     }
 
@@ -65,12 +75,13 @@
 <template>
     <div id="guess">
         <form>
-            <input type="text" class="user-guess" v-model="guess" 
+            <input type="text" :class="classes" v-model="guess" 
                 @keydown.tab.prevent="performAutocomplete" 
                 @keyup.up.prevent="previousAutocomplete" 
                 @keyup.down.prevent="nextAutocomplete" 
-                @keyup.enter.prevent="makeGuess" 
-                @keyup="emitChange"/>
+                @keyup.enter.prevent="makeGuess"
+                @keyup="emitChange"
+                @animationend="shakeEnd"/>
             <input type="text" class="autocomplete" :value="autocomplete" disabled/>
         </form>
     </div>

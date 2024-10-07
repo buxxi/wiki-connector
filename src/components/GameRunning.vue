@@ -32,17 +32,21 @@ function gameStarted(newGame: Game, newResult: Result) {
 }
 
 async function guessed(value: string) {
-  let newResult = await game.value!.guess(value);
-  convertResult(newResult);
-  switch(newResult.type) {
-    case ResultType.WON:
-      emit("won", game.value!, newResult);
-      break;
-    case ResultType.LOST:
-      emit("lost", game.value!, newResult);
-      break;
-    case ResultType.ONGOING:
-      input.value?.clear();
+  try {
+    let newResult = await game.value!.guess(value);
+    convertResult(newResult);
+    switch(newResult.type) {
+      case ResultType.WON:
+        emit("won", game.value!, newResult);
+        break;
+      case ResultType.LOST:
+        emit("lost", game.value!, newResult);
+        break;
+      case ResultType.ONGOING:
+        input.value?.clear();
+    }
+  } catch (e) {
+    input.value?.invalidInput();
   }
 }
 
