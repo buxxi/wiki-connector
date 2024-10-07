@@ -25,7 +25,7 @@ const props = defineProps<{
     nodes: GraphNode[]
 }>();
 
-const NODE_FORCE_FIELD_SIZE = 150;
+const NODE_FORCE_FIELD_SIZE = 200;
 const BORDER_FORCE_FIELD_SIZE = 64;
 const MOVE_SLOW_RATIO = 1.25;
 
@@ -133,12 +133,28 @@ class DomGraph {
         let graphHeight = this.height();
 
         graph.value!.nodes = [...document.querySelectorAll(".node")].map((node, i) => new DOMGraphNode(node as HTMLElement, graph.value!.nodes[i]?.force));
-        for (let node of graph.value!.nodes) {
+        graph.value!.nodes.forEach((node, i) => {
             if (node.getPosition() == undefined) {
-                //TODO: not random
-                node.setPosition({ x : graphWidth * Math.random(), y : graphHeight * Math.random()});
+                var previousPosition = { x : graphWidth / 2 , y : graphHeight / 2};
+                for (var j = 0; j < i; j++) {
+                    if (props.nodes[j].links.map(l => l.title).includes(props.nodes[i].title)) {
+                        previousPosition = graph.value!.nodes[j].getPosition()!;
+                    }
+                }
+
+                let radius = 32;
+                let angle = i * 70;
+
+                const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+                let newPosition = {
+                    x: (previousPosition.x + radius * Math.cos(toRadians(angle))),
+                    y: (previousPosition.y + radius* Math.sin(toRadians(angle)))
+                };
+
+                node.setPosition(newPosition);
             }
-        }
+        });
         //TODO: skip duplicates
         let links = props.nodes.map(from => from.links.map(to => [from, to])).flatMap(e => e);
         graph.value!.lines = links.map(link => {
@@ -159,7 +175,7 @@ class DomGraph {
 
     moveNodes(delta: number) {
         for (let node of this.nodes) {
-            if (node.force.x != 0 && node.force.y != 0) {
+            if (node.force.x != 0 || node.force.y != 0) {
                 let dir = node.force.clone().multiplyScalar(delta);
                 let pos = node.getPosition()!;
                 node.setPosition({ x : pos.x + dir.x , y : pos.y + dir.y });
@@ -191,7 +207,9 @@ class DomGraph {
                 let otherNode = this.nodes[j];
                 let otherPosition = otherNode.getPosition()!;
                 let diffForce = new Vector2(position.x - otherPosition.x, position.y - otherPosition.y);
-                if (diffForce.length() < NODE_FORCE_FIELD_SIZE) {
+                if (diffForce.length() < 1) {
+                    force = force.add(i < j ? new Vector2(-1, 0) : new Vector2(1, 0));    
+                } else if (diffForce.length() < NODE_FORCE_FIELD_SIZE) {
                     force = force.add(diffForce.normalize());
                 }
             }
