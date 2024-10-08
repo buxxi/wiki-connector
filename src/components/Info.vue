@@ -7,6 +7,11 @@
         time: number
     }>();
 
+    const emit = defineEmits<{
+        (e: 'restart'): void
+    }>();
+
+
     function formatTime(seconds: number) : string {
         let minutes = Math.floor(seconds / 60);
         seconds = seconds - (minutes * 60);
@@ -17,7 +22,7 @@
 <template>
     <div id="info">
         <form>
-            <input type="button" id="restart" :value="$t('button.restart')"/>
+            <input type="button" id="restart" :value="$t('button.restart')" @click="emit('restart')"/>
         </form>
         <div>
             <dl>

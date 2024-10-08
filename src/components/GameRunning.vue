@@ -11,7 +11,8 @@ import { ArticleState } from '@/domain/article';
 
 const emit = defineEmits<{
   (e: 'won', game: Game, result: Result): void,
-  (e: 'lost', game: Game, result: Result): void
+  (e: 'lost', game: Game, result: Result): void,
+  (e: 'restart'): void,  
 }>();
 
 defineExpose({
@@ -41,7 +42,6 @@ function gameStarted(newGame: Game, newResult: Result) {
   timer.value = setInterval(() => {
     seconds.value = Math.floor(((ended.value == undefined ? new Date() : ended.value).getTime() - started.value!.getTime()) / 1000)
   }, 1000);
-
 }
 
 async function guessed(value: string) {
@@ -93,6 +93,6 @@ function convertResult(result: Result) {
   <div>
     <Graph :nodes="nodes"/>
     <GuessInput :suggestions="suggestions" @guess="guessed" @type="typed" ref="input"/>
-    <Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs" :time="seconds"/>
+    <Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs" :time="seconds" @restart="emit('restart')"/>
   </div>
 </template>

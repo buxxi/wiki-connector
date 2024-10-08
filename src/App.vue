@@ -25,6 +25,10 @@
     gameComponent.value?.gameStarted(game, result);
   }
 
+  function restartGame() {
+    gameState.value = GameState.NOT_STARTED;
+  }
+
   async function gameWon(game: Game, result: Result) {
     gameState.value = GameState.WON;
   }
@@ -38,7 +42,7 @@
   <main>
     <Background/>
     <GameSetup @started="gameStarted" v-if="gameState.value == 'NOT_STARTED'"/>
-    <GameRunning @won="gameWon" @lost="gameLost" ref="gameComponent" v-if="gameState.value != 'NOT_STARTED'"/>
+    <GameRunning @won="gameWon" @lost="gameLost" @restart="restartGame" ref="gameComponent" v-if="gameState.value != 'NOT_STARTED'"/>
     <GameWon v-if="gameState.value == GameState.WON"/>
     <GameLost v-if="gameState.value == GameState.LOST"/>
   </main>
