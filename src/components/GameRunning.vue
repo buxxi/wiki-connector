@@ -7,6 +7,7 @@ import { ref, computed } from 'vue';
 import type Game from '@/services/game';
 import type Article from '@/domain/article';
 import { ResultType } from '@/domain/result';
+import { ArticleState } from '@/domain/article';
 
 const emit = defineEmits<{
   (e: 'won', game: Game, result: Result): void,
@@ -21,14 +22,26 @@ const game = ref<undefined | Game>(undefined);
 const nodes = ref<Article[]>([]);
 const suggestions = ref<string[]>([]);
 const input = ref<undefined | InstanceType<typeof GuessInput>>(undefined);
-const linkCount = computed(() => {
-  return nodes.value.map(n => n.linkCount).reduce((a, b) => a + b, 0);
+const counts = ref({
+  links: 0,
+  start: 0,
+  bombs: 0,
+  found: 0
 });
 
+const started = ref<Date | undefined>();
+const ended = ref<Date | undefined>();
+const seconds = ref<number>(0);
+const timer = ref();
 
 function gameStarted(newGame: Game, newResult: Result) {
+  started.value = newResult.started;
   game.value = newGame;
   convertResult(newResult);
+  timer.value = setInterval(() => {
+    seconds.value = Math.floor(((ended.value == undefined ? new Date() : ended.value).getTime() - started.value!.getTime()) / 1000)
+  }, 1000);
+
 }
 
 async function guessed(value: string) {
@@ -37,14 +50,17 @@ async function guessed(value: string) {
     convertResult(newResult);
     switch(newResult.type) {
       case ResultType.WON:
+        ended.value = newResult.ended;
+        clearInterval(timer.value);
         emit("won", game.value!, newResult);
         break;
       case ResultType.LOST:
+        ended.value = newResult.ended;
+        clearInterval(timer.value);
         emit("lost", game.value!, newResult);
         break;
-      case ResultType.ONGOING:
-        input.value?.clear();
     }
+    input.value?.clear();
   } catch (e) {
     input.value?.invalidInput();
   }
@@ -65,6 +81,10 @@ function convertResult(result: Result) {
       nodes.value[i] = article;
     }
   }
+  counts.value.start = result.count(ArticleState.START);
+  counts.value.bombs = result.count(ArticleState.BOMB);
+  counts.value.found = result.count(ArticleState.FOUND);
+  counts.value.links = result.found.map(n => n.linkCount).reduce((a, b) => a + b, 0);
 }
 
 </script>
@@ -73,6 +93,6 @@ function convertResult(result: Result) {
   <div>
     <Graph :nodes="nodes"/>
     <GuessInput :suggestions="suggestions" @guess="guessed" @type="typed" ref="input"/>
-    <Info :found="nodes.length" :possible="linkCount"/>
+    <Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs" :time="seconds"/>
   </div>
 </template>

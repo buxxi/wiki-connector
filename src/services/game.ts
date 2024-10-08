@@ -1,7 +1,7 @@
 import WikipediaService from "./wikipedia";
 import { unique, findAll, findParents, findLink, type NodeId } from "../util/graph";
 import Article, { ArticleState, toArticleId } from "../domain/article";
-import Result from "../domain/result";
+import Result, { ResultType } from "../domain/result";
 import { levenshteinDistance } from "@/util/text";
 import config from '@/config.ts';
 
@@ -25,6 +25,8 @@ const ROOT_NAME = "#ROOT";
 class Game {
     wikipedia: WikipediaService | undefined;
     root: Article = new Article(ROOT_NAME, "", [], 0, ArticleState.ROOT);
+    started: Date | undefined;
+    ended: Date | undefined;
 
     async start(language: Language, startArticleCount: number, bombCount: number, gameMode: GameMode) : Promise<Result> {
         this.wikipedia = new WikipediaService(language);
@@ -34,6 +36,8 @@ class Game {
             this.root.connect(loadResult.article);
             this._connect(loadResult.article, loadResult.links);
         }
+
+        this.started = new Date();
 
         return this._generateResult();
     }
@@ -55,7 +59,11 @@ class Game {
             this._connect(loadResult.article, loadResult.links);
         }
 
-        return this._generateResult();
+        let result = this._generateResult();
+        if ((result.type == ResultType.WON || result.type == ResultType.LOST) && this.ended == undefined) {
+            this.ended = new Date();
+        }
+        return result;
     }
 
     autoCompleteSuggestions(title: string) : string[] {
@@ -87,7 +95,7 @@ class Game {
 
     _generateResult() : Result {
         let foundLinks = this._onlyFoundLinks();
-        return Result.from(foundLinks);
+        return Result.from(foundLinks, this.started, this.ended);
     }
 
     _onlyFoundLinks() : Article[] {

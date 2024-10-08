@@ -22,8 +22,11 @@ export default {
         text: 'TODO, articles: {articles}, bombs: {bombs}'
     },
     info:{
+        start: 'Starting articles',
+        bombs: 'Bombs',
         found : 'Found articles',
-        possible: 'Possible links'
+        possible: 'Possible links',
+        time: 'Elapsed time'
     },
     won : {
         title: 'You won!'

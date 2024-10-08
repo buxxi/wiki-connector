@@ -78,25 +78,34 @@ function _updateCorrectLinks(foundLinks: Article[]) : Article[] {
 class Result {
     found: Article[];
     type: ResultType;
+    started: Date | undefined;
+    ended: Date | undefined;
 
-    constructor(found: Article[], type: ResultType) {
+    constructor(found: Article[], type: ResultType, started: Date | undefined, ended: Date | undefined) {
         this.found = found;
         this.type = type;
+        this.started = started;
+        this.ended = ended;
     }
 
-    static from(foundLinks: Article[]) : Result {
+    count(state: ArticleState) : number {
+        return this.found.filter(art => art.state == state).length;
+    }
+
+
+    static from(foundLinks: Article[], started: Date | undefined, ended: Date | undefined) : Result {
         foundLinks = _updateCorrectLinks(_updateBombLinks(foundLinks));
         let startingArticles = foundLinks.filter(article => article.state == ArticleState.START);
         let connectedToBomb = startingArticles.map(article => article.links.find(a => a.state == ArticleState.BOMB) != undefined).reduce((a, b) => a || b, false);
         if (connectedToBomb) {
-            return new Result(foundLinks, ResultType.LOST);
+            return new Result(foundLinks, ResultType.LOST, started, ended);
         }
 
         let connectedCorrect = foundLinks.find(art => art.state == ArticleState.CORRECT) != undefined;
         if (connectedCorrect) {
-            return new Result(foundLinks, ResultType.WON);
+            return new Result(foundLinks, ResultType.WON, started, ended);
         } else {
-            return new Result(foundLinks, ResultType.ONGOING);
+            return new Result(foundLinks, ResultType.ONGOING, started, ended);
         }
     }
 }

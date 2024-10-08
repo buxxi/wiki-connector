@@ -1,10 +1,17 @@
 <script setup lang="ts">
     const props = defineProps<{
+        start: number,
+        bombs: number,
         found: number,
-        possible: number
+        possibleLinks: number,
+        time: number
     }>();
-    //TODO: implement timer
-    //TODO: implement score
+
+    function formatTime(seconds: number) : string {
+        let minutes = Math.floor(seconds / 60);
+        seconds = seconds - (minutes * 60);
+        return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
+    }
 </script>
 
 <template>
@@ -14,12 +21,24 @@
         </form>
         <div>
             <dl>
-                <dt>{{ $t('info.found') }}</dt>
+                <dt :title="$t('info.start')">🎖️</dt>
+                <dd>{{ start }}</dd>
+            </dl>
+            <dl>
+                <dt :title="$t('info.bombs')">🧨</dt>
+                <dd>{{ bombs }}</dd>
+            </dl>
+            <dl>
+                <dt :title="$t('info.found')">✅</dt>
                 <dd>{{ found }}</dd>
             </dl>
             <dl>
-                <dt>{{ $t('info.possible') }}</dt>
-                <dd>{{ possible }}</dd>
+                <dt :title="$t('info.possible')">🔗</dt>
+                <dd>{{ possibleLinks }}</dd>
+            </dl>
+            <dl>
+                <dt :title="$t('info.time')">🕗</dt>
+                <dd>{{ formatTime(time) }}</dd>
             </dl>
         </div>
     </div>

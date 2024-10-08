@@ -22,8 +22,11 @@ export default {
         text: 'TODO, Artiklar: {articles}, Bomber: {bombs}'
     },
     info:{
+        start : 'Startartiklar',
+        bombs: 'Bomber',
         found : 'Funna artiklar',
-        possible: 'Möjliga kopplingar'
+        possible: 'Möjliga kopplingar',
+        time: 'Åtgången tid'
     },
     won : {
         title: 'Du vann!'
