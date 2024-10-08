@@ -19,7 +19,7 @@ export default {
     },
     instructions: {
         title: 'How to play',
-        text: 'TODO, articles: {articles}, bombs: {bombs}'
+        text: 'You\'ll get {articles} articles from Wikipedia (green circles).\nEach of these pages has links to other pages.\nFind the links between all these pages.\nThere\'s also {bombs} articles that you can\'t link to (red circles).\nIf you do, you\'ll lose!'
     },
     info:{
         start: 'Starting articles',

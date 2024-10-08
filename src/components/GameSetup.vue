@@ -11,7 +11,7 @@ const emit = defineEmits<{
 
 const language = defineModel<string>('language', { default: 'en'});
 const type = defineModel<string>('type', { default : 'curated'});
-const difficulty = defineModel<number>('difficulty', { default : 0});
+const difficulty = defineModel<number>('difficulty', { default : 2});
 const i18n = useI18n();
 
 function languageChanged() {

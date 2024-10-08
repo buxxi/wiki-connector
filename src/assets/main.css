@@ -183,7 +183,10 @@ dialog {
 
 .rules {
   text-align: left;
-  max-width: 20em;
+  max-width: 30em;
+  white-space: pre;
+  font-size: 0.85em;
+  font-style: italic;
 }
 
 .node {

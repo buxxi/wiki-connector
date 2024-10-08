@@ -19,7 +19,7 @@ export default {
     },
     instructions: {
         title: 'Regler',
-        text: 'TODO, Artiklar: {articles}, Bomber: {bombs}'
+        text: 'Du kommer att få {articles} artiklar från Wikipedia (gröna cirklar).\nVarje av dessa artiklar har länkar till andra artiklar.\nHitta kopplingen mellan alla dessa.\nDet finns även {bombs} artiklar som du inte kan länka till (röda cirklar).\nDu förlorar om du gör det!'
     },
     info:{
         start : 'Startartiklar',
