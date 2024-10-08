@@ -17,7 +17,8 @@
 }
 
 html {
-  font-family: Ubuntu;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 400;
   background-color: gray;
 }
 
@@ -68,6 +69,10 @@ html {
   right : 0.5em;
   bottom : 0.5em;
   font-size: 2em;
+}
+
+input {
+  font-family: "Open Sans", sans-serif;;
 }
 
 input.user-guess {
