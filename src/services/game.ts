@@ -123,15 +123,23 @@ class Game {
             case GameMode.Curated:
                 switch (this.wikipedia!.language) {
                     case "sv":
-                        return Promise.resolve(config.curated.sv.slice(0, startArticleCount));
+                        return Promise.resolve(this._random(config.curated.sv.slice(0), startArticleCount));
                     case "en":
-                        return Promise.resolve(config.curated.en.slice(0, startArticleCount));
+                        return Promise.resolve(this._random(config.curated.en.slice(0), startArticleCount));
                 }
             case GameMode.Random:
                 return this.wikipedia!.getRandom(startArticleCount);
             case GameMode.Popular:
                 return this.wikipedia!.getPopular(startArticleCount);
         }
+    }
+
+    _random(input: string[], count: number) : string[] {
+        let result = [];
+        while (result.length < count) {
+            result.push(input.splice(Math.floor(Math.random() * input.length), 1)[0]);
+        }
+        return result;
     }
 }
 
