@@ -51,9 +51,9 @@ async function startGame() {
             </select>
           </fieldset>
           <fieldset>
-            <label for="difficulty">{{ $t('difficulty') }}</label>
+            <label for="difficulty">{{ $t('difficulty.title') }}</label>
             <input id="difficulty" type="range" list="difficulties" min="0" max="4" v-model.number="difficulty"/>
-            <span class="difficulty-smiley">{{ getDifficultySetting(difficulty).smiley }}</span>
+            <span class="difficulty-smiley">{{ getDifficultySetting(difficulty).smiley }}</span> <span>{{ $t('difficulty.' + difficulty) }}</span>
             
             <datalist id="difficulties">
               <option v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))" :value="key">{{ value }}</option>
@@ -66,7 +66,9 @@ async function startGame() {
           </p>
         </section>
       </div>
-      <input type="button" :value="$t('button.start')" @click.prevent="startGame"/>
+      <div class="buttons">
+        <input type="button" :value="$t('button.start')" @click.prevent="startGame"/>
+      </div>
     </form>
   </dialog>
 </template>

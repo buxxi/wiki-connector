@@ -1,5 +1,5 @@
 export default {
-    title: "Wiki ihopkopplaren",
+    title: "Wiki Ihopkopplaren",
     settings: 'Inställningar',
     language: {
         select: 'Språk',
@@ -8,11 +8,18 @@ export default {
     },
     gameMode: {
         select: 'Spelsätt',
-        curated: 'Utvalda',
-        random: 'Slumpmässiga',
-        popular: 'Populära'
+        curated: 'Utvalda - En utvald lista av mig',
+        random: 'Slumpmässiga - Från samtliga artiklar på Wikipedia',
+        popular: 'Populära - Gårdagens mest visade artiklar'
     },
-    difficulty: 'Svårighetsgrad',
+    difficulty: {
+        title: 'Svårighetsgrad',
+        0: 'Lättast',
+        1: 'Lätt',
+        2: 'Normal',
+        3: 'Svår',
+        4: 'Svårast'
+    },
     button: {
         start: 'Starta',
         restart: 'Börja om'
@@ -29,10 +36,10 @@ export default {
         time: 'Åtgången tid'
     },
     won : {
-        title: 'Du vann!'
+        title: '🥳 Du vann!'
     },
     lost : {
-        title: 'Du förlorade!'
+        title: '😱 Du förlorade!'
     },
     article: {
         connections: '{linkCount} kopplingar till andra artiklar'

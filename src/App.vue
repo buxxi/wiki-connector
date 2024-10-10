@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import GameRunning from './components/GameRunning.vue';
   import GameSetup from './components/GameSetup.vue';
-  import GameWon from './components/GameWon.vue';
-  import GameLost from './components/GameLost.vue';
+  import GameOver from './components/GameOver.vue';
   import Background from './components/Background.vue';
 
   import { nextTick, reactive, ref } from 'vue';
@@ -43,8 +42,7 @@
     <Background/>
     <GameSetup @started="gameStarted" v-if="gameState.value == 'NOT_STARTED'"/>
     <GameRunning @won="gameWon" @lost="gameLost" @restart="restartGame" ref="gameComponent" v-if="gameState.value != 'NOT_STARTED'"/>
-    <GameWon v-if="gameState.value == GameState.WON"/>
-    <GameLost v-if="gameState.value == GameState.LOST"/>
+    <GameOver @restart="restartGame" :won="gameState.value == GameState.WON" v-if="gameState.value == GameState.WON || gameState.value == GameState.LOST"/>
   </main>
 </template>
 
