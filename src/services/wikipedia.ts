@@ -2,7 +2,7 @@ import config from "@/config";
 
 const RANDOM_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&list=random&format=json&rnnamespace=0&rnlimit={count}&origin=*';
 const POPULAR_URL = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/{language}.wikipedia/all-access/{year}/{month}/{day}';
-const LINKS_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&titles={title}&prop=links&pllimit=max&format=json&origin=*';
+const LINKS_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&generator=links&titles={title}&gpllimit=max&format=json&redirects&origin=*';
 const THUMBNAIL_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&titles={title}&prop=pageimages&format=json&pithumbsize=250&pilicense=any&origin=*';
 const MISSING_THUMBNAIL_URL = 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/250px-Wikipedia-logo-v2.svg.png';
 
@@ -41,7 +41,7 @@ type WikipediaLinksResponse = {
 }
 
 type WikipediaLinksContinue = {
-    plcontinue: string;
+    gplcontinue: string;
     continue: string;
 }
 
@@ -54,11 +54,8 @@ type WikipediaLinksPages = {
 }
 
 type WikipediaLinksPage = {
-    links : WikipediaLinksLink[];
-}
-
-type WikipediaLinksLink = {
-    title : string;
+    pageid: number;
+    title: string;
 }
 
 
@@ -127,9 +124,9 @@ class WikipediaService {
         do {
             let data : WikipediaLinksResponse = await this._fetchJson(url + cont);
             
-            result.push(Object.values(data.query.pages)[0].links.map(e => e.title));
+            result.push(Object.values(data.query.pages).filter(e => e.pageid > 0).map(e => e.title));
             if (data.continue) {
-                cont = `&plcontinue=${data.continue.plcontinue}&continue=${data.continue.continue}`;
+                cont = `&gplcontinue=${data.continue.gplcontinue}&continue=${data.continue.continue}`;
             } else {
                 cont = "";
             }
@@ -137,7 +134,6 @@ class WikipediaService {
         return result.flatMap(e => e).filter(e => this._filterPages(e));
     }
 
-    //TODO: follow redirects
     async getThumbnail(title: string) : Promise<string> {
         let url = THUMBNAIL_URL
             .replace('{language}', this.language)
