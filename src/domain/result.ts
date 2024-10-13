@@ -88,10 +88,21 @@ class Result {
         this.ended = ended;
     }
 
-    count(state: ArticleState) : number {
-        return this.found.filter(art => art.state == state).length;
+    titles(state: ArticleState) : string[] {
+        return this.found.filter(art => art.state == state).map(art => art.title);
     }
 
+    linkCount(): number {
+        return this.found.map(n => n.linkCount).reduce((a, b) => a + b, 0);
+    }
+
+    shortest() : number | undefined {
+        return _findCompleteSingleConnection(this.found)?.length;
+    }
+
+    seconds() : number {
+        return Math.floor(((this.ended == undefined ? new Date() : this.ended).getTime() - this.started!.getTime()) / 1000)
+    }
 
     static from(foundLinks: Article[], started: Date | undefined, ended: Date | undefined) : Result {
         foundLinks = _updateCorrectLinks(_updateBombLinks(foundLinks));

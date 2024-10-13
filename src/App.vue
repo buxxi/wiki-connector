@@ -16,6 +16,7 @@
   }
 
   const gameComponent = ref<undefined | InstanceType<typeof GameRunning>>(undefined);
+  const gameOverComponent = ref<undefined | InstanceType<typeof GameOver>>(undefined);
   const gameState = reactive({ value : GameState.NOT_STARTED});
 
   async function gameStarted(game: Game, result: Result) {
@@ -30,10 +31,14 @@
 
   async function gameWon(game: Game, result: Result) {
     gameState.value = GameState.WON;
+    await nextTick();
+    gameOverComponent.value?.gameWon(result);
   }
 
   async function gameLost(game: Game, result: Result) {
     gameState.value = GameState.LOST;
+    await nextTick();
+    gameOverComponent.value?.gameLost(result);
   }
 </script>
 
@@ -42,7 +47,7 @@
     <Background/>
     <GameSetup @started="gameStarted" v-if="gameState.value == 'NOT_STARTED'"/>
     <GameRunning @won="gameWon" @lost="gameLost" @restart="restartGame" ref="gameComponent" v-if="gameState.value != 'NOT_STARTED'"/>
-    <GameOver @restart="restartGame" :won="gameState.value == GameState.WON" v-if="gameState.value == GameState.WON || gameState.value == GameState.LOST"/>
+    <GameOver @restart="restartGame" ref="gameOverComponent" v-if="gameState.value == GameState.WON || gameState.value == GameState.LOST"/>
   </main>
 </template>
 

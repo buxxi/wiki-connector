@@ -9,7 +9,7 @@ export default {
     gameMode: {
         select: 'Type',
         curated: 'Curated - A list of articles chosen by me',
-        random: 'Random - Fromm the complete wikipedia set',
+        random: 'Random - From the complete wikipedia set',
         popular: 'Popular - Yesterdays most viewed articles'
     },
     difficulty: {
@@ -22,11 +22,30 @@ export default {
     },
     button: {
         start: 'Start',
-        restart: 'Restart'
+        restart: 'Restart',
+        new: 'New game'
     },
     instructions: {
         title: 'How to play',
         text: 'You\'ll get {articles} articles from Wikipedia (green circles).\nEach of these pages has links to other pages.\nFind the links between all these pages.\nThere\'s also {bombs} articles that you can\'t link to (red circles).\nIf you do, you\'ll lose!'
+    },
+    results: {
+        title: 'Results',
+        won : {
+            title: '🥳 You won!',
+            connected: 'You connected {firstTitle} with {otherTitles} and avoided all bombs!',
+            stats: 'And all this in only {steps} steps in {time}, well done!'
+        },
+        lost : {
+            title: '😱 You lost!',
+            connected: 'Oops! You connected {firstTitle} with {bombTitle} which was one of the bombs.'
+        }
+    },
+    history: {
+        title: 'History',
+        date: 'Date',
+        won: 'Win/Loss',
+        shortest: 'Shortest path'
     },
     info:{
         start: 'Starting articles',
@@ -35,13 +54,8 @@ export default {
         possible: 'Possible links',
         time: 'Elapsed time'
     },
-    won : {
-        title: '🥳 You won!'
-    },
-    lost : {
-        title: '😱 You lost!'
-    },
     article: {
         connections: 'Has {linkCount} connections to other articles'
-    }
+    },
+    and: ' and '
 }

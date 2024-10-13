@@ -3,6 +3,7 @@ import type Result from '@/domain/result.ts';
 import Game, { GameMode, type Language } from '../services/game.ts';
 import { Difficulty, getDifficultySetting } from '@/domain/difficulty.ts';
 import { useI18n } from 'vue-i18n';
+import { onMounted } from 'vue';
 
 
 const emit = defineEmits<{
@@ -17,6 +18,10 @@ const i18n = useI18n();
 function languageChanged() {
   i18n.locale.value = language.value;
 }
+
+onMounted(() => {
+  language.value = i18n.locale.value;
+});
 
 async function startGame() {
   let game = new Game();

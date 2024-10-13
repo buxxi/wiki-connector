@@ -1,4 +1,6 @@
 <script setup lang="ts">
+    import TimeFormat from './TimeFormat.vue';
+
     const props = defineProps<{
         start: number,
         bombs: number,
@@ -10,13 +12,6 @@
     const emit = defineEmits<{
         (e: 'restart'): void
     }>();
-
-
-    function formatTime(seconds: number) : string {
-        let minutes = Math.floor(seconds / 60);
-        seconds = seconds - (minutes * 60);
-        return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0');
-    }
 </script>
 
 <template>
@@ -43,7 +38,7 @@
             </dl>
             <dl>
                 <dt :title="$t('info.time')">🕗</dt>
-                <dd>{{ formatTime(time) }}</dd>
+                <dd><TimeFormat :seconds="time"></TimeFormat></dd>
             </dl>
         </div>
     </div>
