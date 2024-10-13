@@ -26,7 +26,7 @@ import { ref } from 'vue';
       titles.value.push(title);
     }
 
-    currentResult.value = new HistoryResult(result.started!, true, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest()! -2);
+    currentResult.value = new HistoryResult(result.started!, true, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest()! -1);
     allResults.value.push(currentResult.value);
   }
 
