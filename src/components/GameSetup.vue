@@ -67,8 +67,10 @@ async function startGame() {
         </section>
         <section class="rules">
           <h2>{{ $t('instructions.title') }}</h2>
-          <p>{{ $t('instructions.text', { articles: getDifficultySetting(difficulty).articles, bombs: getDifficultySetting(difficulty).bombs }) }}
-          </p>
+          <i18n-t keypath="instructions.text" tag="p" scope="global">
+            <template v-slot:articles><b>{{ getDifficultySetting(difficulty).articles }}</b></template>
+            <template v-slot:bombs><b>{{ getDifficultySetting(difficulty).bombs }}</b></template>    
+          </i18n-t>
         </section>
       </div>
       <div class="buttons">
