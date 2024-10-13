@@ -63,7 +63,7 @@
     }
 
     function makeGuess() {
-        if (guess.value != undefined) {
+        if (guess.value != undefined && guess.value.trim().length > 0) {
             emit('guess', guess.value);
         }
     }

@@ -48,6 +48,10 @@ class Article {
         return this.state == ArticleState.FOUND || this.state == ArticleState.BOMB || this.state == ArticleState.START;
     }
 
+    autoCompletable() : boolean {
+        return !this.found() && this.state != ArticleState.ROOT;
+    }
+
     connect(article : Article) {
         _connect(this, article);
         _connect(article, this);

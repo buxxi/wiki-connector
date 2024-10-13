@@ -70,7 +70,7 @@ class Game {
         let matchNodeId = toArticleId(title);
         let tolerance = Math.floor(matchNodeId.length / AUTOCOMPLETE_TOLERANCE_RATIO);
 
-        let notFound = unique(this.root, a => !a.found());
+        let notFound = unique(this.root, a => a.autoCompletable());
         var matches = notFound.filter(a => levenshteinDistance(a.id(), matchNodeId) <= tolerance);
         matches = [...new Set(matches)];
         matches.sort((a, b) => levenshteinDistance(a.id(), matchNodeId) - levenshteinDistance(b.id(), matchNodeId));
