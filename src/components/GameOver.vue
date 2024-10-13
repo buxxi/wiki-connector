@@ -3,7 +3,8 @@ import TimeFormat from './TimeFormat.vue';
 import { ArticleState } from '@/domain/article';
 import { Difficulty, getDifficultySetting } from '@/domain/difficulty';
 import type Result from '@/domain/result';
-import { ref } from 'vue';
+import HistoryService from '@/services/history';
+import { computed, ref } from 'vue';
   const emit = defineEmits<{
     (e: 'restart'): void,  
   }>();
@@ -13,11 +14,12 @@ import { ref } from 'vue';
     gameLost: gameLost
   });
 
+  let history = new HistoryService();
   let open = ref<boolean>(true);
   let won = ref<boolean>(false);
   let titles = ref<string[]>([]);
   let currentResult = ref<HistoryResult | undefined>(undefined);
-  let allResults = ref<HistoryResult[]>([]); //TODO: save and load history
+  let allResults = ref<HistoryResult[]>([]);
 
   function gameWon(result: Result) {
     won.value = true;
@@ -27,7 +29,8 @@ import { ref } from 'vue';
     }
 
     currentResult.value = new HistoryResult(result.started!, true, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest()! -1);
-    allResults.value.push(currentResult.value);
+    history.add(currentResult.value);
+    allResults.value = history.read();
   }
 
   function gameLost(result: Result) {
@@ -38,7 +41,8 @@ import { ref } from 'vue';
     titles.value.push(startNode!.title);
 
     currentResult.value = new HistoryResult(result.started!, false, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
-    allResults.value.push(currentResult.value);
+    history.add(currentResult.value);
+    allResults.value = history.read();
   }
 
   function closeModal() {
