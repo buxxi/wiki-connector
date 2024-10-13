@@ -4,6 +4,7 @@ import Article, { ArticleState, toArticleId } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { levenshteinDistance } from "@/util/text";
 import config from '@/config.ts';
+import { getDifficultySetting, type Difficulty } from "@/domain/difficulty";
 
 export enum GameMode {
     Curated = "curated",
@@ -23,14 +24,23 @@ const AUTOCOMPLETE_TOLERANCE_RATIO = 3;
 const ROOT_NAME = "#ROOT";
 
 class Game {
-    wikipedia: WikipediaService | undefined;
+    wikipedia: WikipediaService;
     root: Article = new Article(ROOT_NAME, "", [], 0, ArticleState.ROOT);
     started: Date | undefined;
     ended: Date | undefined;
+    difficulty: Difficulty;
+    gameMode: GameMode;
 
-    async start(language: Language, startArticleCount: number, bombCount: number, gameMode: GameMode) : Promise<Result> {
+    constructor(language: Language, difficulty: Difficulty, gameMode : GameMode) {
         this.wikipedia = new WikipediaService(language);
-        let titles = await this._loadStartingArticles(gameMode, startArticleCount + bombCount);
+        this.difficulty = difficulty;
+        this.gameMode = gameMode;
+    }
+
+    async start() : Promise<Result> {
+        let startArticleCount = getDifficultySetting(this.difficulty).articles;
+        let bombCount = getDifficultySetting(this.difficulty).bombs;
+        let titles = await this._loadStartingArticles(this.gameMode, startArticleCount + bombCount);
         let loadResults = await Promise.all(titles.map((title, index) => this._loadArticle(title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
         for (let loadResult of loadResults) {
             this.root.connect(loadResult.article);

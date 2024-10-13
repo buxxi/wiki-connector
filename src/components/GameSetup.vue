@@ -24,10 +24,12 @@ onMounted(() => {
 });
 
 async function startGame() {
-  let game = new Game();
   let gameMode = type.value as GameMode;
-  let selectedDifficulty = getDifficultySetting(difficulty.value);
-  let result = await game.start(language.value as Language, selectedDifficulty.articles, selectedDifficulty.bombs, gameMode);
+  let selectedDifficulty = difficulty.value as Difficulty;
+  
+  let game = new Game(language.value as Language, selectedDifficulty, gameMode);
+
+  let result = await game.start();
   emit('started', game, result);
 }
 </script>

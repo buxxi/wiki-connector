@@ -3,8 +3,9 @@ import TimeFormat from './TimeFormat.vue';
 import { ArticleState } from '@/domain/article';
 import { Difficulty, getDifficultySetting } from '@/domain/difficulty';
 import type Result from '@/domain/result';
+import type Game from '@/services/game';
 import HistoryService from '@/services/history';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
   const emit = defineEmits<{
     (e: 'restart'): void,  
   }>();
@@ -21,26 +22,26 @@ import { computed, ref } from 'vue';
   let currentResult = ref<HistoryResult | undefined>(undefined);
   let allResults = ref<HistoryResult[]>([]);
 
-  function gameWon(result: Result) {
+  function gameWon(game: Game, result: Result) {
     won.value = true;
     titles.value.splice(0, titles.value.length);
     for (let title of result.titles(ArticleState.START)) {
       titles.value.push(title);
     }
 
-    currentResult.value = new HistoryResult(result.started!, true, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest()! -1);
+    currentResult.value = new HistoryResult(result.started!, true, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest()! -1);
     history.add(currentResult.value);
     allResults.value = history.read();
   }
 
-  function gameLost(result: Result) {
+  function gameLost(game: Game, result: Result) {
     won.value = false;
 
     titles.value.splice(0, titles.value.length);
     let startNode = result.found.find(art => art.state == ArticleState.START && art.links.find(link => link.state == ArticleState.BOMB) != undefined)!;
     titles.value.push(startNode!.title);
 
-    currentResult.value = new HistoryResult(result.started!, false, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
+    currentResult.value = new HistoryResult(result.started!, false, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
     history.add(currentResult.value);
     allResults.value = history.read();
   }

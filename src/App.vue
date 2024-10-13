@@ -32,13 +32,13 @@
   async function gameWon(game: Game, result: Result) {
     gameState.value = GameState.WON;
     await nextTick();
-    gameOverComponent.value?.gameWon(result);
+    gameOverComponent.value?.gameWon(game, result);
   }
 
   async function gameLost(game: Game, result: Result) {
     gameState.value = GameState.LOST;
     await nextTick();
-    gameOverComponent.value?.gameLost(result);
+    gameOverComponent.value?.gameLost(game, result);
   }
 </script>
 
