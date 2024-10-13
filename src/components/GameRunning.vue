@@ -47,6 +47,8 @@ function gameStarted(newGame: Game, newResult: Result) {
 
 async function guessed(value: string) {
   try {
+    suggestions.value.splice(0, suggestions.value.length);
+
     let newResult = await game.value!.guess(value);
     convertResult(newResult);
     switch(newResult.type) {

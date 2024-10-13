@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { computed, reactive, ref } from 'vue';
+    import { computed, reactive, ref, watch } from 'vue';
 
     const props = defineProps<{
         suggestions: string[]
@@ -26,6 +26,10 @@
         } else {
             return `${guess.value} → ${suggestions[index.value]} (${index.value + 1}/${suggestions.length})`;            
         }
+    });
+
+    watch(props.suggestions, () => {
+        index.value = 0;
     });
 
     function clearGuess() {
@@ -65,7 +69,7 @@
     }
 
     async function emitChange(event: KeyboardEvent) {
-        if (guess.value != undefined && event.key != 'Tab') {
+        if (guess.value != undefined && !['tab', 'arrowdown', 'arrowup', 'enter'].includes(event.key.toLowerCase())) {
             emit('type', guess.value);
         }
     }
