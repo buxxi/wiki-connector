@@ -38,7 +38,7 @@ export default {
         },
         lost : {
             title: '😱 Du förlorade!',
-            connected: 'Ojdå! Du kopplade ihop {firstTitle} med {bombTitle} vilket var en av bomberna.'
+            connected: 'Ojdå! Du kopplade ihop {firstTitle} med en av bomberna.'
         }
     },
     info:{

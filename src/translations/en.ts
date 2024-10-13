@@ -38,7 +38,7 @@ export default {
         },
         lost : {
             title: '😱 You lost!',
-            connected: 'Oops! You connected {firstTitle} with {bombTitle} which was one of the bombs.'
+            connected: 'Oops! You connected {firstTitle} with one of the bombs.'
         }
     },
     history: {

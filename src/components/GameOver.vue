@@ -35,9 +35,7 @@ import { ref } from 'vue';
 
     titles.value.splice(0, titles.value.length);
     let startNode = result.found.find(art => art.state == ArticleState.START && art.links.find(link => link.state == ArticleState.BOMB) != undefined)!;
-    let bombNode = result.found.find(art => art.state == ArticleState.BOMB && art.links.find(link => link.id() == startNode.id()) != undefined);
     titles.value.push(startNode!.title);
-    titles.value.push(bombNode!.title);
 
     currentResult.value = new HistoryResult(result.started!, false, Difficulty.EASY, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
     allResults.value.push(currentResult.value);
@@ -81,9 +79,6 @@ import { ref } from 'vue';
             <i18n-t keypath="results.lost.connected" tag="span" scope="global">
               <template v-slot:firstTitle>
                 <b>{{ titles[0] }}</b>
-              </template>
-              <template v-slot:bombTitle>
-                <b>{{ titles[1] }}</b>
               </template>
             </i18n-t>
           </p>
