@@ -37,6 +37,7 @@ class Article {
     }
 
     id() : NodeId {
+        //TODO: use the pageId from wikipedia instead
         return toArticleId(this.title);
     }
 
