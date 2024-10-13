@@ -90,15 +90,15 @@ class WikipediaService {
         this.language = language;
     }
 
-    async getRandom(count: number) : Promise<string[]> {
+    async getRandom() : Promise<string[]> {
         let url = RANDOM_URL
             .replace('{language}', this.language)
-            .replace('{count}', "" + count);
+            .replace('{count}', "" + 500);
         let data : WikipediaRandomResponse = await this._fetchJson(url);
         return data.query.random.map(e => e.title).filter(e => this._filterPages(e));
     }
 
-    async getPopular(count: number) : Promise<string[]> {
+    async getPopular() : Promise<string[]> {
         let yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         let year = new String(yesterday.getFullYear()).padStart(4, '0');
@@ -112,8 +112,7 @@ class WikipediaService {
             .replace('{day}', "" + day);
             
         let data : WikipediaPopularResponse = await this._fetchJson(url);
-        let articles = data.items[0].articles.filter(e => this._filterPages(e.article)).map(e => this._parseTitle(e.article));
-        return this._randomSelect(articles, count);
+        return data.items[0].articles.filter(e => this._filterPages(e.article)).map(e => this._parseTitle(e.article));
     }
 
     //TODO: follow redirects

@@ -128,9 +128,9 @@ class Game {
                         return Promise.resolve(this._random(config.curated.en.slice(0), startArticleCount));
                 }
             case GameMode.Random:
-                return this.wikipedia!.getRandom(startArticleCount);
+                return this.wikipedia!.getRandom().then(list => this._random(list, startArticleCount));
             case GameMode.Popular:
-                return this.wikipedia!.getPopular(startArticleCount);
+                return this.wikipedia!.getPopular().then(list => this._random(list, startArticleCount));
         }
     }
 
