@@ -1,4 +1,4 @@
-import WikipediaService from "./wikipedia";
+import WikipediaService, { type WikipediaArticle } from "./wikipedia";
 import { unique, findAll, findParents, findLink, type NodeId } from "../util/graph";
 import Article, { ArticleState, toArticleId } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
@@ -16,7 +16,7 @@ export type Language = "se" | "en";
 
 type LoadResult = {
     article: Article;
-    links: string[];
+    links: WikipediaArticle[];
 }
 
 const AUTOCOMPLETE_SUGGESTIONS = 3;
@@ -41,7 +41,7 @@ class Game {
         let startArticleCount = getDifficultySetting(this.difficulty).articles;
         let bombCount = getDifficultySetting(this.difficulty).bombs;
         let titles = await this._loadStartingArticles(this.gameMode, startArticleCount + bombCount);
-        let loadResults = await Promise.all(titles.map((title, index) => this._loadArticle(title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
+        let loadResults = await Promise.all(titles.map((title, index) => this._loadArticle(title.title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
         for (let loadResult of loadResults) {
             this.root.connect(loadResult.article);
             this._connect(loadResult.article, loadResult.links);
@@ -93,9 +93,6 @@ class Game {
     }
 
     async _loadArticle(title: string, state: ArticleState) : Promise<LoadResult> {
-        if (this.wikipedia == undefined) {
-            throw new Error("Game not started");
-        }
         let [thumbnail, links] = await Promise.all([this.wikipedia.getThumbnail(title), this.wikipedia.getAllLinks(title)]);
 
         let article = new Article(title, thumbnail, [], links.length, state);
@@ -120,31 +117,31 @@ class Game {
         return foundArticles;
     }
 
-    _connect(fromArticle: Article, links: string[]) : void {
-        let toArticles : Article[] = findAll(this.root, links.map(link => toArticleId(link)))
-            .map((link, i) => link != undefined ? link : new Article(links[i], "" , [], 0, ArticleState.NOT_FOUND));
+    _connect(fromArticle: Article, links: WikipediaArticle[]) : void {
+        let toArticles : Article[] = findAll(this.root, links.map(link => toArticleId(link.title)))
+            .map((link, i) => link != undefined ? link : new Article(links[i].title, "" , [], 0, ArticleState.NOT_FOUND));
         for (let toArticle of toArticles) {
             fromArticle.connect(toArticle);
         }
     }
 
-    _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<string[]> {
+    _loadStartingArticles(gameMode: GameMode, startArticleCount: number): Promise<WikipediaArticle[]> {
         switch(gameMode) {
             case GameMode.Curated:
                 switch (this.wikipedia!.language) {
                     case "sv":
-                        return Promise.resolve(this._random(config.curated.sv.slice(0), startArticleCount));
+                        return this.wikipedia.getPages(config.curated.sv.slice(0)).then(list => this._random(list, startArticleCount));
                     case "en":
-                        return Promise.resolve(this._random(config.curated.en.slice(0), startArticleCount));
+                        return this.wikipedia.getPages(config.curated.en.slice(0)).then(list => this._random(list, startArticleCount));
                 }
             case GameMode.Random:
-                return this.wikipedia!.getRandom().then(list => this._random(list, startArticleCount));
+                return this.wikipedia.getRandom().then(list => this._random(list, startArticleCount));
             case GameMode.Popular:
-                return this.wikipedia!.getPopular().then(list => this._random(list, startArticleCount));
+                return this.wikipedia.getPopular().then(list => this._random(list, startArticleCount));
         }
     }
 
-    _random(input: string[], count: number) : string[] {
+    _random(input: WikipediaArticle[], count: number) : WikipediaArticle[] {
         let result = [];
         while (result.length < count) {
             result.push(input.splice(Math.floor(Math.random() * input.length), 1)[0]);

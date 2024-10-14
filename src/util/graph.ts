@@ -11,7 +11,7 @@ type Brand<K, T> = K & { __brand: T }
 
 
 export function unique<T extends GraphNode<T>>(root: T, predicate: Predicate<T>) : T[] {
-    let checkIds: string[] = [];
+    let checkIds: NodeId[] = [];
     let queue: T[] = [];
     let result: T[] = [];
 
@@ -52,7 +52,7 @@ export function findAll<T extends GraphNode<T>>(root: T, ids: NodeId[]) : (T | u
 }
 
 export function findLink<T extends GraphNode<T>>(from: T, to: T) : T[] | undefined {
-    let checkIds: string[] = [];
+    let checkIds: NodeId[] = [];
     let queue: T[][] = [];
 
     queue.push([from]);
