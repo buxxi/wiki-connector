@@ -39,10 +39,6 @@ function gameStarted(newGame: Game, newResult: Result) {
   started.value = newResult.started;
   game.value = newGame;
   convertResult(newResult);
-  timer.value = setInterval(() => {
-    //TODO: use from result directly instead
-    seconds.value = Math.floor(((ended.value == undefined ? new Date() : ended.value).getTime() - started.value!.getTime()) / 1000)
-  }, 1000);
 }
 
 async function guessed(value: string) {
@@ -76,6 +72,8 @@ function typed(value: string) {
 }
 
 function convertResult(result: Result) {
+  clearInterval(timer.value);
+
   for (let article of result.found) {
     let i = nodes.value.map(e => e.id()).indexOf(article.id());
     if (i == -1) {
@@ -84,10 +82,15 @@ function convertResult(result: Result) {
       nodes.value[i] = article;
     }
   }
+  
   counts.value.start = result.titles(ArticleState.START).length;
   counts.value.bombs = result.titles(ArticleState.BOMB).length;
   counts.value.found = result.titles(ArticleState.FOUND).length;
   counts.value.links = result.linkCount();
+
+  timer.value = setInterval(() => {
+    seconds.value = result.seconds();
+  }, 1000);
 }
 
 </script>

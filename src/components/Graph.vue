@@ -301,8 +301,6 @@ function onHover(node: GraphNode, e: NodeEvent) : void {
     graph.value!.drawLines();
 }
 
-//TODO: have some way to debug the graph on node click
-
 </script>
 
 <template>
