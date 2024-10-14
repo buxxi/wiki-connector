@@ -38,18 +38,24 @@ class Game {
     }
 
     async start() : Promise<Result> {
-        let startArticleCount = getDifficultySetting(this.difficulty).articles;
-        let bombCount = getDifficultySetting(this.difficulty).bombs;
-        let pages = await this._loadStartingArticles(this.gameMode, startArticleCount + bombCount);
-        let loadResults = await Promise.all(pages.map((page, index) => this._loadArticle(page.id, page.title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
-        for (let loadResult of loadResults) {
-            this.root.connect(loadResult.article);
-            this._connect(loadResult.article, loadResult.links);
-        }
+        var attempts = 0;
+        var result = new Result([], ResultType.LOST, new Date(), new Date());
+        do {
+            this.root.links = [];
+            let startArticleCount = getDifficultySetting(this.difficulty).articles;
+            let bombCount = getDifficultySetting(this.difficulty).bombs;
+            let pages = await this._loadStartingArticles(this.gameMode, startArticleCount + bombCount);
+            let loadResults = await Promise.all(pages.map((page, index) => this._loadArticle(page.id, page.title, index < startArticleCount ? ArticleState.START : ArticleState.BOMB)));
+            for (let loadResult of loadResults) {
+                this.root.connect(loadResult.article);
+                this._connect(loadResult.article, loadResult.links);
+            }
 
-        this.started = new Date();
+            this.started = new Date();
+            result = this._generateResult();
+        } while (result.anyLinks() && attempts++ < 10);
 
-        return this._generateResult();
+        return result;
     }
 
     async guess(title: string) : Promise<Result> {

@@ -99,6 +99,10 @@ class Result {
         return this.found.filter(art => art.state == state).map(art => art.title);
     }
 
+    anyLinks(): boolean {
+        return this.found.flatMap(art => art.links).length > 0;
+    }
+
     linkCount(): number {
         return this.found.map(n => n.linkCount).reduce((a, b) => a + b, 0);
     }
