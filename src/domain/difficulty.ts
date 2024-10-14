@@ -21,7 +21,7 @@ export class DifficultySetting {
 export function getDifficultySetting(input: Difficulty) : DifficultySetting {
     switch (input) {
         case Difficulty.EASIEST:
-        return new DifficultySetting("😁", 3, 0);
+        return new DifficultySetting("😁", 2, 0);
         case Difficulty.EASY:
         return new DifficultySetting("🙂", 2, 1);
         case Difficulty.MEDIUM:

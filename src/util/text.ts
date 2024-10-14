@@ -1,5 +1,5 @@
 //copied from and modified: https://gist.github.com/andrei-m/982927
-export function levenshteinDistance(a: string, b: string) {
+export function levenshteinDistance(a: AlphaNumeric, b: AlphaNumeric) {
     if(a.length == 0 || b.length == 0) {
         return (a || b).length;
     }
@@ -24,6 +24,10 @@ export function levenshteinDistance(a: string, b: string) {
     return m[b.length][a.length];
 }
 
-export function alphaNumericOnly(input: string) : string {
-    return input.toLowerCase().replace(/[^a-z0-9]/g, '');
+export type AlphaNumeric = Brand<string, "AlphaNumeric">
+
+type Brand<K, T> = K & { __brand: T }
+
+export function alphaNumericOnly(input: string) : AlphaNumeric {
+    return input.toLowerCase().replace(/[^a-z0-9]/g, '') as AlphaNumeric;
 }

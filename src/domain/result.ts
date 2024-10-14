@@ -11,13 +11,19 @@ export enum ResultType {
 function _findCompleteSingleConnection(foundArticles: Article[]) : Article[] | undefined {
     let startArticles = foundArticles.filter(art => art.state == ArticleState.START);
     let links = new Map();
+
+    const linkKey = function(list: Article[], index : number) {
+        return list[index].id() + "-" + list[index + 1].id();
+    }
+
     for (let pair of pairs(startArticles)) {
         let link = findLink(pair[0], pair[1]);
         if (!link) {
             return undefined;
         }
-        links.set(pair[0].id() + "-" + pair[1].id(), link);
+        links.set(linkKey(pair, 0), link);
     }
+
     let permutationLinks = singleDirectionPermutations(startArticles);
 
     var result : (Article[] | undefined) = undefined;
@@ -25,7 +31,7 @@ function _findCompleteSingleConnection(foundArticles: Article[]) : Article[] | u
     const permutationLink = function(perm: Article[]) : Article[] | undefined {
         let permLinkResult : Article[] = [];
         for (var i = 0; i < perm.length - 1; i++) {
-            let id = perm[i].id() + "-" + perm[i + 1].id();
+            let id = linkKey(perm, i);
             if (links.has(id)) {
                 permLinkResult = permLinkResult.concat(links.get(id).slice(permLinkResult.length == 0 ? 0 : 1));
             } else {

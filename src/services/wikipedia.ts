@@ -3,8 +3,8 @@ import config from "@/config";
 const RANDOM_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&list=random&format=json&rnnamespace=0&rnlimit={count}&origin=*';
 const POPULAR_URL = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/{language}.wikipedia/all-access/{year}/{month}/{day}';
 const LOOKUP_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&titles={titles}&format=json&redirects&origin=*';
-const LINKS_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&generator=links&titles={title}&gpllimit=max&format=json&redirects&origin=*';
-const THUMBNAIL_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&titles={title}&prop=pageimages&format=json&pithumbsize=250&pilicense=any&origin=*';
+const LINKS_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&generator=links&pageids={pageids}&gpllimit=max&format=json&redirects&origin=*';
+const THUMBNAIL_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&pageids={pageids}&prop=pageimages&format=json&pithumbsize=250&pilicense=any&origin=*';
 const MISSING_THUMBNAIL_URL = 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/250px-Wikipedia-logo-v2.svg.png';
 
 type WikipediaRandomResponse = {
@@ -154,10 +154,10 @@ class WikipediaService {
         return Object.values(data.query.pages).map(e => ({id: e.pageid, title: e.title})).filter(e => this._filterPages(e));
     }
 
-    async getAllLinks(title: string) : Promise<WikipediaArticle[]> {
+    async getAllLinks(pageid: number) : Promise<WikipediaArticle[]> {
         let url = LINKS_URL
             .replace('{language}', this.language)
-            .replace('{title}', title);
+            .replace('{pageids}', "" + pageid);
 
         var cont = "";            
         let result = [];
@@ -172,13 +172,13 @@ class WikipediaService {
                 cont = "";
             }
         } while (cont);
-        return result.flatMap(e => e).map(e => ({id: e.pageid, title: e.title})).filter(e => this._filterPages(e));
+        return result.flatMap(e => e).map(e => ({id: e.pageid, title: e.title})).filter(e => e.id != pageid && this._filterPages(e));
     }
 
-    async getThumbnail(title: string) : Promise<string> {
+    async getThumbnail(pageid: number) : Promise<string> {
         let url = THUMBNAIL_URL
             .replace('{language}', this.language)
-            .replace('{title}', title);
+            .replace('{pageids}', "" + pageid);
 
         let data : WikipediaThumbnailResponse = await this._fetchJson(url);
         let pages = Object.values(data.query.pages);

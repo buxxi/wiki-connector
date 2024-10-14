@@ -3,7 +3,7 @@ export type GraphNode<T> = {
     connections() : T[];
 }
 
-export type NodeId = Brand<string, "NodeId">
+export type NodeId = Brand<number, "NodeId">
 
 type Predicate<T> = (e : T) => boolean;
 
@@ -36,8 +36,12 @@ export function unique<T extends GraphNode<T>>(root: T, predicate: Predicate<T>)
     return result;
 }
 
-export function findParents<T extends GraphNode<T>>(root: T, childId: NodeId) : T[] {
+export function linksTo<T extends GraphNode<T>>(root: T, childId: NodeId) : T[] {
     return unique(root, parent => parent.connections().map(c => c.id()).includes(childId));
+}
+
+export function find<T extends GraphNode<T>>(root: T, predicate: Predicate<T>) : (T | undefined) {
+    return unique(root, predicate).find(() => true);
 }
 
 export function findAll<T extends GraphNode<T>>(root: T, ids: NodeId[]) : (T | undefined)[] {

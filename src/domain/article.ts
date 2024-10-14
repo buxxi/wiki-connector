@@ -1,5 +1,5 @@
 import type { NodeId } from "@/util/graph";
-import { alphaNumericOnly } from "@/util/text";
+import { alphaNumericOnly, type AlphaNumeric } from "@/util/text";
 
 export enum ArticleState {
     ROOT = "ROOT",
@@ -22,13 +22,15 @@ function _connect(art1: Article, art2: Article) {
 
 
 class Article {
+    _id: number;
     title: string;
     thumbnail: string;
     links: Article[];
     linkCount: number;
     state: ArticleState;
 
-    constructor(title: string, thumbnail: string, links: Article[], linkCount : number, state: ArticleState) {
+    constructor(id: number, title: string, thumbnail: string, links: Article[], linkCount : number, state: ArticleState) {
+        this._id = id;
         this.title = title;
         this.thumbnail = thumbnail;
         this.links = links;
@@ -37,8 +39,11 @@ class Article {
     }
 
     id() : NodeId {
-        //TODO: use the pageId from wikipedia instead
-        return toArticleId(this.title);
+        return this._id as NodeId;
+    }
+
+    searchValue() : AlphaNumeric {
+        return alphaNumericOnly(this.title);
     }
 
     connections() : Article[] {
@@ -60,7 +65,7 @@ class Article {
 }
 
 export function toArticleId(input: string) : NodeId {
-    return alphaNumericOnly(input) as NodeId;
+    return alphaNumericOnly(input) as unknown as NodeId;
 }
 
 export default Article;
