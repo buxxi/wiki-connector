@@ -14,7 +14,6 @@ function _findCompleteSingleConnection(foundArticles: Article[]) : Article[] | u
     for (let pair of pairs(startArticles)) {
         let link = findLink(pair[0], pair[1]);
         if (!link) {
-            console.log("No link for " + pair[0].id() + "-" + pair[1].id());
             return undefined;
         }
         links.set(pair[0].id() + "-" + pair[1].id(), link);
@@ -27,8 +26,10 @@ function _findCompleteSingleConnection(foundArticles: Article[]) : Article[] | u
         let permLinkResult : Article[] = [];
         for (var i = 0; i < perm.length - 1; i++) {
             let id = perm[i].id() + "-" + perm[i + 1].id();
-            if (links.has(id)) { // TODO: not needed after permutations don't return the reversed one
-                permLinkResult = permLinkResult.concat(links.get(id));
+            if (links.has(id)) {
+                permLinkResult = permLinkResult.concat(links.get(id).slice(permLinkResult.length == 0 ? 0 : 1));
+            } else {
+                return undefined;
             }
         }
 
@@ -97,7 +98,9 @@ class Result {
     }
 
     shortest() : number | undefined {
-        return _findCompleteSingleConnection(this.found)?.length;
+        //TODO: should this handle one link being used 2 times as 1 or 2? currently 2
+        let path = _findCompleteSingleConnection(this.found);
+        return path != undefined ? path.length - 1 : undefined;
     }
 
     seconds() : number {
