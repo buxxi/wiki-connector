@@ -31,7 +31,7 @@ class Article {
 
     constructor(id: number, title: string, thumbnail: string, links: Article[], linkCount : number, state: ArticleState) {
         this._id = id;
-        this.title = title;
+        this.title = this._cleanTitle(title);
         this.thumbnail = thumbnail;
         this.links = links;
         this.linkCount = linkCount;
@@ -61,6 +61,15 @@ class Article {
     connect(article : Article) {
         _connect(this, article);
         _connect(article, this);
+    }
+
+    //TODO: now that I clean titles, duplicates may exist, how to handle in guessing?
+    _cleanTitle(input: string) {
+        let m = /(.*) \(.*\)/.exec(input);
+        if (m != undefined) {
+            return m[1];
+        }
+        return input;
     }
 }
 
