@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUpdated, onMounted, onUnmounted, ref } from "vue";
+import { onUpdated, onMounted, onUnmounted, ref, watch, nextTick } from "vue";
 import Node, { type NodeEvent } from "./Node.vue";
 import { ArticleState } from "@/domain/article";
 import { Vector2 } from 'three';
@@ -17,9 +17,7 @@ type Position = {
     y: number;
 }
 
-type DrawFunction = (context : CanvasRenderingContext2D) => void;
-
-type LineColor = "black" | "orangered" | "yellowgreen" | "silver";
+type LineClass = "normal" | "bomb" | "correct" | "hover";
 
 const props = defineProps<{
     nodes: GraphNode[]
@@ -36,32 +34,38 @@ var lastDraw : (number | undefined) = undefined;
 class DomGraphLine {
     from: DOMGraphNode;
     to: DOMGraphNode;
-    color: LineColor;
+    extraClass: LineClass;
+    key: string;
 
-    constructor(from: DOMGraphNode, to: DOMGraphNode, color: LineColor) {
+    constructor(from: DOMGraphNode, to: DOMGraphNode, extraClass: LineClass) {
         this.from = from;
         this.to = to;
-        this.color = color;
+        this.extraClass = extraClass;
+        this.key = Math.random().toString();
     }
 
-    draw(context: CanvasRenderingContext2D) : void {
-        let from = this.from.getPosition()!;
-        let to = this.to.getPosition()!;
-        context.strokeStyle = this.color;
-        context.lineWidth = 10;
-        context.beginPath();
-        context.moveTo(from.x, from.y);
-        context.lineTo(to.x, to.y);
-        context.closePath();
-        context.stroke();
+    fromX() {
+        return this.from.getPosition()?.x;
+    }
 
-        context.strokeStyle = "white";
-        context.lineWidth = 3;
-        context.beginPath();
-        context.moveTo(from.x, from.y);
-        context.lineTo(to.x, to.y);
-        context.closePath();
-        context.stroke();
+    toX() {
+        return this.to.getPosition()?.x;
+    }
+
+    fromY() {
+        return this.from.getPosition()?.y;
+    }
+
+    toY() {
+        return this.to.getPosition()?.y;
+    }
+
+    classes() {
+        return ["line", this.extraClass];
+    }
+
+    rerender() {
+        this.key = Math.random().toString();
     }
 }
 
@@ -95,42 +99,25 @@ class DOMGraphNode {
 
 class DomGraph {
     elem: HTMLElement;
-    canvas: HTMLCanvasElement;
-    context: CanvasRenderingContext2D;
     nodes: DOMGraphNode[] = [];
     lines: DomGraphLine[] = [];
     highlightNode: GraphNode | undefined;
+    width: number = 0;
+    height: number = 0;
 
     constructor() {
         this.elem = document.querySelector("#graph")!;
-        this.canvas = this.elem.querySelector("canvas")!;
-        this.canvas.width = this.width();
-        this.canvas.height = this.height();
-        this.context = this.canvas.getContext("2d")!;
-    }
-
-    width() : number {
-        return this.elem.getBoundingClientRect().width;
-    }
-
-    height() : number {
-        return this.elem.getBoundingClientRect().height;
-    }
-
-    draw(drawFunction: DrawFunction) : void {
-        this.context.reset();
-        drawFunction(this.context);
+        this.resize();
     }
 
     resize() {
-        this.canvas.width = this.width();
-        this.canvas.height = this.height();
-        this.context.reset();
+        this.width = this.elem.getBoundingClientRect().width;
+        this.height = this.elem.getBoundingClientRect().height;
     }
 
     recreateNodesAndLines() {
-        let graphWidth = this.width();
-        let graphHeight = this.height();
+        let graphWidth = this.width;
+        let graphHeight = this.height;
 
         graph.value!.nodes = [...document.querySelectorAll(".node")].map((node, i) => new DOMGraphNode(node as HTMLElement, graph.value!.nodes[i]?.force));
         graph.value!.nodes.forEach((node, i) => {
@@ -155,20 +142,24 @@ class DomGraph {
                 node.setPosition(newPosition);
             }
         });
-        //TODO: skip duplicates
+
         let links = props.nodes.map(from => from.links.map(to => [from, to])).flatMap(e => e);
         graph.value!.lines = links.map(link => {
             let fromIndex = props.nodes.map(e => e.title).indexOf(link[0].title);
             let toIndex = props.nodes.map(e => e.title).indexOf(link[1].title);
+            if (fromIndex > toIndex) {
+                return undefined;
+            }
+
             let fromNode = graph.value!.nodes[fromIndex];
             let toNode = graph.value!.nodes[toIndex];
-            let color = lineColor(props.nodes[fromIndex], props.nodes[toIndex]);
-            return new DomGraphLine(fromNode, toNode, color);
-        });
+            let extraClass = lineClass(props.nodes[fromIndex], props.nodes[toIndex]);
+            return new DomGraphLine(fromNode, toNode, extraClass);
+        }).filter(e => e != undefined);
     }
 
     reposition(delta: number) {
-        this.calculateForces(this.width(), this.height());
+        this.calculateForces(this.width, this.height);
         this.moveNodes(delta);
         this.drawLines();
     }
@@ -220,11 +211,9 @@ class DomGraph {
 
     drawLines() {
         let lines = graph.value!.lines;
-        graph.value!.draw((context : CanvasRenderingContext2D) => {
-            for (var i = 0; i < lines.length; i++) {
-                lines[i].draw(context);
-            }
-        });
+        for (let line of lines) {
+            line.rerender();
+        }
     }
 }
 
@@ -255,20 +244,29 @@ onUnmounted(() => {
     lastDraw = undefined;
 });
 
-onUpdated(() => {
-    graph.value!.recreateNodesAndLines();
+var propsChanged = false;
+
+watch(props.nodes, () => {
+    propsChanged = true;
 });
 
-function lineColor(from: GraphNode, to: GraphNode) : LineColor {
+onUpdated(() => {
+    if (propsChanged) {
+        graph.value!.recreateNodesAndLines();
+        propsChanged = false;
+    }
+});
+
+function lineClass(from: GraphNode, to: GraphNode) : LineClass {
     if (from.title == graph.value!.highlightNode?.title || to.title == graph.value!.highlightNode?.title) {
-        return "silver";
+        return "hover";
     }
     if (from.state == ArticleState.BOMB || to.state == ArticleState.BOMB) {
-        return "orangered";
+        return "bomb";
     } else if ((from.state == ArticleState.CORRECT || from.state == ArticleState.START) && (to.state == ArticleState.CORRECT || to.state == ArticleState.START)) {
-        return "yellowgreen";
+        return "correct";
     } else {
-        return "black";
+        return "normal";
     }
 }
 
@@ -298,14 +296,31 @@ function onDragOver(event: MouseEvent) {
 function onHover(node: GraphNode, e: NodeEvent) : void {
     graph.value!.highlightNode = e.target != undefined ? node : undefined;
     graph.value!.recreateNodesAndLines();
-    graph.value!.drawLines();
 }
 
 </script>
 
 <template>
     <div id="graph" @dragover="onDragOver">
-        <canvas></canvas>
+        <svg xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${graph?.width} ${graph?.height}`">
+            <defs>
+                <line v-for="(line, index) in graph?.lines" :key="line.key" :id="`chain-path-${index}`" :x1="line.fromX()" :x2="line.toX()" :y1="line.fromY()" :y2="line.toY()" fill="none" stroke-linecap="round"/>
+
+                <mask v-for="(line, index) in graph?.lines" :id="`holes-${index}`">
+                    <!-- white everywhere = keep everything... -->
+                    <rect x="0%" y="0%" width="100%" height="100%" fill="white"/>
+
+                    <!-- ...except holes -->
+                    <use :href="`#chain-path-${index}`" stroke-width="4" stroke-dasharray="6 14" stroke-dashoffset="7" stroke="black"/>
+                </mask>
+            </defs>
+
+            <!-- segments whose hole is visible, with holes cut out using mask-->
+            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" stroke-width="8" stroke-dasharray="6 14" stroke-dashoffset="7" :class="line.classes()" stroke-opacity="1" :mask="`url(#holes-${index})`"/>
+
+            <!-- segments whose hole isn't visible -->
+            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" stroke-width="2" stroke-dasharray="12 8" :class="line.classes()" stroke-opacity="1"/>
+        </svg>
         <ul>
             <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
         </ul>

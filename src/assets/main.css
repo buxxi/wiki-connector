@@ -52,7 +52,26 @@ html {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 10em; 
+  bottom: 10em;
+  svg {
+    width : 100%;
+    height : 100%;
+    .line {
+      &.normal {
+        stroke: white;
+      }
+      &.hover {
+        stroke: silver;
+        filter: drop-shadow(0 0 3px yellow);
+      }
+      &.bomb {
+        stroke: orangered;
+      }
+      &.correct {
+        stroke: yellowgreen;
+      }
+    }
+  } 
 }
 
 #guess {
