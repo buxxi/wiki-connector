@@ -159,9 +159,10 @@ class DomGraph {
     }
 
     reposition(delta: number) {
-        this.calculateForces(this.width, this.height);
-        this.moveNodes(delta);
-        this.drawLines();
+        if (this.calculateForces(this.width, this.height)) {
+            this.moveNodes(delta);
+            this.drawLines();
+        }
     }
 
     moveNodes(delta: number) {
@@ -176,7 +177,8 @@ class DomGraph {
         }    
     }
 
-    calculateForces(width: number, height: number) {
+    calculateForces(width: number, height: number) : boolean {
+        var anyForce = false;
         for (let i in this.nodes) {
             let node = this.nodes[i];
             var force = new Vector2(0, 0);
@@ -206,10 +208,17 @@ class DomGraph {
             }
             force = force.normalize();
             node.force = node.force.add(force);
+            if (node.force.length() > 0.1) {
+                anyForce = true;
+            } else {
+                node.force = new Vector2(0, 0);
+            }
         }
+        return anyForce;
     }
 
     drawLines() {
+        console.log("drawing lines");
         let lines = graph.value!.lines;
         for (let line of lines) {
             line.rerender();
