@@ -123,7 +123,6 @@ class Game {
     }
 
     _connect(fromArticle: Article, links: WikipediaArticle[]) : void {
-        console.log(links.map(e => e.title).filter(e => e == 'Bear'));
         let toArticles : Article[] = findAll(this.root, links.map(link => link.id as NodeId))
             .map((link, i) => link != undefined ? link : new Article(links[i].id, links[i].title, "" , [], 0, ArticleState.NOT_FOUND));
         for (let toArticle of toArticles) {
