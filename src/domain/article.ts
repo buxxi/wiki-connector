@@ -73,8 +73,4 @@ class Article {
     }
 }
 
-export function toArticleId(input: string) : NodeId {
-    return alphaNumericOnly(input) as unknown as NodeId;
-}
-
 export default Article;

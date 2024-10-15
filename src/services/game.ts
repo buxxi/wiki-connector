@@ -1,6 +1,6 @@
 import WikipediaService, { type WikipediaArticle } from "./wikipedia";
-import { unique, findAll, find, linksTo } from "../util/graph";
-import Article, { ArticleState, toArticleId } from "../domain/article";
+import { unique, findAll, find, linksTo, type NodeId } from "../util/graph";
+import Article, { ArticleState } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { alphaNumericOnly, levenshteinDistance } from "@/util/text";
 import config from '@/config.ts';
@@ -71,8 +71,8 @@ class Game {
         //Connect the ones that linked to this new article
         for (let fromArticle of fromArticles) {
             fromArticle.connect(loadResult.article);
-            this._connect(loadResult.article, loadResult.links);
         }
+        this._connect(loadResult.article, loadResult.links);
 
         let result = this._generateResult();
         if ((result.type == ResultType.WON || result.type == ResultType.LOST) && this.ended == undefined) {
@@ -123,7 +123,8 @@ class Game {
     }
 
     _connect(fromArticle: Article, links: WikipediaArticle[]) : void {
-        let toArticles : Article[] = findAll(this.root, links.map(link => toArticleId(link.title)))
+        console.log(links.map(e => e.title).filter(e => e == 'Bear'));
+        let toArticles : Article[] = findAll(this.root, links.map(link => link.id as NodeId))
             .map((link, i) => link != undefined ? link : new Article(links[i].id, links[i].title, "" , [], 0, ArticleState.NOT_FOUND));
         for (let toArticle of toArticles) {
             fromArticle.connect(toArticle);
