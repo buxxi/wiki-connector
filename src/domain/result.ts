@@ -108,9 +108,19 @@ class Result {
     }
 
     shortest() : number | undefined {
-        //TODO: should this handle one link being used 2 times as 1 or 2? currently 2
         let path = _findCompleteSingleConnection(this.found);
-        return path != undefined ? path.length - 1 : undefined;
+        if (path == undefined) {
+            return undefined;
+        }
+        console.log(path);
+        let links = new Map();
+        for (var i = 0; i < path.length - 1; i++) {
+            let id1 = path[i].id();
+            let id2 = path[i + 1].id();
+            let key = id1 > id2 ? id1 + "-" + id2 : id2 + "-" + id1;
+            links.set(key, true);
+        }
+        return links.size;
     }
 
     seconds() : number {
