@@ -16,7 +16,7 @@ export default {
             "Midas", "Carl XVI Gustaf", "Louis XVI", "Henry VIII", "Ramesses II", //Kings
             "Three Laws of Robotics", "Moore's law", "Newton's laws of motion", "Destiny", "Murphy's law", //Not really laws
             "Scarlett Johansson", "Izabella Scorupco", "Marilyn Monroe", "Judi Dench", "Michelle Yeoh", //Actresses
-            "Lego", "Kleenex", "Jet Ski", "Post-it note", "Styrofoam", //Brands that became the common name
+            "Lego", "Coca-Cola", "Adidas", "Samsung", "IKEA", //Brands
             "Nixie (folklore)", "Chupacabra", "Bigfoot", "Unicorn", "Leprechaun", //Folklore
             "Boten Anna", "I'm Gonna Be (500 Miles)", "Nothing Else Matters", "Gangnam Style", "What a Wonderful World", //Singles
             "Uluru", "Mount Fuji", "Grand Canyon", "Skogskyrkogården", "Victoria Falls", //Nature
@@ -30,7 +30,13 @@ export default {
             "MS-DOS", "Amiga 500", "Apple II", "Commodore 64", "Vectrex", //Retro computing
             "Pokémon", "Super Mario", "Half-Life (series)", "Fallout (franchise)", "Tomb Raider", //Video game franchises
             "St Edward's Crown", "Wedding ring", "Necklace", "Body piercing", "Fabergé egg", //Jewelry
-            "Burning Man", "San Diego Comic-Con", "Saint Patrick's Day", "Diwali", "Midsummer" //Events 
+            "Coachella", "Super Bowl", "Saint Patrick's Day", "Diwali", "Midsummer", //Events
+            "Wolfgang Amadeus Mozart", "Koji Kondo", "Hans Zimmer", "Antonio Vivaldi", "Ravi Shankar",  //Composers
+            "Kiwifruit", "Mango", "Apple", "Lime (fruit)", "Pumpkin", //Fruits
+            "C", "Morse code", "Å", "Z", "Infinity symbol", //Symbols
+            "Swedish riksdaler", "Dollar", "Japanese yen", "Rupee", "Dubloon", //Money
+            "Lassie", "Laika", "Hachikō", "Scooby-Doo", "Balto", //Dogs
+            "Whisky", "Bloody Mary (cocktail)", "Tea", "Eggnog", "Dr Pepper" //Drinks
         ],
         sv: [
             "Bamse", "Snobben", "Asterix", "Son-Goku", "Tintin", //Cartoons
@@ -48,7 +54,7 @@ export default {
             "Midas", "Carl XVI Gustaf", "Ludvig XVI av Frankrike", "Henrik VIII av England", "Ramses II", //Kings
             "Robotikens lagar", "Moores lag", "Newtons rörelselagar", "Öde", "Murphys lag", //Not really laws
             "Scarlett Johansson", "Izabella Scorupco", "Marilyn Monroe", "Judi Dench", "Michelle Yeoh", //Actresses
-            "Lego", "Post-It", //Brands that became the common name
+            "Lego", "Coca-Cola", "Adidas", "Samsung", "Ikea", //Brands
             "Näcken", "Chupacabra", "Bigfoot", "Enhörning", "Leprechaun", //Folklore
             "Boten Anna", "I'm Gonna Be (500 Miles)", "Nothing Else Matters", "Gangnam Style", "What a Wonderful World", //Singles
             "Uluru", "Fuji", "Grand Canyon", "Skogskyrkogården", "Victoriafallen", //Nature
@@ -62,7 +68,13 @@ export default {
             "MS-DOS", "Amiga 500", "Apple II", "Commodore 64", "Vectrex", //Retro computing
             "Pokémon", "Super Mario (datorspelsserie)", "Half-Life (spelserie)", "Fallout (spelserie)", "Tomb Raider (spelserie)", //Video game francises
             "S:t Edvards krona", "Vigselring", "Halsband", "Piercing", "Fabergéägg", //Jewelry
-            "Burning Man", "San Diego Comic-Con International", "Saint Patrick’s Day", "Diwali", "Midsommar" //Events
+            "Coachella Valley Music and Arts Festival", "Super Bowl", "Saint Patrick’s Day", "Diwali", "Midsommar", //Events
+            "Wolfgang Amadeus Mozart", "Koji Kondo", "Hans Zimmer", "Antonio Vivaldi", "Ravi Shankar", //Composers
+            "Kiwi", "Mango (frukt)", "Äpple", "Lime", "Pumpa", //Fruits
+            "C", "Morsealfabetet", "Å", "Z", "Lemniskata", //Symbols
+            "Riksdaler", "Dollar", "Yen", "Rupie", "Guldmynt", //Money
+            "Lassie", "Lajka", "Hachikō", "Scooby-Doo", "Balto", //Dogs
+            "Whisky", "Bloody Mary (drink)", "Te", "Äggtoddy", "Dr Pepper" //Drinks
           ]
     },
     blacklist: {
