@@ -30,7 +30,7 @@ class HistoryService {
                     shortest: e.shortest
                 }
             });
-        return entries.slice().reverse();
+        return entries.slice();
     }
 
     _save(entries: HistoryEntry[]) {

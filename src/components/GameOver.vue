@@ -31,7 +31,7 @@ import { ref } from 'vue';
 
     currentResult.value = new HistoryResult(result.started!, true, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest());
     history.add(currentResult.value);
-    allResults.value = history.read();
+    allResults.value = history.read().reverse();
   }
 
   function gameLost(game: Game, result: Result) {
@@ -43,7 +43,7 @@ import { ref } from 'vue';
 
     currentResult.value = new HistoryResult(result.started!, false, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
     history.add(currentResult.value);
-    allResults.value = history.read();
+    allResults.value = history.read().reverse();
   }
 
   function closeModal() {
