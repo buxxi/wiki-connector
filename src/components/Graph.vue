@@ -218,7 +218,6 @@ class DomGraph {
     }
 
     drawLines() {
-        console.log("drawing lines");
         let lines = graph.value!.lines;
         for (let line of lines) {
             line.rerender();

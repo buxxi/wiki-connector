@@ -112,7 +112,6 @@ class Result {
         if (path == undefined) {
             return undefined;
         }
-        console.log(path);
         let links = new Map();
         for (var i = 0; i < path.length - 1; i++) {
             let id1 = path[i].id();
