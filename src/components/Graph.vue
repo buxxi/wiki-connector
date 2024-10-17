@@ -147,15 +147,13 @@ class DomGraph {
         graph.value!.lines = links.map(link => {
             let fromIndex = props.nodes.map(e => e.title).indexOf(link[0].title);
             let toIndex = props.nodes.map(e => e.title).indexOf(link[1].title);
-            if (fromIndex > toIndex) {
-                return undefined;
-            }
-
-            let fromNode = graph.value!.nodes[fromIndex];
-            let toNode = graph.value!.nodes[toIndex];
-            let extraClass = lineClass(props.nodes[fromIndex], props.nodes[toIndex]);
+            return { fromIndex: fromIndex, toIndex: toIndex };
+        }).filter(e => e.fromIndex > e.toIndex).map(e => {
+            let fromNode = graph.value!.nodes[e.fromIndex];
+            let toNode = graph.value!.nodes[e.toIndex];
+            let extraClass = lineClass(props.nodes[e.fromIndex], props.nodes[e.toIndex]);
             return new DomGraphLine(fromNode, toNode, extraClass);
-        }).filter(e => e != undefined);
+        });
     }
 
     reposition(delta: number) {
