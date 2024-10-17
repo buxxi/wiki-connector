@@ -288,11 +288,25 @@ dialog {
       line-height: 0.5em;
       padding: 0 0.25em;
     }
+    input~label {
+      font-weight: normal;
+    }
   }
 }
 
 .rules {
-  max-width: 30em;
+  div {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    background-color: #ddd;
+    padding: 0.5em;
+    margin-bottom: 1em;
+  }
+  img {
+    width: 250px;
+    height: 100px;
+  }
   p {
     white-space: pre;
     font-size: 0.85em;

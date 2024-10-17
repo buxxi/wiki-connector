@@ -43,11 +43,12 @@ async function startGame() {
         <section class="settings">
           <h2>{{ $t('settings') }}</h2>
           <fieldset>
-            <label for="language">{{ $t('language.select') }}</label>
-            <select id="language" v-model="language" @change="languageChanged">
-              <option value="en">🇺🇸 {{ $t('language.en') }}</option>
-              <option value="sv">🇸🇪 {{ $t('language.sv') }}</option>
-            </select>
+            <label for="language-en">{{ $t('language.select') }}</label>
+
+            <input type="radio" v-model="language" id="language-en" value="en" @change="languageChanged">
+            <label for="language-en">🇺🇸 {{ $t('language.en') }}</label>
+            <input type="radio" v-model="language" id="language-sv" value="sv" @change="languageChanged">
+            <label for="language-sv">🇸🇪 {{ $t('language.sv') }}</label>
           </fieldset>
           <fieldset>
             <label for="type">{{ $t('gameMode.select') }}</label>
@@ -69,10 +70,13 @@ async function startGame() {
         </section>
         <section class="rules">
           <h2>{{ $t('instructions.title') }}</h2>
-          <i18n-t keypath="instructions.text" tag="p" scope="global">
-            <template v-slot:articles><b>{{ getDifficultySetting(difficulty).articles }}</b></template>
-            <template v-slot:bombs><b>{{ getDifficultySetting(difficulty).bombs }}</b></template>    
-          </i18n-t>
+          <div>
+            <img src="@/assets/rules-example.png"/>
+            <i18n-t keypath="instructions.text" tag="p" scope="global">
+              <template v-slot:articles><b>{{ getDifficultySetting(difficulty).articles }}</b></template>
+              <template v-slot:bombs><b>{{ getDifficultySetting(difficulty).bombs }}</b></template>    
+            </i18n-t>
+          </div>
         </section>
       </div>
       <div class="buttons">
