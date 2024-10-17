@@ -27,8 +27,8 @@ export function getDifficultySetting(input: Difficulty) : DifficultySetting {
         case Difficulty.MEDIUM:
         return new DifficultySetting("🥴", 3, 2);
         case Difficulty.HARD:
-        return new DifficultySetting("🥵", 3, 3);
+        return new DifficultySetting("🥵", 4, 4);
         case Difficulty.HARDEST:
-        return new DifficultySetting("🤬", 4, 4);
+        return new DifficultySetting("🤬", 5, 5);
     }
 }
