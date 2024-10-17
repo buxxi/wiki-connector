@@ -92,7 +92,8 @@
                 @keyup.enter.prevent="makeGuess"
                 @keyup="emitChange"
                 @animationend="shakeEnd"
-                :placeholder="$t('guess.placeholder')"/>
+                :placeholder="$t('guess.placeholder')"
+                autofocus="true"/>
             <input type="text" class="autocomplete" :value="autocomplete" disabled/>
         </form>
     </div>
