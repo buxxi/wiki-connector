@@ -78,6 +78,12 @@
 
 <template>
     <div id="guess">
+        <dl id="keylegend" v-if:="!!autocomplete">
+            <dt>{{ $t('keylegend.enter.name') }}</dt><dd>{{ $t('keylegend.enter.value') }}</dd>
+            <dt>{{ $t('keylegend.tab.name') }}</dt><dd>{{ $t('keylegend.tab.value') }}</dd>
+            <dt>{{ $t('keylegend.up.name') }}</dt><dd>{{ $t('keylegend.up.value') }}</dd>
+            <dt>{{ $t('keylegend.down.name') }}</dt><dd>{{ $t('keylegend.down.value') }}</dd>
+        </dl>
         <form>
             <input type="text" :class="classes" v-model="guess" 
                 @keydown.tab.prevent="performAutocomplete" 
@@ -85,7 +91,8 @@
                 @keyup.down.prevent="nextAutocomplete" 
                 @keyup.enter.prevent="makeGuess"
                 @keyup="emitChange"
-                @animationend="shakeEnd"/>
+                @animationend="shakeEnd"
+                :placeholder="$t('guess.placeholder')"/>
             <input type="text" class="autocomplete" :value="autocomplete" disabled/>
         </form>
     </div>

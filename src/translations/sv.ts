@@ -57,5 +57,26 @@ export default {
     article: {
         connections: '{linkCount} kopplingar till andra artiklar'
     },
-    and: ' och '
+    and: ' och ',
+    guess: {
+        placeholder: 'Gör din gissning här'
+    },
+    keylegend: {
+        enter: {
+            name: ' ↵ ',
+            value: 'Gissa'
+        },
+        tab: {
+            name: 'Tab',
+            value: 'Välj markerad'
+        },
+        up: {
+            name: '↑',
+            value: 'Visa föregående'
+        },
+        down: {
+            name: '↓',
+            value: 'Visa nästa'
+        }
+    }
 }

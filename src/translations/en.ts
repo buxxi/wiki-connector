@@ -57,5 +57,26 @@ export default {
     article: {
         connections: 'Has {linkCount} connections to other articles'
     },
-    and: ' and '
+    and: ' and ',
+    guess: {
+        placeholder: 'Enter your guess here'
+    },
+    keylegend: {
+        enter: {
+            name: ' ↵ ',
+            value: 'Make guess'
+        },
+        tab: {
+            name: 'Tab',
+            value: 'Change to selected'
+        },
+        up: {
+            name: '↑',
+            value: 'Show previous'
+        },
+        down: {
+            name: '↓',
+            value: 'Show next'
+        }
+    }
 }
