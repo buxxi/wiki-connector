@@ -55,7 +55,7 @@ class Article {
     }
 
     autoCompletable() : boolean {
-        return !this.found() && this.state != ArticleState.ROOT;
+        return this.state == ArticleState.NOT_FOUND;
     }
 
     connect(article : Article) {

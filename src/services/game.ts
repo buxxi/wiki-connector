@@ -63,6 +63,9 @@ class Game {
         if (loadArticle == undefined) {
             throw new Error("No matches for title: " + title);
         }
+        if (loadArticle.state != ArticleState.NOT_FOUND) {
+            throw new Error("Can only guess on not found articles");
+        }
 
         let fromArticles = loadArticle.links.concat(linksTo(this.root, loadArticle.id()));
 
