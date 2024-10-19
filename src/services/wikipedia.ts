@@ -219,14 +219,8 @@ class WikipediaService {
     }
 
     async _fetchJson<T>(url: string) : Promise<T> {
-        let data = sessionStorage.getItem(url);
-        if (data != undefined) {
-            return JSON.parse(data);
-        }
-
-        let response = await fetch(url);
+        let response = await fetch(url, { cache: "force-cache" });
         let newData = await response.json();
-        sessionStorage.setItem(url, JSON.stringify(newData));
         return newData;
     }
 }
