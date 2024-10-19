@@ -36,13 +36,11 @@ class DomGraphLine {
     id: string;
     from: DOMGraphNode;
     to: DOMGraphNode;
-    key: string;
 
     constructor(id: string, from: DOMGraphNode, to: DOMGraphNode) {
         this.id = id;
         this.from = from;
         this.to = to;
-        this.key = Math.random().toString();
     }
 
     fromX() {
@@ -72,10 +70,6 @@ class DomGraphLine {
         } else {
             return "chain normal";
         }
-    }
-
-    rerender() {
-        this.key = Math.random().toString();
     }
 }
 
@@ -198,7 +192,6 @@ class DomGraph {
     reposition(delta: number) {
         if (this.calculateForces(this.width, this.height, delta)) {
             this.moveNodes(delta);
-            this.drawLines();
             this.decreaseForces(delta);
         }
     }
@@ -261,13 +254,6 @@ class DomGraph {
         }
         return anyForce;
     }
-
-    drawLines() {
-        let lines = graph.value!.lines;
-        for (let line of lines) {
-            line.rerender();
-        }
-    }
 }
 
 function resized() {
@@ -319,7 +305,7 @@ function onHover(node: DOMGraphNode, e: NodeEvent) : void {
 
 <template>
     <div id="graph" @dragover="onDragOver">
-        <Chain :key="line.key" :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines"/>
+        <Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines"/>
         <Node :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes"/>
     </div>
 </template>
