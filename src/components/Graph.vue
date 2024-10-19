@@ -3,6 +3,7 @@ import { onUpdated, onMounted, onUnmounted, ref, watch, nextTick } from "vue";
 import Node, { type NodeEvent } from "./Node.vue";
 import { ArticleState } from "@/domain/article";
 import { Vector2 } from 'three';
+import Chain from "./Chain.vue";
 
 export type GraphNode = {
     title: string;
@@ -32,12 +33,14 @@ const graph = ref<DomGraph | undefined>(undefined);
 var lastDraw : (number | undefined) = undefined;
 
 class DomGraphLine {
+    id: string;
     from: DOMGraphNode;
     to: DOMGraphNode;
     extraClass: LineClass;
     key: string;
 
-    constructor(from: DOMGraphNode, to: DOMGraphNode, extraClass: LineClass) {
+    constructor(id: string, from: DOMGraphNode, to: DOMGraphNode, extraClass: LineClass) {
+        this.id = id;
         this.from = from;
         this.to = to;
         this.extraClass = extraClass;
@@ -45,23 +48,23 @@ class DomGraphLine {
     }
 
     fromX() {
-        return this.from.getPosition()?.x;
+        return this.from.getPosition()!.x;
     }
 
     toX() {
-        return this.to.getPosition()?.x;
+        return this.to.getPosition()!.x;
     }
 
     fromY() {
-        return this.from.getPosition()?.y;
+        return this.from.getPosition()!.y;
     }
 
     toY() {
-        return this.to.getPosition()?.y;
+        return this.to.getPosition()!.y;
     }
 
     classes() {
-        return ["line", this.extraClass];
+        return ["chain", this.extraClass].join(" ");
     }
 
     rerender() {
@@ -151,8 +154,9 @@ class DomGraph {
         }).filter(e => e.fromIndex > e.toIndex).map(e => {
             let fromNode = graph.value!.nodes[e.fromIndex];
             let toNode = graph.value!.nodes[e.toIndex];
+            let id = `${e.fromIndex}-${e.toIndex}`;
             let extraClass = lineClass(props.nodes[e.fromIndex], props.nodes[e.toIndex]);
-            return new DomGraphLine(fromNode, toNode, extraClass);
+            return new DomGraphLine(id, fromNode, toNode, extraClass);
         });
     }
 
@@ -308,25 +312,7 @@ function onHover(node: GraphNode, e: NodeEvent) : void {
 
 <template>
     <div id="graph" @dragover="onDragOver">
-        <svg xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${graph?.width} ${graph?.height}`">
-            <defs>
-                <line v-for="(line, index) in graph?.lines" :key="line.key" :id="`chain-path-${index}`" :x1="line.fromX()" :x2="line.toX()" :y1="line.fromY()" :y2="line.toY()" fill="none"/>
-
-                <mask v-for="(line, index) in graph?.lines" :id="`holes-${index}`">
-                    <!-- white everywhere = keep everything... -->
-                    <rect x="0%" y="0%" width="100%" height="100%" fill="white"/>
-
-                    <!-- ...except holes -->
-                    <use :href="`#chain-path-${index}`" class="hole-mask" stroke="black"/>
-                </mask>
-            </defs>
-
-            <!-- segments whose hole is visible, with holes cut out using mask-->
-            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" class="hole" :class="line.classes()" :mask="`url(#holes-${index})`"/>
-
-            <!-- segments whose hole isn't visible -->
-            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" :class="line.classes()"/>
-        </svg>
+        <Chain :key="line.key" :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes()" v-for="line in graph?.lines"/>
         <ul>
             <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
         </ul>
