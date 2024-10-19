@@ -2,9 +2,10 @@ import WikipediaService, { type WikipediaArticle } from "./wikipedia";
 import { unique, findAll, find, linksTo, type NodeId } from "../util/graph";
 import Article, { ArticleState } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
-import { alphaNumericOnly, levenshteinDistance } from "@/util/text";
+import { alphaNumericOnly } from "@/util/text";
 import config from '@/config.ts';
 import { getDifficultySetting, type Difficulty } from "@/domain/difficulty";
+import Autocompleter from "@/util/autocomplete";
 
 export enum GameMode {
     Curated = "curated",
@@ -19,8 +20,6 @@ type LoadResult = {
     links: WikipediaArticle[];
 }
 
-const AUTOCOMPLETE_SUGGESTIONS = 3;
-const AUTOCOMPLETE_TOLERANCE_RATIO = 3;
 const ROOT_NAME = "#ROOT";
 
 class Game {
@@ -30,11 +29,13 @@ class Game {
     ended: Date | undefined;
     difficulty: Difficulty;
     gameMode: GameMode;
+    autoCompleter: Autocompleter;
 
     constructor(language: Language, difficulty: Difficulty, gameMode : GameMode) {
         this.wikipedia = new WikipediaService(language);
         this.difficulty = difficulty;
         this.gameMode = gameMode;
+        this.autoCompleter = new Autocompleter(this.root);
     }
 
     async start() : Promise<Result> {
@@ -81,21 +82,14 @@ class Game {
         if ((result.type == ResultType.WON || result.type == ResultType.LOST) && this.ended == undefined) {
             this.ended = new Date();
         }
+
+        this.autoCompleter.reset();
+
         return result;
     }
 
     autoCompleteSuggestions(title: string) : string[] {
-        let cleanedInputTitle = alphaNumericOnly(title);
-        let tolerance = Math.floor(cleanedInputTitle.length / AUTOCOMPLETE_TOLERANCE_RATIO);
-
-        let notFound = unique(this.root, a => a.autoCompletable());
-        var matches = notFound.filter(a => levenshteinDistance(a.searchValue(), cleanedInputTitle) <= tolerance);
-        matches = [...new Set(matches)];
-        matches.sort((a, b) => levenshteinDistance(a.searchValue(), cleanedInputTitle) - levenshteinDistance(b.searchValue(), cleanedInputTitle));
-
-        if (matches.length > AUTOCOMPLETE_SUGGESTIONS) {
-            matches = matches.slice(0, AUTOCOMPLETE_SUGGESTIONS);
-        }
+        let matches = this.autoCompleter.autoCompleteSuggestions(title);
 
         return matches.map(a => a.title);
     }
