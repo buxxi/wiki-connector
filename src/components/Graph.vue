@@ -25,6 +25,8 @@ const props = defineProps<{
 const NODE_FORCE_FIELD_SIZE = 200;
 const BORDER_FORCE_FIELD_SIZE = 64;
 const MOVE_SLOW_RATIO = 1.25;
+const MAX_FPS = 30;
+const FORCE_STRENGHT = 150;
 
 const graph = ref<DomGraph | undefined>(undefined);
 
@@ -44,19 +46,19 @@ class DomGraphLine {
     }
 
     fromX() {
-        return this.from.getPosition().x;
+        return this.from.drawPosition.x;
     }
 
     toX() {
-        return this.to.getPosition().x;
+        return this.to.drawPosition.x;
     }
 
     fromY() {
-        return this.from.getPosition().y;
+        return this.from.drawPosition.y;
     }
 
     toY() {
-        return this.to.getPosition().y;
+        return this.to.drawPosition.y;
     }
 
     classes(highlightNode: DOMGraphNode | undefined) {
@@ -78,13 +80,15 @@ class DomGraphLine {
 }
 
 class DOMGraphNode {
-    position: Position;
+    drawPosition: Position;
+    physicsPosition: Position;
     node: GraphNode;
     force: Vector2;
 
     constructor(node: GraphNode, position: Position, force: Vector2) {
         this.node = node;
-        this.position = position;
+        this.drawPosition = position;
+        this.physicsPosition = position;
         this.force = force;
     }
 
@@ -101,11 +105,16 @@ class DOMGraphNode {
     }
 
     setPosition(position: Position) {
-        this.position = position;
+        this.physicsPosition = position;
+        let newX = Math.floor(position.x);
+        let newY = Math.floor(position.y);
+        if (Math.floor(this.drawPosition.x) != newX || Math.floor(this.drawPosition.y) != newY) {
+            this.drawPosition = position;
+        }
     }
 
-    getPosition() : Position {
-        return this.position;
+    getPhysicsPosition() : Position {
+        return this.physicsPosition;
     } 
 
     class() {
@@ -145,7 +154,7 @@ class DomGraph {
 
     recreateNodesAndLines() {
         this.nodes = props.nodes.map((node, i) => {
-            let position: (Position | undefined) = this.nodes[i]?.position;
+            let position: (Position | undefined) = this.nodes[i]?.physicsPosition;
             let force: (Vector2 | undefined) = this.nodes[i]?.force; 
             return new DOMGraphNode(node, position == undefined ? this.defaultPosition(i) : position, force != undefined ? force : new Vector2(0, 0));
         });
@@ -170,7 +179,7 @@ class DomGraph {
         var previousPosition = { x: graphWidth / 2, y: graphHeight / 2 };
         for (var j = 0; j < i; j++) {
             if (props.nodes[j].links.map(l => l.title).includes(props.nodes[i].title) && j < this.nodes.length) {
-                previousPosition = this.nodes[j].getPosition();
+                previousPosition = this.nodes[j].getPhysicsPosition();
             }
         }
 
@@ -187,9 +196,10 @@ class DomGraph {
     }
 
     reposition(delta: number) {
-        if (this.calculateForces(this.width, this.height)) {
+        if (this.calculateForces(this.width, this.height, delta)) {
             this.moveNodes(delta);
             this.drawLines();
+            this.decreaseForces(delta);
         }
     }
 
@@ -197,20 +207,27 @@ class DomGraph {
         for (let node of this.nodes) {
             if (node.force.x != 0 || node.force.y != 0) {
                 let dir = node.force.clone().multiplyScalar(delta);
-                let pos = node.getPosition()!;
+                let pos = node.getPhysicsPosition();
                 node.setPosition({ x : pos.x + dir.x , y : pos.y + dir.y });
+            }      
+        }    
+    }
+
+    decreaseForces(delta: number) {
+        for (let node of this.nodes) {
+            if (node.force.x != 0 || node.force.y != 0) {
                 node.force.sub(node.force.clone().multiplyScalar(MOVE_SLOW_RATIO * delta));
             }
             
         }    
     }
 
-    calculateForces(width: number, height: number) : boolean {
+    calculateForces(width: number, height: number, delta: number) : boolean {
         var anyForce = false;
         for (let i in this.nodes) {
             let node = this.nodes[i];
             var force = new Vector2(0, 0);
-            let position = node.getPosition()!;
+            let position = node.getPhysicsPosition();
             if (position.x < BORDER_FORCE_FIELD_SIZE) {
                 force = force.add(new Vector2(1, 0));
             } else if (position.x > width - BORDER_FORCE_FIELD_SIZE) {
@@ -226,7 +243,7 @@ class DomGraph {
                     continue;
                 }
                 let otherNode = this.nodes[j];
-                let otherPosition = otherNode.getPosition()!;
+                let otherPosition = otherNode.getPhysicsPosition();
                 let diffForce = new Vector2(position.x - otherPosition.x, position.y - otherPosition.y);
                 if (diffForce.length() < 1) {
                     force = force.add(i < j ? new Vector2(-1, 0) : new Vector2(1, 0));    
@@ -234,7 +251,7 @@ class DomGraph {
                     force = force.add(diffForce.normalize());
                 }
             }
-            force = force.normalize();
+            force = force.normalize().multiplyScalar(FORCE_STRENGHT).multiplyScalar(delta);
             node.force = node.force.add(force);
             if (node.force.length() > 0.1) {
                 anyForce = true;
@@ -260,9 +277,12 @@ function resized() {
 function drawLoop() {
     if (lastDraw != undefined) {
         let before = lastDraw;
-        lastDraw = new Date().getTime();
-        let delta = (lastDraw - before) / 1000;
-        graph.value?.reposition(delta);
+        let after = new Date().getTime();
+        let delta = (after - before) / 1000;
+        if (delta > 1 / MAX_FPS) {
+            lastDraw = after;
+            graph.value?.reposition(delta);
+        }
         window.requestAnimationFrame(drawLoop);
     }
 }
@@ -300,6 +320,6 @@ function onHover(node: DOMGraphNode, e: NodeEvent) : void {
 <template>
     <div id="graph" @dragover="onDragOver">
         <Chain :key="line.key" :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines"/>
-        <Node :position="node.position!" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes"/>
+        <Node :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes"/>
     </div>
 </template>
