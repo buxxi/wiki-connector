@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUpdated, onMounted, onUnmounted, ref, watch, nextTick } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import Node, { type NodeEvent } from "./Node.vue";
 import { ArticleState } from "@/domain/article";
 import { Vector2 } from 'three';
@@ -18,8 +18,6 @@ type Position = {
     y: number;
 }
 
-type LineClass = "normal" | "bomb" | "correct" | "hover";
-
 const props = defineProps<{
     nodes: GraphNode[]
 }>();
@@ -36,35 +34,42 @@ class DomGraphLine {
     id: string;
     from: DOMGraphNode;
     to: DOMGraphNode;
-    extraClass: LineClass;
     key: string;
 
-    constructor(id: string, from: DOMGraphNode, to: DOMGraphNode, extraClass: LineClass) {
+    constructor(id: string, from: DOMGraphNode, to: DOMGraphNode) {
         this.id = id;
         this.from = from;
         this.to = to;
-        this.extraClass = extraClass;
         this.key = Math.random().toString();
     }
 
     fromX() {
-        return this.from.getPosition()!.x;
+        return this.from.getPosition().x;
     }
 
     toX() {
-        return this.to.getPosition()!.x;
+        return this.to.getPosition().x;
     }
 
     fromY() {
-        return this.from.getPosition()!.y;
+        return this.from.getPosition().y;
     }
 
     toY() {
-        return this.to.getPosition()!.y;
+        return this.to.getPosition().y;
     }
 
-    classes() {
-        return ["chain", this.extraClass].join(" ");
+    classes(highlightNode: DOMGraphNode | undefined) {
+        if (this.from.node.title == highlightNode?.node.title || this.to.node.title == highlightNode?.node.title) {
+            return "chain hover";
+        }
+        if (this.from.node.state == ArticleState.BOMB || this.to.node.state == ArticleState.BOMB) {
+            return "chain bomb";
+        } else if ((this.from.node.state == ArticleState.CORRECT || this.from.node.state == ArticleState.START) && (this.to.node.state == ArticleState.CORRECT || this.to.node.state == ArticleState.START)) {
+            return "chain correct";
+        } else {
+            return "chain normal";
+        }
     }
 
     rerender() {
@@ -73,44 +78,64 @@ class DomGraphLine {
 }
 
 class DOMGraphNode {
-    elem: HTMLElement;
+    position: Position;
+    node: GraphNode;
     force: Vector2;
 
-    constructor(elem : HTMLElement, force: Vector2 | undefined) {
-        this.elem = elem;
-        this.force = force != undefined ? force : new Vector2(0, 0);
+    constructor(node: GraphNode, position: Position, force: Vector2) {
+        this.node = node;
+        this.position = position;
+        this.force = force;
+    }
+
+    title() {
+        return this.node.title;
+    }
+
+    thumbnail() {
+        return this.node.thumbnail;
+    }
+
+    linkCount() {
+        return this.node.linkCount;
     }
 
     setPosition(position: Position) {
-        this.elem.style.left = `${position.x}px`;
-        this.elem.style.top = `${position.y}px`;
+        this.position = position;
     }
 
-    getPosition() : Position | undefined {
-        let left = this.elem.style.left;
-        let top = this.elem.style.top;
-
-        if (!left || !top) {
-            return undefined;
-        }
-        return {
-            x: parseFloat((/(.*)px/.exec(left)![1])),
-            y: parseFloat((/(.*)px/.exec(top)![1]))
-        };
+    getPosition() : Position {
+        return this.position;
     } 
+
+    class() {
+        switch (this.node.state) {
+            case ArticleState.ROOT:
+            case ArticleState.NOT_FOUND:
+            case ArticleState.FOUND:
+                return 'normal';
+            case ArticleState.START:
+                return 'start';
+            case ArticleState.BOMB:
+                return 'bomb';
+            case ArticleState.CORRECT:
+                return 'correct';
+        }
+    }
 }
 
 class DomGraph {
     elem: HTMLElement;
     nodes: DOMGraphNode[] = [];
     lines: DomGraphLine[] = [];
-    highlightNode: GraphNode | undefined;
+    highlightNode: DOMGraphNode | undefined;
     width: number = 0;
     height: number = 0;
 
     constructor() {
         this.elem = document.querySelector("#graph")!;
         this.resize();
+        this.recreateNodesAndLines();
     }
 
     resize() {
@@ -119,45 +144,46 @@ class DomGraph {
     }
 
     recreateNodesAndLines() {
-        let graphWidth = this.width;
-        let graphHeight = this.height;
-
-        graph.value!.nodes = [...document.querySelectorAll(".node")].map((node, i) => new DOMGraphNode(node as HTMLElement, graph.value!.nodes[i]?.force));
-        graph.value!.nodes.forEach((node, i) => {
-            if (node.getPosition() == undefined) {
-                var previousPosition = { x : graphWidth / 2 , y : graphHeight / 2};
-                for (var j = 0; j < i; j++) {
-                    if (props.nodes[j].links.map(l => l.title).includes(props.nodes[i].title)) {
-                        previousPosition = graph.value!.nodes[j].getPosition()!;
-                    }
-                }
-
-                let radius = 32;
-                let angle = i * 70;
-
-                const toRadians = (degrees: number) => degrees * (Math.PI / 180);
-
-                let newPosition = {
-                    x: (previousPosition.x + radius * Math.cos(toRadians(angle))),
-                    y: (previousPosition.y + radius* Math.sin(toRadians(angle)))
-                };
-
-                node.setPosition(newPosition);
-            }
+        this.nodes = props.nodes.map((node, i) => {
+            let position: (Position | undefined) = this.nodes[i]?.position;
+            let force: (Vector2 | undefined) = this.nodes[i]?.force; 
+            return new DOMGraphNode(node, position == undefined ? this.defaultPosition(i) : position, force != undefined ? force : new Vector2(0, 0));
         });
-
+        
         let links = props.nodes.map(from => from.links.map(to => [from, to])).flatMap(e => e);
-        graph.value!.lines = links.map(link => {
+        this.lines = links.map(link => {
             let fromIndex = props.nodes.map(e => e.title).indexOf(link[0].title);
             let toIndex = props.nodes.map(e => e.title).indexOf(link[1].title);
             return { fromIndex: fromIndex, toIndex: toIndex };
         }).filter(e => e.fromIndex > e.toIndex).map(e => {
-            let fromNode = graph.value!.nodes[e.fromIndex];
-            let toNode = graph.value!.nodes[e.toIndex];
+            let fromNode = this.nodes[e.fromIndex];
+            let toNode = this.nodes[e.toIndex];
             let id = `${e.fromIndex}-${e.toIndex}`;
-            let extraClass = lineClass(props.nodes[e.fromIndex], props.nodes[e.toIndex]);
-            return new DomGraphLine(id, fromNode, toNode, extraClass);
+            return new DomGraphLine(id, fromNode, toNode);
         });
+    }
+
+    private defaultPosition(i: number) {
+        let graphWidth = this.width;
+        let graphHeight = this.height;
+
+        var previousPosition = { x: graphWidth / 2, y: graphHeight / 2 };
+        for (var j = 0; j < i; j++) {
+            if (props.nodes[j].links.map(l => l.title).includes(props.nodes[i].title) && j < this.nodes.length) {
+                previousPosition = this.nodes[j].getPosition();
+            }
+        }
+
+        let radius = 32;
+        let angle = i * 70;
+
+        const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+        let newPosition = {
+            x: (previousPosition.x + radius * Math.cos(toRadians(angle))),
+            y: (previousPosition.y + radius * Math.sin(toRadians(angle)))
+        };
+        return newPosition;
     }
 
     reposition(delta: number) {
@@ -229,7 +255,6 @@ class DomGraph {
 
 function resized() {
     graph.value!.resize();
-    graph.value!.recreateNodesAndLines();
 }
 
 function drawLoop() {
@@ -254,67 +279,27 @@ onUnmounted(() => {
     lastDraw = undefined;
 });
 
-var propsChanged = false;
-
 watch(props.nodes, () => {
-    propsChanged = true;
+    graph.value!.recreateNodesAndLines();
 });
 
-onUpdated(() => {
-    if (propsChanged) {
-        graph.value!.recreateNodesAndLines();
-        propsChanged = false;
-    }
-});
-
-function lineClass(from: GraphNode, to: GraphNode) : LineClass {
-    if (from.title == graph.value!.highlightNode?.title || to.title == graph.value!.highlightNode?.title) {
-        return "hover";
-    }
-    if (from.state == ArticleState.BOMB || to.state == ArticleState.BOMB) {
-        return "bomb";
-    } else if ((from.state == ArticleState.CORRECT || from.state == ArticleState.START) && (to.state == ArticleState.CORRECT || to.state == ArticleState.START)) {
-        return "correct";
-    } else {
-        return "normal";
-    }
-}
-
-function nodeStyle(node: GraphNode) : string {
-    switch (node.state) {
-        case ArticleState.ROOT:
-        case ArticleState.NOT_FOUND:
-        case ArticleState.FOUND:
-            return 'normal';
-        case ArticleState.START:
-            return 'start';
-        case ArticleState.BOMB:
-            return 'bomb';
-        case ArticleState.CORRECT:
-            return 'correct';
-    }
-}
-
-function dragNode(node: GraphNode, e: NodeEvent) : void {
-    graph.value!.nodes[props.nodes.indexOf(node)].setPosition({ x: e.x, y: e.y});
+function dragNode(node: DOMGraphNode, e: NodeEvent) : void {
+    node.setPosition({ x: e.x, y: e.y});
 }
 
 function onDragOver(event: MouseEvent) {
     event.preventDefault();
 }
 
-function onHover(node: GraphNode, e: NodeEvent) : void {
+function onHover(node: DOMGraphNode, e: NodeEvent) : void {
     graph.value!.highlightNode = e.target != undefined ? node : undefined;
-    graph.value!.recreateNodesAndLines();
 }
 
 </script>
 
 <template>
     <div id="graph" @dragover="onDragOver">
-        <Chain :key="line.key" :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes()" v-for="line in graph?.lines"/>
-        <ul>
-            <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
-        </ul>
+        <Chain :key="line.key" :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines"/>
+        <Node :position="node.position!" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes"/>
     </div>
 </template>

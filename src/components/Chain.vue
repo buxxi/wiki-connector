@@ -11,7 +11,7 @@
     }>();
 </script>
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${width} ${height}`">
+    <svg xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${width} ${height}`" :id="`chain-${id}`">
     <defs>
         <line :id="`chain-path-${id}`" :x1="fromX" :x2="toX" :y1="fromY" :y2="toY" fill="none"/>
 

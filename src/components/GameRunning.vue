@@ -97,7 +97,7 @@ function convertResult(result: Result) {
 
 <template>
   <div>
-    <Graph :nodes="nodes"/>
+    <Graph :nodes="nodes" v-if="nodes.length > 0"/>
     <GuessInput :suggestions="suggestions" @guess="guessed" @type="typed" ref="input"/>
     <Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs" :time="seconds" @restart="emit('restart')"/>
   </div>

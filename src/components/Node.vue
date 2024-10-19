@@ -4,6 +4,10 @@
         x: number;
         y: number;
     };
+    type Position = {
+        x: number;
+        y: number;
+    };
 
     const emit = defineEmits<{
         (e: 'hover', value: { target: EventTarget | undefined, x: number, y: number}): void
@@ -15,7 +19,8 @@
         title: string,
         thumbnail: string,
         linkCount: number,
-        style: string
+        style: string,
+        position: Position
     }>();
 
     function onClick(event: MouseEvent) {
@@ -36,7 +41,7 @@
 </script>
 
 <template>
-    <div :class="['node', style]" :style="{backgroundImage: 'url(' + thumbnail + ')'}" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
+    <div :class="['node', style]" :style="{backgroundImage: 'url(' + thumbnail + ')', left: `${position.x}px`, top: `${position.y}px`}" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
         <h3 :title="title">{{ title }}</h3>
         <p :title="$t('article.connections', {linkCount: linkCount})">{{ linkCount }}</p>
     </div>
