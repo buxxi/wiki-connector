@@ -310,22 +310,22 @@ function onHover(node: GraphNode, e: NodeEvent) : void {
     <div id="graph" @dragover="onDragOver">
         <svg xmlns="http://www.w3.org/2000/svg" :viewBox="`0 0 ${graph?.width} ${graph?.height}`">
             <defs>
-                <line v-for="(line, index) in graph?.lines" :key="line.key" :id="`chain-path-${index}`" :x1="line.fromX()" :x2="line.toX()" :y1="line.fromY()" :y2="line.toY()" fill="none" stroke-linecap="round"/>
+                <line v-for="(line, index) in graph?.lines" :key="line.key" :id="`chain-path-${index}`" :x1="line.fromX()" :x2="line.toX()" :y1="line.fromY()" :y2="line.toY()" fill="none"/>
 
                 <mask v-for="(line, index) in graph?.lines" :id="`holes-${index}`">
                     <!-- white everywhere = keep everything... -->
                     <rect x="0%" y="0%" width="100%" height="100%" fill="white"/>
 
                     <!-- ...except holes -->
-                    <use :href="`#chain-path-${index}`" stroke-width="4" stroke-dasharray="6 14" stroke-dashoffset="7" stroke="black"/>
+                    <use :href="`#chain-path-${index}`" class="hole-mask" stroke="black"/>
                 </mask>
             </defs>
 
             <!-- segments whose hole is visible, with holes cut out using mask-->
-            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" stroke-width="8" stroke-dasharray="6 14" stroke-dashoffset="7" :class="line.classes()" stroke-opacity="1" :mask="`url(#holes-${index})`"/>
+            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" class="hole" :class="line.classes()" :mask="`url(#holes-${index})`"/>
 
             <!-- segments whose hole isn't visible -->
-            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" stroke-width="2" stroke-dasharray="12 8" :class="line.classes()" stroke-opacity="1"/>
+            <use v-for="(line, index) in graph?.lines" :href="`#chain-path-${index}`" :class="line.classes()"/>
         </svg>
         <ul>
             <Node :title="node.title" :thumbnail="node.thumbnail" :linkCount="node.linkCount" :style="nodeStyle(node)" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in nodes"/>
