@@ -6,6 +6,7 @@ import { Vector2 } from 'three';
 import Chain from "./Chain.vue";
 
 export type GraphNode = {
+    id: () => number;
     title: string;
     thumbnail: string;
     linkCount: number;
@@ -60,7 +61,7 @@ class DomGraphLine {
     }
 
     classes(highlightNode: DOMGraphNode | undefined) {
-        if (this.from.node.title == highlightNode?.node.title || this.to.node.title == highlightNode?.node.title) {
+        if (this.from.node.id() == highlightNode?.node.id() || this.to.node.id() == highlightNode?.node.id()) {
             return "chain hover";
         }
         if (this.from.node.state == ArticleState.BOMB || this.to.node.state == ArticleState.BOMB) {
@@ -155,8 +156,8 @@ class DomGraph {
         
         let links = props.nodes.map(from => from.links.map(to => [from, to])).flatMap(e => e);
         this.lines = links.map(link => {
-            let fromIndex = props.nodes.map(e => e.title).indexOf(link[0].title);
-            let toIndex = props.nodes.map(e => e.title).indexOf(link[1].title);
+            let fromIndex = props.nodes.map(e => e.id()).indexOf(link[0].id());
+            let toIndex = props.nodes.map(e => e.id()).indexOf(link[1].id());
             return { fromIndex: fromIndex, toIndex: toIndex };
         }).filter(e => e.fromIndex > e.toIndex).map(e => {
             let fromNode = this.nodes[e.fromIndex];
@@ -172,7 +173,7 @@ class DomGraph {
 
         var previousPosition = { x: graphWidth / 2, y: graphHeight / 2 };
         for (var j = 0; j < i; j++) {
-            if (props.nodes[j].links.map(l => l.title).includes(props.nodes[i].title) && j < this.nodes.length) {
+            if (props.nodes[j].links.map(l => l.id()).includes(props.nodes[i].id()) && j < this.nodes.length) {
                 previousPosition = this.nodes[j].getPhysicsPosition();
             }
         }
