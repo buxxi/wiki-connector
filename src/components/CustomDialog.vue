@@ -55,7 +55,7 @@ dialog {
   right : 0;
   border-radius: 1em;
   border: 3px solid var(--dialog-border-color);
-  box-shadow: 0 0 20px var(--dialog-shadow-color);
+  box-shadow: 0 0 var(--dialog-shadow-strength) var(--dialog-shadow-color);
   overflow: hidden;
   h1 {
     margin: 0;

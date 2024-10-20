@@ -32,7 +32,7 @@
   --normal-chain-color: rgb(255, 255, 255);
   --bomb-chain-color: var(--bomb-color);
   --correct-chain-color: var(--correct-color);
-  --highlight-chain-shadow-color: rgb(255, 255, 0); 
+  --highlight-chain-color: rgb(255, 226, 63);
 
   --info-bg-color: rgb(68, 68, 68);
   --info-text-color: rgb(238, 238, 238);
@@ -50,6 +50,13 @@
   --guess-text-color: rgb(0, 0, 0);
   --keylegend-bg-color: rgb(221, 221, 221);
   --keylegend-border-color: rgb(153, 153, 153);
+
+  --shadow-strength: 10px;
+  --dialog-shadow-strength: calc(var(--shadow-strength) * 2);
+  --info-icon-shadow-strength: var(--shadow-strength);
+  --info-text-shadow-strength: calc(var(--shadow-strength) / 2);
+  --node-inner-shadow-strength: var(--shadow-strength);
+  --node-outer-shadow-strength: var(--shadow-strength);
 }
 
 html {

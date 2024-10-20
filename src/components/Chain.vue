@@ -59,8 +59,7 @@ svg {
         stroke-dashoffset: 7;
       }
       &.hover {
-        stroke: silver;
-        filter: drop-shadow(0 0 3px var(--highlight-chain-border-color));
+        stroke: var(--highlight-chain-color);
       }
       &.bomb {
         stroke: var(--bomb-chain-color);

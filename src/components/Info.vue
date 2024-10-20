@@ -61,11 +61,11 @@
   left: 0;
   right: 0;
   dt {
-    text-shadow: 1px 1px 10px var(--info-icon-shadow-color);
+    text-shadow: 0 0 var(--info-icon-shadow-strength) var(--info-icon-shadow-color);
     font-size: 2em;
   }
   dd {
-    text-shadow: 1px 1px 5px var(--info-text-shadow-color);
+    text-shadow: 0 0 var(--info-text-shadow-strength) var(--info-text-shadow-color);
     font-size: 2em;
   }
 }
