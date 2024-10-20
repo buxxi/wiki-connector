@@ -23,7 +23,7 @@
         <tr v-for="entry in entries">
         <td>{{ entry.date.toISOString().substring(0, 10) }}</td>
         <td :class="{won: entry.won, lost: !entry.won}">{{ entry.won ? '✓' : '✕' }}</td>
-        <td>{{ getDifficultySetting(entry.difficulty).smiley }} {{ $t('difficulty.' + entry.difficulty) }}</td>
+        <td><i>{{ getDifficultySetting(entry.difficulty).smiley }}</i> {{ $t('difficulty.' + entry.difficulty) }}</td>
         <td><TimeFormat :seconds="entry.seconds"></TimeFormat></td>
         <td>{{ entry.bombs }}</td>
         <td>{{ entry.shortest != undefined ? entry.shortest : '-' }}</td>

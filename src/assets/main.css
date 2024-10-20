@@ -68,6 +68,11 @@ input {
   font-family: "Open Sans", sans-serif;
 }
 
+i {
+  font-family: "Noto Color Emoji", "Open Sans", sans-serif;
+  font-style: normal;
+}
+
 dl, dt, dd {
   display : inline-block;
   margin: 0;

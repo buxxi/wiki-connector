@@ -45,9 +45,9 @@ async function startGame() {
           <label for="language-en">{{ $t('language.select') }}</label>
 
           <input type="radio" v-model="language" id="language-en" value="en" @change="languageChanged">
-          <label for="language-en">🇺🇸 {{ $t('language.en') }}</label>
+          <label for="language-en"><i>🇺🇸</i> {{ $t('language.en') }}</label>
           <input type="radio" v-model="language" id="language-sv" value="sv" @change="languageChanged">
-          <label for="language-sv">🇸🇪 {{ $t('language.sv') }}</label>
+          <label for="language-sv"><i>🇸🇪</i> {{ $t('language.sv') }}</label>
         </fieldset>
         <fieldset>
           <label for="type">{{ $t('gameMode.select') }}</label>
@@ -60,7 +60,7 @@ async function startGame() {
         <fieldset>
           <label for="difficulty">{{ $t('difficulty.title') }}</label>
           <input id="difficulty" type="range" list="difficulties" min="0" max="4" v-model.number="difficulty"/>
-          <span class="difficulty-smiley">{{ getDifficultySetting(difficulty).smiley }}</span> <span>{{ $t('difficulty.' + difficulty) }}</span>
+          <span class="difficulty-smiley"><i>{{ getDifficultySetting(difficulty).smiley }}</i></span> <span>{{ $t('difficulty.' + difficulty) }}</span>
           
           <datalist id="difficulties">
             <option v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))" :value="key">{{ value }}</option>

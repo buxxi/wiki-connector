@@ -17,7 +17,7 @@ function closeModal() {
 <template>
   <dialog :open="open">
     <a @click="closeModal" v-if="closeable" class="close">✕</a>
-    <h1>{{ title }}</h1>
+    <h1><i>{{ title }}</i></h1>
     <form>
       <div>
         <slot name="content"></slot>

@@ -61,6 +61,7 @@
   left: 0;
   right: 0;
   dt {
+    font-family: "Noto Color Emoji";
     text-shadow: 0 0 var(--info-icon-shadow-strength) var(--info-icon-shadow-color);
     font-size: 2em;
   }
