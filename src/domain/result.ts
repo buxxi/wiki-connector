@@ -1,6 +1,7 @@
 import { pairs, singleDirectionPermutations } from "@/util/permutations";
 import Article, { ArticleState } from "./article";
 import { findLink } from "@/util/graph";
+import { Duration } from "./duration";
 
 export enum ResultType {
     WON = "WON",
@@ -85,14 +86,12 @@ function _updateCorrectLinks(foundLinks: Article[]) : Article[] {
 class Result {
     found: Article[];
     type: ResultType;
-    started: Date | undefined;
-    ended: Date | undefined;
+    duration: Duration;
 
-    constructor(found: Article[], type: ResultType, started: Date | undefined, ended: Date | undefined) {
+    constructor(found: Article[], type: ResultType, duration: Duration) {
         this.found = found;
         this.type = type;
-        this.started = started;
-        this.ended = ended;
+        this.duration = duration;
     }
 
     titles(state: ArticleState) : string[] {
@@ -123,22 +122,22 @@ class Result {
     }
 
     seconds() : number {
-        return Math.floor(((this.ended == undefined ? new Date() : this.ended).getTime() - this.started!.getTime()) / 1000)
+        return this.duration.seconds();
     }
 
-    static from(foundLinks: Article[], started: Date | undefined, ended: Date | undefined) : Result {
+    static from(foundLinks: Article[], started: Date, ended: Date | undefined) : Result {
         foundLinks = _updateCorrectLinks(_updateBombLinks(foundLinks));
         let startingArticles = foundLinks.filter(article => article.state == ArticleState.START);
         let connectedToBomb = startingArticles.map(article => article.links.find(a => a.state == ArticleState.BOMB) != undefined).reduce((a, b) => a || b, false);
         if (connectedToBomb) {
-            return new Result(foundLinks, ResultType.LOST, started, ended);
+            return new Result(foundLinks, ResultType.LOST, new Duration(started, ended));
         }
 
         let connectedCorrect = foundLinks.find(art => art.state == ArticleState.CORRECT) != undefined;
         if (connectedCorrect) {
-            return new Result(foundLinks, ResultType.WON, started, ended);
+            return new Result(foundLinks, ResultType.WON, new Duration(started, ended));
         } else {
-            return new Result(foundLinks, ResultType.ONGOING, started, ended);
+            return new Result(foundLinks, ResultType.ONGOING, new Duration(started, ended));
         }
     }
 }

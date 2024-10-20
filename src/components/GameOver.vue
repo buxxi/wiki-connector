@@ -18,7 +18,6 @@ import { ref } from 'vue';
   });
 
   let history = new HistoryService();
-  let open = ref<boolean>(true);
   let won = ref<boolean>(false);
   let titles = ref<string[]>([]);
   let currentResult = ref<HistoryResult | undefined>(undefined);
@@ -31,7 +30,7 @@ import { ref } from 'vue';
       titles.value.push(title);
     }
 
-    currentResult.value = new HistoryResult(result.started!, true, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest());
+    currentResult.value = new HistoryResult(result.duration.started, true, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, result.shortest());
     history.add(currentResult.value);
     allResults.value = history.read().reverse();
   }
@@ -43,7 +42,7 @@ import { ref } from 'vue';
     let startNode = result.found.find(art => art.state == ArticleState.START && art.links.find(link => link.state == ArticleState.BOMB) != undefined)!;
     titles.value.push(startNode!.title);
 
-    currentResult.value = new HistoryResult(result.started!, false, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
+    currentResult.value = new HistoryResult(result.duration.started, false, game.difficulty, result.seconds(), result.titles(ArticleState.BOMB).length, undefined);
     history.add(currentResult.value);
     allResults.value = history.read().reverse();
   }

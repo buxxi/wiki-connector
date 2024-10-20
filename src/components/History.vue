@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import type { HistoryEntry } from '@/services/history';
+    import TimeFormat from './TimeFormat.vue';
     import { getDifficultySetting } from '@/domain/difficulty';
 
     const props = defineProps<{

@@ -6,12 +6,16 @@ import { alphaNumericOnly } from "@/util/text";
 import config from '@/config.ts';
 import { getDifficultySetting, type Difficulty } from "@/domain/difficulty";
 import Autocompleter from "@/util/autocomplete";
+import { Clock } from "@/util/clock";
+import { Duration } from "@/domain/duration";
 
 export enum GameMode {
     Curated = "curated",
     Random = "random",
     Popular = "popular"
 };
+
+export type DurationCallback = (duration: Duration) => void;
 
 export type Language = "se" | "en";
 
@@ -25,11 +29,10 @@ const ROOT_NAME = "#ROOT";
 class Game {
     wikipedia: WikipediaService;
     root: Article = new Article(-1, ROOT_NAME, "", [], 0, ArticleState.ROOT);
-    started: Date | undefined;
-    ended: Date | undefined;
     difficulty: Difficulty;
     gameMode: GameMode;
     autoCompleter: Autocompleter;
+    clock: Clock = new Clock();
 
     constructor(language: Language, difficulty: Difficulty, gameMode : GameMode) {
         this.wikipedia = new WikipediaService(language);
@@ -40,7 +43,7 @@ class Game {
 
     async start() : Promise<Result> {
         var attempts = 0;
-        var result = new Result([], ResultType.LOST, new Date(), new Date());
+        var result = new Result([], ResultType.LOST, new Duration(new Date(), new Date()));
         do {
             this.root.links = [];
             let startArticleCount = getDifficultySetting(this.difficulty).articles;
@@ -52,10 +55,10 @@ class Game {
                 this._connect(loadResult.article, loadResult.links);
             }
 
-            this.started = new Date();
             result = this._generateResult();
         } while (result.anyLinks() && attempts++ < 10);
 
+        this.clock.start();
         return result;
     }
 
@@ -79,8 +82,8 @@ class Game {
         this._connect(loadResult.article, loadResult.links);
 
         let result = this._generateResult();
-        if ((result.type == ResultType.WON || result.type == ResultType.LOST) && this.ended == undefined) {
-            this.ended = new Date();
+        if ((result.type == ResultType.WON || result.type == ResultType.LOST) && this.clock.ended == undefined) {
+            this.clock.stop();
         }
 
         this.autoCompleter.reset();
@@ -94,6 +97,10 @@ class Game {
         return matches.map(a => a.title);
     }
 
+    onTimeChange(callback: DurationCallback) {
+        this.clock.setCallback((started, ended) => callback(new Duration(started, ended)));
+    }
+
     async _loadArticle(id: number, title: string, state: ArticleState) : Promise<LoadResult> {
         let [thumbnail, links] = await Promise.all([this.wikipedia.getThumbnail(id), this.wikipedia.getAllLinks(id)]);
 
@@ -104,7 +111,7 @@ class Game {
 
     _generateResult() : Result {
         let foundLinks = this._onlyFoundLinks();
-        return Result.from(foundLinks, this.started, this.ended);
+        return Result.from(foundLinks, this.clock.started, this.clock.ended);
     }
 
     _onlyFoundLinks() : Article[] {

@@ -3,7 +3,7 @@ import type Result from '@/domain/result';
 import Graph from './Graph.vue';
 import GuessInput from './GuessInput.vue';
 import Info from './Info.vue';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import type Game from '@/services/game';
 import type Article from '@/domain/article';
 import { ResultType } from '@/domain/result';
@@ -30,14 +30,14 @@ const counts = ref({
   found: 0
 });
 
-const started = ref<Date | undefined>();
-const ended = ref<Date | undefined>();
 const seconds = ref<number>(0);
 const timer = ref();
 
 function gameStarted(newGame: Game, newResult: Result) {
-  started.value = newResult.started;
   game.value = newGame;
+  game.value.onTimeChange(duration => {
+    seconds.value = duration.seconds();
+  });
   convertResult(newResult);
 }
 
@@ -49,12 +49,10 @@ async function guessed(value: string) {
     convertResult(newResult);
     switch(newResult.type) {
       case ResultType.WON:
-        ended.value = newResult.ended;
         clearInterval(timer.value);
         emit("won", game.value!, newResult);
         break;
       case ResultType.LOST:
-        ended.value = newResult.ended;
         clearInterval(timer.value);
         emit("lost", game.value!, newResult);
         break;
@@ -87,10 +85,6 @@ function convertResult(result: Result) {
   counts.value.bombs = result.titles(ArticleState.BOMB).length;
   counts.value.found = result.titles(ArticleState.FOUND).length;
   counts.value.links = result.linkCount();
-
-  timer.value = setInterval(() => {
-    seconds.value = result.seconds();
-  }, 1000);
 }
 
 </script>
