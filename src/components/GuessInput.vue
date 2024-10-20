@@ -130,15 +130,19 @@
     &.user-guess {
       z-index: 2;
       background-color: transparent;
+      color: var(--guess-text-color);
       &.shake {
         animation: 0.1s ease normal 5 shake;
+      }
+      &::placeholder {
+        color: var(--guess-text-placeholder-color);
       }
     }
     
     &.autocomplete {
       z-index: 1;
       background-color: var(--guess-bg-color);
-      color: var(--guess-text-color);
+      color: var(--guess-text-placeholder-color);
     }
   }
   #keylegend {

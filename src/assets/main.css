@@ -48,6 +48,7 @@
 
   --guess-bg-color: rgb(238, 238, 238);
   --guess-text-color: rgb(0, 0, 0);
+  --guess-text-placeholder-color: rgb(128, 128, 128);
   --keylegend-bg-color: rgb(221, 221, 221);
   --keylegend-border-color: rgb(153, 153, 153);
 
