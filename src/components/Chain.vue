@@ -51,7 +51,7 @@ svg {
       stroke-linecap: round;
 
       &.normal {
-        stroke: white;
+        stroke: var(--normal-chain-color);
       }
       &.hole {
         stroke-width: 8;
@@ -60,13 +60,13 @@ svg {
       }
       &.hover {
         stroke: silver;
-        filter: drop-shadow(0 0 3px yellow);
+        filter: drop-shadow(0 0 3px var(--highlight-chain-border-color));
       }
       &.bomb {
-        stroke: orangered;
+        stroke: var(--bomb-chain-color);
       }
       &.correct {
-        stroke: yellowgreen;
+        stroke: var(--correct-chain-color);
       }
     }
   } 

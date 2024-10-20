@@ -1,7 +1,60 @@
+:root {
+  --shadow-color: rgb(0, 0, 0);
+  --bomb-color: rgb(255, 69, 0);
+  --correct-color: rgb(154, 205, 50);
+
+  --dialog-shadow-color: var(--shadow-color);
+  --dialog-border-color: rgb(128, 128, 128);
+  --title-underline-color: rgb(128, 128, 128);
+
+  --button-bg-color: rgb(12, 95, 204);
+  --button-border-color: rgb(7, 49, 104);
+  --button-hover-color: rgb(12, 143, 204);
+  --button-text-color: rgb(255, 255, 255);
+
+  --node-bg-color: rgb(255, 255, 255); /* In case on transparent background images */
+
+  --normal-node-color: rgb(255, 255, 255);
+  --normal-node-outer-shadow-color: var(--shadow-color);
+  --normal-node-inner-shadow-color: var(--shadow-color);
+
+  --start-node-color: var(--correct-color);
+  --start-node-outer-shadow-color: rgb(0, 100, 0);
+  --start-node-inner-shadow-color: var(--shadow-color);
+
+  --bomb-node-color: var(--bomb-color);
+  --bomb-node-outer-shadow-color: rgb(139, 0, 0);
+  --bomb-node-inner-shadow-color: var(--shadow-color);
+
+  --node-label-bg-color: rgba(255, 255, 255, 0.75);
+  --node-label-hover-bg-color: rgba(255, 255, 255, 0.9);
+
+  --normal-chain-color: rgb(255, 255, 255);
+  --bomb-chain-color: var(--bomb-color);
+  --correct-chain-color: var(--correct-color);
+  --highlight-chain-shadow-color: rgb(255, 255, 0); 
+
+  --info-bg-color: rgb(68, 68, 68);
+  --info-text-color: rgb(238, 238, 238);
+  --info-icon-shadow-color: var(--shadow-color);
+  --info-text-shadow-color: var(--shadow-color);
+
+  --history-bg-color: rgb(238, 238, 238);
+  --history-header-text-color: rgb(238, 238, 238);
+  --history-header-bg-color: rgb(68, 68, 68);
+  --history-current-game-row-bg-color: rgb(128, 128, 128);
+  --history-won-color: var(--correct-color);
+  --history-loss-color: var(--bomb-color);
+
+  --guess-bg-color: rgb(238, 238, 238);
+  --guess-text-color: rgb(0, 0, 0);
+  --keylegend-bg-color: rgb(221, 221, 221);
+  --keylegend-border-color: rgb(153, 153, 153);
+}
+
 html {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
-  background-color: gray;
 }
 
 input {
@@ -25,19 +78,19 @@ dd {
 }
 
 input[type="button"] {
-  background: rgb(12, 95, 204);
+  background: var(--button-bg-color);
   font-size: 2.5em;
   padding: 0 1em;
   border-radius: 0.25em;
-  border: 3px solid rgb(7, 49, 104);
-  color: white;
+  border: 3px solid var(--button-border-color);
+  color: var(--button-text-color);
   cursor: pointer;
   font-weight: 600;
   &:active {
-    border: 3px solid rgb(12, 95, 204);
-    background: rgb(7, 49, 104);  
+    border: 3px solid var(--button-bg-color);
+    background: var(--button-bg-color);  
   }
   &:hover {
-    background-color: rgb(12, 143, 204);
+    background-color: var(--button-hover-color);
   }
 }

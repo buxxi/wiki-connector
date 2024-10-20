@@ -54,24 +54,24 @@ dialog {
   left: 0;
   right : 0;
   border-radius: 1em;
-  border: 3px solid gray;
-  box-shadow: 0 0 20px black;
+  border: 3px solid var(--dialog-border-color);
+  box-shadow: 0 0 20px var(--dialog-shadow-color);
   overflow: hidden;
   h1 {
     margin: 0;
-    border-bottom : 1px solid gray;
+    border-bottom : 1px solid var(--title-underline-color);
     text-align: center;
     font-size: 4em;
   }
   h2 {
-    border-bottom: 1px dashed gray;
+    border-bottom: 1px dashed var(--title-underline-color);
   }
   .close {
     position: absolute;
     right : 0;
-    border: 1px solid rgb(7, 49, 104);
-    background-color: rgb(12, 95, 204);
-    color: white;
+    border: 1px solid var(--button-border-color);
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
     font-weight: bold;
     cursor: pointer;
     width : 2em;
@@ -81,7 +81,7 @@ dialog {
     text-align: center;
     border-bottom-left-radius: 1em;
     &:hover {
-      background-color: rgb(12, 143, 204);
+      background-color: var(--button-hover-color);
     }
   }
   .buttons {

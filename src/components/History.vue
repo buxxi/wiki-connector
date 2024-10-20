@@ -34,28 +34,29 @@
 
 <style>
     table {
+      background: var(--history-bg-color);
       text-align: center;
       width : 100%;
       border-collapse: collapse;
       thead {
         position: sticky;
         top: 0;
-        background-color: #444;
+        background-color: var(--history-header-bg-color);
         font-weight: bold;
-        color: #eee;
+        color: var(--history-header-text-color);
       }
       th, td {
         padding: 0.1em 0.25em;
       }
       tbody tr:first-of-type {
-        background-color: gray;
+        background-color: var(--history-current-game-row-bg-color);
       }
       .won {
-        color: yellowgreen;
+        color: var(--history-won-color);
         font-weight: bold;
       }
       .lost {
-        color: orangered;
+        color: var(--history-loss-color);
         font-weight: bold;
       }
     }

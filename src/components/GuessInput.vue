@@ -116,8 +116,6 @@
   left: 0;
   right: 0;
   z-index: 3;
-  border-top : 4px solid black;
-  border-bottom : 4px solid black;
   input {
     border: 0;
     width : 100%;
@@ -139,7 +137,8 @@
     
     &.autocomplete {
       z-index: 1;
-      background-color: #eee;
+      background-color: var(--guess-bg-color);
+      color: var(--guess-text-color);
     }
   }
   #keylegend {
@@ -152,9 +151,9 @@
       font-weight: bold;
       min-width: 1.25em;
       text-align: center;
-      background-color: #ddd;
+      background-color: var(--keylegend-bg-color);
       padding: 0.1em 0.25em;
-      border: 4px inset #999;
+      border: 4px inset var(--keylegend-border-color);
       border-radius: 0.25em;
     }
     dd {

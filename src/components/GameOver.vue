@@ -72,7 +72,7 @@ import { ref } from 'vue';
 </script>
 
 <template>
- <CustomDialog :title="won ? $t('results.won.title') : $t('results.lost.title')">
+ <CustomDialog :title="won ? $t('results.won.title') : $t('results.lost.title')" :closeable="true">
   <template v-slot:content>
       <section class="results">
         <h2>{{ $t('results.title') }}</h2>
@@ -128,7 +128,6 @@ import { ref } from 'vue';
     overflow: auto;
     max-height: 10em;
     margin-bottom: 2em;
-    background: #eee;
   }
 }
 </style>

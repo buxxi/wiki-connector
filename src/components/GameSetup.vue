@@ -111,7 +111,6 @@ async function startGame() {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    background-color: #ddd;
     padding: 0.5em;
     margin-bottom: 1em;
   }

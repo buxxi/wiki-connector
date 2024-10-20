@@ -59,39 +59,41 @@
 
 .node {
   position: absolute;
-  background: white;
+  background: var(--node-bg-color);
   width : 8em;
   height : 8em;
   margin-left: -4em;
   margin-top : -4em;
-  border: 3px solid white;
+  border: 3px solid var(--normal-node-color);
   border-radius: 10em;
   text-align: center;
   overflow: hidden;
   background-size: cover;
   background-position: center center;
-  box-shadow: 1px 1px 10px black, inset 1px 1px 10px black;
+  box-shadow: 1px 1px 10px var(--normal-node-outer-shadow-color), inset 1px 1px 10px var(--normal-node-inner-shadow-color);
   animation: 0.5s ease normal zoom;
   
   &.start {
-    border-color: yellowgreen;
-    box-shadow : 1px 1px 10px darkgreen, inset 1px 1px 10px black;
+    border-color: var(--start-node-color);
+    box-shadow : 1px 1px 10px var(--start-node-outer-shadow-color), inset 1px 1px 10px var(--start-node-inner-shadow-color);
     h3 {
-      border-color : yellowgreen;
+      border-color: var(--start-node-color);
+      box-shadow: 1px 1px 10px var(--start-node-inner-shadow-color);
     }
     p {
-      border-color : yellowgreen;
+      border-color: var(--start-node-color);
     }
   }
 
   &.bomb {
-    border-color : orangered;
-    box-shadow: 1px 1px 10px darkred, inset 1px 1px 10px black;
+    border-color: var(--bomb-node-color);
+    box-shadow: 1px 1px 10px var(--bomb-node-outer-shadow-color), inset 1px 1px 10px var(--bomb-node-inner-shadow-color);
     h3 {
-      border-color : orangered;
+      border-color: var(--bomb-node-color);
+      box-shadow: 1px 1px 10px var(--bomb-node-inner-shadow-color);
     }
     p {
-      border-color: orangered;
+      border-color: var(--bomb-node-color);
     }
   }
 
@@ -101,18 +103,18 @@
     margin-top : 5em;
     margin-bottom : 0;
     padding : 0;
-    border-top: 3px solid white;
-    border-bottom: 3px solid white;
-    background-color: rgba(255, 255, 255, 0.75);
+    border-top: 3px solid var(--normal-node-color);
+    border-bottom: 3px solid var(--normal-node-color);
+    background-color: var(--node-label-bg-color);
     text-wrap: nowrap;
     overflow: hidden;
-    box-shadow: 1px 1px 10px black;
+    box-shadow: 1px 1px 10px var(--normal-node-inner-shadow-color);
   }
   p {
     opacity: 0;
-    border-bottom: 3px solid white;
+    border-bottom: 3px solid var(--normal-node-color);
     margin: 0;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--node-label-hover-bg-color);
     &:before {
       filter: brightness(0);
       content: "🔗 ";
@@ -123,7 +125,7 @@
       opacity : 1;
     }
     h3 {
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: var(--node-label-hover-bg-color);
       border-bottom-width: 1px;    
     }
   }
