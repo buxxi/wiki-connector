@@ -29,7 +29,7 @@
                 <dd>{{ bombs }}</dd>
             </dl>
             <dl>
-                <dt :title="$t('info.found')">✅</dt>
+                <dt :title="$t('info.found')">📄</dt>
                 <dd>{{ found }}</dd>
             </dl>
             <dl>
