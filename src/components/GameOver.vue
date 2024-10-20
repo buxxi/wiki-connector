@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import TimeFormat from './TimeFormat.vue';
+import CustomDialog from './CustomDialog.vue';
+import History from './History.vue';
 import { ArticleState } from '@/domain/article';
-import { Difficulty, getDifficultySetting } from '@/domain/difficulty';
+import { Difficulty } from '@/domain/difficulty';
 import type Result from '@/domain/result';
 import type Game from '@/services/game';
 import HistoryService from '@/services/history';
@@ -46,10 +48,6 @@ import { ref } from 'vue';
     allResults.value = history.read().reverse();
   }
 
-  function closeModal() {
-    open.value = false;
-  }
-
   function newGame() {
     emit('restart');
   }
@@ -74,74 +72,64 @@ import { ref } from 'vue';
 </script>
 
 <template>
-  <dialog :open="open">
-    <a @click="closeModal" class="close">✕</a>
-    <h1>{{ won ? $t('results.won.title') : $t('results.lost.title') }}</h1>
-    <div>
-        <section class="results">
-          <h2>{{ $t('results.title') }}</h2>
-          <p v-if="!won">
-            <i18n-t keypath="results.lost.connected" tag="span" scope="global">
-              <template v-slot:firstTitle>
-                <b>{{ titles[0] }}</b>
-              </template>
-            </i18n-t>
-          </p>
-          <p v-if="won">
-            <i18n-t keypath="results.won.connected" tag="span" scope="global">
-              <template v-slot:firstTitle>
-                <b>{{ titles[0] }}</b>
-              </template>
-              <template v-slot:otherTitles>
-                <span v-for="(title, index) in titles.slice(1)">
-                  <b>{{ title }}</b>
-                  <span v-if="index == titles.length - 3"> {{ $t('and') }} </span>
-                  <span v-else-if="index < titles.length - 2">, </span>
-                </span>
-              </template>
-            </i18n-t>
-            <br/>
-            <i18n-t keypath="results.won.stats" tag="span" scope="global">
-              <template v-slot:steps>
-                <b>{{ currentResult!.shortest }}</b>
-              </template>
-              <template v-slot:time>
-                <b><TimeFormat :seconds="currentResult!.seconds"></TimeFormat></b>
-              </template>
-            </i18n-t>
-          </p>
-        </section>
+ <CustomDialog :title="won ? $t('results.won.title') : $t('results.lost.title')">
+  <template v-slot:content>
+      <section class="results">
+        <h2>{{ $t('results.title') }}</h2>
+        <p v-if="!won">
+          <i18n-t keypath="results.lost.connected" tag="span" scope="global">
+            <template v-slot:firstTitle>
+              <b>{{ titles[0] }}</b>
+            </template>
+          </i18n-t>
+        </p>
+        <p v-if="won">
+          <i18n-t keypath="results.won.connected" tag="span" scope="global">
+            <template v-slot:firstTitle>
+              <b>{{ titles[0] }}</b>
+            </template>
+            <template v-slot:otherTitles>
+              <span v-for="(title, index) in titles.slice(1)">
+                <b>{{ title }}</b>
+                <span v-if="index == titles.length - 3"> {{ $t('and') }} </span>
+                <span v-else-if="index < titles.length - 2">, </span>
+              </span>
+            </template>
+          </i18n-t>
+          <br/>
+          <i18n-t keypath="results.won.stats" tag="span" scope="global">
+            <template v-slot:steps>
+              <b>{{ currentResult!.shortest }}</b>
+            </template>
+            <template v-slot:time>
+              <b><TimeFormat :seconds="currentResult!.seconds"></TimeFormat></b>
+            </template>
+          </i18n-t>
+        </p>
+      </section>
 
-        <section class="history">
-          <h2>{{ $t('history.title') }}</h2>
-          <div>
-            <table>
-              <thead>
-                <tr>
-                  <th>{{ $t('history.date') }}</th>
-                  <th>{{ $t('history.won') }}</th>
-                  <th>{{ $t('difficulty.title') }}</th>
-                  <th>{{ $t('info.time') }}</th>
-                  <th>{{ $t('info.bombs') }}</th>
-                  <th>{{ $t('history.shortest') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="entry in allResults">
-                  <td>{{ entry.date.toISOString().substring(0, 10) }}</td>
-                  <td :class="{won: entry.won, lost: !entry.won}">{{ entry.won ? '✓' : '✕' }}</td>
-                  <td>{{ getDifficultySetting(entry.difficulty).smiley }} {{ $t('difficulty.' + entry.difficulty) }}</td>
-                  <td><TimeFormat :seconds="entry.seconds"></TimeFormat></td>
-                  <td>{{ entry.bombs }}</td>
-                  <td>{{ entry.shortest != undefined ? entry.shortest : '-' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-    </div>
-    <div class="buttons">
-      <input type="button" :value="$t('button.new')" @click="newGame"/>
-    </div>
-  </dialog>
+      <section class="history">
+        <h2>{{ $t('history.title') }}</h2>
+        <div>
+          <History :entries="allResults"></History>
+        </div>
+      </section>
+    </template>
+    <template v-slot:buttons>
+        <input type="button" :value="$t('button.new')" @click="newGame"/>
+    </template>
+  </CustomDialog>
 </template>
+
+<style>
+.history {
+  div {
+    display : block;
+    overflow: auto;
+    max-height: 10em;
+    margin-bottom: 2em;
+    background: #eee;
+  }
+}
+</style>
+

@@ -98,3 +98,69 @@
         </form>
     </div>
 </template>
+
+<style>
+@keyframes shake {
+  from {
+    padding-left : -1em;
+  } 
+  to {
+    padding-left: 1em;
+  }
+}
+
+#guess {
+  position: fixed;
+  bottom: 5em;
+  height: 5em;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  border-top : 4px solid black;
+  border-bottom : 4px solid black;
+  input {
+    border: 0;
+    width : 100%;
+    font-size: 3em;
+    padding: 0.25em 0.5em;
+    font-weight: 700;
+    position: absolute;
+    &:focus {
+      outline: none;
+    }
+
+    &.user-guess {
+      z-index: 2;
+      background-color: transparent;
+      &.shake {
+        animation: 0.1s ease normal 5 shake;
+      }
+    }
+    
+    &.autocomplete {
+      z-index: 1;
+      background-color: #eee;
+    }
+  }
+  #keylegend {
+    user-select: none;
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    margin-top: 0.5em;
+    dt {
+      font-weight: bold;
+      min-width: 1.25em;
+      text-align: center;
+      background-color: #ddd;
+      padding: 0.1em 0.25em;
+      border: 4px inset #999;
+      border-radius: 0.25em;
+    }
+    dd {
+      font-weight: normal;
+    }
+  }
+}
+
+</style>

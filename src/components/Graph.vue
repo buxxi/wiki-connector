@@ -310,3 +310,14 @@ function onHover(node: DOMGraphNode, e: NodeEvent) : void {
         <Node :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes"/>
     </div>
 </template>
+
+<style>
+#graph {
+  position : fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 10em;
+  
+}
+</style>

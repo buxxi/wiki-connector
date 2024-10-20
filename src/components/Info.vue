@@ -43,3 +43,30 @@
         </div>
     </div>
 </template>
+
+<style>
+#restart {
+  position: fixed;
+  right : 0.5em;
+  bottom : 0.5em;
+  font-size: 2em;
+}
+
+#info {
+  position: fixed;
+  color: #eee;
+  background-color: #444;
+  bottom: 0;
+  height : 5em;
+  left: 0;
+  right: 0;
+  dt {
+    text-shadow: 1px 1px 10px black;
+    font-size: 2em;
+  }
+  dd {
+    text-shadow: 1px 1px 5px black;
+    font-size: 2em;
+  }
+}
+</style>

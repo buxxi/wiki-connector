@@ -31,3 +31,43 @@
     <use :href="`#chain-path-${id}`" :class="class"/>
 </svg>
 </template>
+
+<style>
+svg {
+    width : 100%;
+    height : 100%;
+    position: absolute;
+
+    .hole-mask {
+      stroke-width: 4;
+      stroke-dasharray: 6 14;
+      stroke-dashoffset: 7;
+    }
+
+    .chain {
+      stroke-opacity: 1;
+      stroke-width: 2;
+      stroke-dasharray: 12 8;
+      stroke-linecap: round;
+
+      &.normal {
+        stroke: white;
+      }
+      &.hole {
+        stroke-width: 8;
+        stroke-dasharray: 6 14;
+        stroke-dashoffset: 7;
+      }
+      &.hover {
+        stroke: silver;
+        filter: drop-shadow(0 0 3px yellow);
+      }
+      &.bomb {
+        stroke: orangered;
+      }
+      &.correct {
+        stroke: yellowgreen;
+      }
+    }
+  } 
+</style>
