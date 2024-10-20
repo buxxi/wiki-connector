@@ -8,221 +8,221 @@ const THUMBNAIL_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&p
 const MISSING_THUMBNAIL_URL = 'https://upload.wikimedia.org/wikipedia/en/thumb/8/80/Wikipedia-logo-v2.svg/250px-Wikipedia-logo-v2.svg.png';
 
 type WikipediaRandomResponse = {
-    query: WikipediaRandomQuery;
+	query: WikipediaRandomQuery;
 }
 
 type WikipediaRandomQuery = {
-    random: WikipediaRandomEntry[];   
+	random: WikipediaRandomEntry[];
 }
 
 type WikipediaRandomEntry = {
-    id: number;
-    title: string;
+	id: number;
+	title: string;
 }
 
 
 
 type WikipediaPopularResponse = {
-    items: WikipediaPopularItem[];
+	items: WikipediaPopularItem[];
 }
 
 type WikipediaPopularItem = {
-    articles: WikipediaPopularArticle[];
+	articles: WikipediaPopularArticle[];
 }
 
 type WikipediaPopularArticle = {
-    article: string;
+	article: string;
 }
 
 
 
 type WikipediaLookupResponse = {
-    query: WikipediaLookupQuery;
+	query: WikipediaLookupQuery;
 }
 
 type WikipediaLookupQuery = {
-    pages: WikipediaLookupPages;
+	pages: WikipediaLookupPages;
 }
 
 type WikipediaLookupPages = {
-    [key: string] : WikipediaLookupPage;
+	[key: string]: WikipediaLookupPage;
 }
 
 type WikipediaLookupPage = {
-    pageid: number;
-    title: string;
+	pageid: number;
+	title: string;
 }
 
 
 
 type WikipediaLinksResponse = {
-    continue : WikipediaLinksContinue;
-    query: WikipediaLinksQuery;
+	continue: WikipediaLinksContinue;
+	query: WikipediaLinksQuery;
 }
 
 type WikipediaLinksContinue = {
-    gplcontinue: string;
-    continue: string;
+	gplcontinue: string;
+	continue: string;
 }
 
 type WikipediaLinksQuery = {
-    pages: WikipediaLinksPages;
+	pages: WikipediaLinksPages;
 }
 
 type WikipediaLinksPages = {
-    [key: string] : WikipediaLinksPage;
+	[key: string]: WikipediaLinksPage;
 }
 
 type WikipediaLinksPage = {
-    pageid: number;
-    title: string;
+	pageid: number;
+	title: string;
 }
 
 
 
 type WikipediaThumbnailResponse = {
-    query: WikipediaThumbnailQuery;
+	query: WikipediaThumbnailQuery;
 }
 
 type WikipediaThumbnailQuery = {
-    pages: WikipediaThumbnailPages;
+	pages: WikipediaThumbnailPages;
 }
 
 type WikipediaThumbnailPages = {
-    [key: string] : WikipediaThumbnailPage;
+	[key: string]: WikipediaThumbnailPage;
 }
 
 type WikipediaThumbnailPage = {
-    thumbnail : WikipediaThumbnail;
+	thumbnail: WikipediaThumbnail;
 }
 
 type WikipediaThumbnail = {
-    source : string;
+	source: string;
 }
 
 export type WikipediaArticle = {
-    id: number;
-    title: string;
+	id: number;
+	title: string;
 }
 
 class WikipediaService {
-    language: string;
+	language: string;
 
-    constructor(language: string) {
-        this.language = language;
-    }
+	constructor(language: string) {
+		this.language = language;
+	}
 
-    async getRandom() : Promise<WikipediaArticle[]> {
-        let url = RANDOM_URL
-            .replace('{language}', this.language)
-            .replace('{count}', "" + 500);
-        let data : WikipediaRandomResponse = await this._fetchJson(url);
-        return data.query.random.map(e => ({id: e.id, title: e.title})).filter(e => this._filterPages(e));
-    }
+	async getRandom(): Promise<WikipediaArticle[]> {
+		let url = RANDOM_URL
+			.replace('{language}', this.language)
+			.replace('{count}', "" + 500);
+		let data: WikipediaRandomResponse = await this._fetchJson(url);
+		return data.query.random.map(e => ({ id: e.id, title: e.title })).filter(e => this._filterPages(e));
+	}
 
-    async getPopular() : Promise<WikipediaArticle[]> {
-        let yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        let year = new String(yesterday.getFullYear()).padStart(4, '0');
-        let month = new String(yesterday.getMonth()).padStart(2, '0');
-        let day = new String(yesterday.getDate()).padStart(2, '0');
+	async getPopular(): Promise<WikipediaArticle[]> {
+		let yesterday = new Date();
+		yesterday.setDate(yesterday.getDate() - 1);
+		let year = new String(yesterday.getFullYear()).padStart(4, '0');
+		let month = new String(yesterday.getMonth()).padStart(2, '0');
+		let day = new String(yesterday.getDate()).padStart(2, '0');
 
-        let url = POPULAR_URL
-            .replace('{language}', this.language)
-            .replace('{year}', "" + year)
-            .replace('{month}', "" + month)
-            .replace('{day}', "" + day);
-            
-        let data : WikipediaPopularResponse = await this._fetchJson(url);
-        return this.getPages(data.items[0].articles.map(e => this._parseTitle(e.article)));
-    }
+		let url = POPULAR_URL
+			.replace('{language}', this.language)
+			.replace('{year}', "" + year)
+			.replace('{month}', "" + month)
+			.replace('{day}', "" + day);
 
-    async getPages(titles: string[]) : Promise<WikipediaArticle[]> {
-        if (titles.length > 50) {
-            let chunkPromises = [];
-            for (var i = 0; i < titles.length; i = i + 50) {
-                let chunkTitles = titles.slice(i, i + 50);
-                chunkPromises.push(this.getPages(chunkTitles));
-            }
-            let chunkResult = await Promise.all(chunkPromises);
-            return chunkResult.flatMap(e => e);
-        }
-        let url = LOOKUP_URL
-            .replace('{language}', this.language)
-            .replace('{titles}', titles.join("|"));
-        let data : WikipediaLookupResponse = await this._fetchJson(url);
-        return Object.values(data.query.pages).map(e => ({id: e.pageid, title: e.title})).filter(e => this._filterPages(e));
-    }
+		let data: WikipediaPopularResponse = await this._fetchJson(url);
+		return this.getPages(data.items[0].articles.map(e => this._parseTitle(e.article)));
+	}
 
-    async getAllLinks(pageid: number) : Promise<WikipediaArticle[]> {
-        let url = LINKS_URL
-            .replace('{language}', this.language)
-            .replace('{pageids}', "" + pageid);
+	async getPages(titles: string[]): Promise<WikipediaArticle[]> {
+		if (titles.length > 50) {
+			let chunkPromises = [];
+			for (var i = 0; i < titles.length; i = i + 50) {
+				let chunkTitles = titles.slice(i, i + 50);
+				chunkPromises.push(this.getPages(chunkTitles));
+			}
+			let chunkResult = await Promise.all(chunkPromises);
+			return chunkResult.flatMap(e => e);
+		}
+		let url = LOOKUP_URL
+			.replace('{language}', this.language)
+			.replace('{titles}', titles.join("|"));
+		let data: WikipediaLookupResponse = await this._fetchJson(url);
+		return Object.values(data.query.pages).map(e => ({ id: e.pageid, title: e.title })).filter(e => this._filterPages(e));
+	}
 
-        var cont = "";            
-        let result = [];
+	async getAllLinks(pageid: number): Promise<WikipediaArticle[]> {
+		let url = LINKS_URL
+			.replace('{language}', this.language)
+			.replace('{pageids}', "" + pageid);
 
-        do {
-            let data : WikipediaLinksResponse = await this._fetchJson(url + cont);
-            
-            result.push(Object.values(data.query.pages).filter(e => e.pageid > 0));
-            if (data.continue) {
-                cont = `&gplcontinue=${data.continue.gplcontinue}&continue=${data.continue.continue}`;
-            } else {
-                cont = "";
-            }
-        } while (cont);
-        return result.flatMap(e => e).map(e => ({id: e.pageid, title: e.title})).filter(e => e.id != pageid && this._filterPages(e));
-    }
+		var cont = "";
+		let result = [];
 
-    async getThumbnail(pageid: number) : Promise<string> {
-        let url = THUMBNAIL_URL
-            .replace('{language}', this.language)
-            .replace('{pageids}', "" + pageid);
+		do {
+			let data: WikipediaLinksResponse = await this._fetchJson(url + cont);
 
-        let data : WikipediaThumbnailResponse = await this._fetchJson(url);
-        let pages = Object.values(data.query.pages);
-        if (pages.length > 0 && pages[0].thumbnail) {
-            return pages[0].thumbnail.source;
-        } else {
-            return MISSING_THUMBNAIL_URL;
-        }
-    }
+			result.push(Object.values(data.query.pages).filter(e => e.pageid > 0));
+			if (data.continue) {
+				cont = `&gplcontinue=${data.continue.gplcontinue}&continue=${data.continue.continue}`;
+			} else {
+				cont = "";
+			}
+		} while (cont);
+		return result.flatMap(e => e).map(e => ({ id: e.pageid, title: e.title })).filter(e => e.id != pageid && this._filterPages(e));
+	}
 
-    _parseTitle(title: string) {
-        return title.replace(/_/g, " ");
-    }
+	async getThumbnail(pageid: number): Promise<string> {
+		let url = THUMBNAIL_URL
+			.replace('{language}', this.language)
+			.replace('{pageids}', "" + pageid);
 
-    _randomSelect(articles: string[], count: number): string[] {
-        while (articles.length > count) {
-            let random = Math.floor(Math.random() * articles.length);
-            articles.splice(random, 1);
-        }
-        return articles;
-    }
+		let data: WikipediaThumbnailResponse = await this._fetchJson(url);
+		let pages = Object.values(data.query.pages);
+		if (pages.length > 0 && pages[0].thumbnail) {
+			return pages[0].thumbnail.source;
+		} else {
+			return MISSING_THUMBNAIL_URL;
+		}
+	}
 
-    _filterPages(article: WikipediaArticle): boolean {
-        let page = article.title;
-        if (config.blacklist.articles.includes(page)) {
-            return false;
-        }
-        let m = /(.*?):.*/;
-        let r = m.exec(page);
-        if (r != null) {
-            if (config.blacklist.prefix.includes(r[1])) {
-                return false;
-            } else {
-                // nothing for now
-            }
-        }
-        return true;
-    }
+	_parseTitle(title: string) {
+		return title.replace(/_/g, " ");
+	}
 
-    async _fetchJson<T>(url: string) : Promise<T> {
-        let response = await fetch(url, { cache: "force-cache" });
-        let newData = await response.json();
-        return newData;
-    }
+	_randomSelect(articles: string[], count: number): string[] {
+		while (articles.length > count) {
+			let random = Math.floor(Math.random() * articles.length);
+			articles.splice(random, 1);
+		}
+		return articles;
+	}
+
+	_filterPages(article: WikipediaArticle): boolean {
+		let page = article.title;
+		if (config.blacklist.articles.includes(page)) {
+			return false;
+		}
+		let m = /(.*?):.*/;
+		let r = m.exec(page);
+		if (r != null) {
+			if (config.blacklist.prefix.includes(r[1])) {
+				return false;
+			} else {
+				// nothing for now
+			}
+		}
+		return true;
+	}
+
+	async _fetchJson<T>(url: string): Promise<T> {
+		let response = await fetch(url, { cache: "force-cache" });
+		let newData = await response.json();
+		return newData;
+	}
 }
 
 export default WikipediaService;

@@ -6,12 +6,12 @@ import en from './translations/en';
 import sv from './translations/sv';
 
 const i18n = createI18n({
-    legacy: false,
-    locale: 'en',
-    messages: {
-        en: en,
-        sv: sv
-    }    
+	legacy: false,
+	locale: 'en',
+	messages: {
+		en: en,
+		sv: sv
+	}
 });
 
 let appInstance = createApp(App);

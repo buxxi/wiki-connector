@@ -1,109 +1,115 @@
 :root {
-  --shadow-color: rgb(0, 0, 0);
-  --bomb-color: rgb(255, 69, 0);
-  --correct-color: rgb(154, 205, 50);
+	--shadow-color: rgb(0, 0, 0);
+	--bomb-color: rgb(255, 69, 0);
+	--correct-color: rgb(154, 205, 50);
 
-  --dialog-shadow-color: var(--shadow-color);
-  --dialog-border-color: rgb(128, 128, 128);
-  --title-underline-color: rgb(128, 128, 128);
+	--dialog-shadow-color: var(--shadow-color);
+	--dialog-border-color: rgb(128, 128, 128);
+	--title-underline-color: rgb(128, 128, 128);
 
-  --button-bg-color: rgb(12, 95, 204);
-  --button-border-color: rgb(7, 49, 104);
-  --button-hover-color: rgb(12, 143, 204);
-  --button-text-color: rgb(255, 255, 255);
+	--button-bg-color: rgb(12, 95, 204);
+	--button-border-color: rgb(7, 49, 104);
+	--button-hover-color: rgb(12, 143, 204);
+	--button-text-color: rgb(255, 255, 255);
 
-  --node-bg-color: rgb(255, 255, 255); /* In case on transparent background images */
+	/* In case on transparent background images */
+	--node-bg-color: rgb(255, 255, 255);
 
-  --normal-node-color: rgb(255, 255, 255);
-  --normal-node-outer-shadow-color: var(--shadow-color);
-  --normal-node-inner-shadow-color: var(--shadow-color);
 
-  --start-node-color: var(--correct-color);
-  --start-node-outer-shadow-color: rgb(0, 100, 0);
-  --start-node-inner-shadow-color: var(--shadow-color);
+	--normal-node-color: rgb(255, 255, 255);
+	--normal-node-outer-shadow-color: var(--shadow-color);
+	--normal-node-inner-shadow-color: var(--shadow-color);
 
-  --bomb-node-color: var(--bomb-color);
-  --bomb-node-outer-shadow-color: rgb(139, 0, 0);
-  --bomb-node-inner-shadow-color: var(--shadow-color);
+	--start-node-color: var(--correct-color);
+	--start-node-outer-shadow-color: rgb(0, 100, 0);
+	--start-node-inner-shadow-color: var(--shadow-color);
 
-  --node-label-bg-color: rgba(255, 255, 255, 0.75);
-  --node-label-hover-bg-color: rgba(255, 255, 255, 0.9);
+	--bomb-node-color: var(--bomb-color);
+	--bomb-node-outer-shadow-color: rgb(139, 0, 0);
+	--bomb-node-inner-shadow-color: var(--shadow-color);
 
-  --normal-chain-color: rgb(255, 255, 255);
-  --bomb-chain-color: var(--bomb-color);
-  --correct-chain-color: var(--correct-color);
-  --highlight-chain-color: rgb(255, 226, 63);
+	--node-label-bg-color: rgba(255, 255, 255, 0.75);
+	--node-label-hover-bg-color: rgba(255, 255, 255, 0.9);
 
-  --info-bg-color: rgb(68, 68, 68);
-  --info-text-color: rgb(238, 238, 238);
-  --info-icon-shadow-color: var(--shadow-color);
-  --info-text-shadow-color: var(--shadow-color);
+	--normal-chain-color: rgb(255, 255, 255);
+	--bomb-chain-color: var(--bomb-color);
+	--correct-chain-color: var(--correct-color);
+	--highlight-chain-color: rgb(255, 226, 63);
 
-  --history-bg-color: rgb(238, 238, 238);
-  --history-header-text-color: rgb(238, 238, 238);
-  --history-header-bg-color: rgb(68, 68, 68);
-  --history-current-game-row-bg-color: rgb(128, 128, 128);
-  --history-won-color: var(--correct-color);
-  --history-loss-color: var(--bomb-color);
+	--info-bg-color: rgb(68, 68, 68);
+	--info-text-color: rgb(238, 238, 238);
+	--info-icon-shadow-color: var(--shadow-color);
+	--info-text-shadow-color: var(--shadow-color);
 
-  --guess-bg-color: rgb(238, 238, 238);
-  --guess-text-color: rgb(0, 0, 0);
-  --guess-text-placeholder-color: rgb(128, 128, 128);
-  --keylegend-bg-color: rgb(221, 221, 221);
-  --keylegend-border-color: rgb(153, 153, 153);
+	--history-bg-color: rgb(238, 238, 238);
+	--history-header-text-color: rgb(238, 238, 238);
+	--history-header-bg-color: rgb(68, 68, 68);
+	--history-current-game-row-bg-color: rgb(128, 128, 128);
+	--history-won-color: var(--correct-color);
+	--history-loss-color: var(--bomb-color);
 
-  --shadow-strength: 10px;
-  --dialog-shadow-strength: calc(var(--shadow-strength) * 2);
-  --info-icon-shadow-strength: var(--shadow-strength);
-  --info-text-shadow-strength: calc(var(--shadow-strength) / 2);
-  --node-inner-shadow-strength: var(--shadow-strength);
-  --node-outer-shadow-strength: var(--shadow-strength);
+	--guess-bg-color: rgb(238, 238, 238);
+	--guess-text-color: rgb(0, 0, 0);
+	--guess-text-placeholder-color: rgb(128, 128, 128);
+	--keylegend-bg-color: rgb(221, 221, 221);
+	--keylegend-border-color: rgb(153, 153, 153);
+
+	--shadow-strength: 10px;
+	--dialog-shadow-strength: calc(var(--shadow-strength) * 2);
+	--info-icon-shadow-strength: var(--shadow-strength);
+	--info-text-shadow-strength: calc(var(--shadow-strength) / 2);
+	--node-inner-shadow-strength: var(--shadow-strength);
+	--node-outer-shadow-strength: var(--shadow-strength);
 }
 
 html {
-  font-family: "Open Sans", sans-serif;
-  font-weight: 400;
+	font-family: "Open Sans", sans-serif;
+	font-weight: 400;
 }
 
 input {
-  font-family: "Open Sans", sans-serif;
+	font-family: "Open Sans", sans-serif;
 }
 
 i {
-  font-family: "Noto Color Emoji", "Open Sans", sans-serif;
-  font-style: normal;
+	font-family: "Noto Color Emoji", "Open Sans", sans-serif;
+	font-style: normal;
 }
 
-dl, dt, dd {
-  display : inline-block;
-  margin: 0;
+dl,
+dt,
+dd {
+	display: inline-block;
+	margin: 0;
 }
 
 dl {
-  padding: 1.25em;
+	padding: 1.25em;
 }
 
 dd {
-  font-weight: bold;
-  margin-right: 1em;
-  margin-left: 0.5em;
+	font-weight: bold;
+	margin-right: 1em;
+	margin-left: 0.5em;
 
 }
 
 input[type="button"] {
-  background: var(--button-bg-color);
-  font-size: 2.5em;
-  padding: 0 1em;
-  border-radius: 0.25em;
-  border: 3px solid var(--button-border-color);
-  color: var(--button-text-color);
-  cursor: pointer;
-  font-weight: 600;
-  &:active {
-    border: 3px solid var(--button-bg-color);
-    background: var(--button-bg-color);  
-  }
-  &:hover {
-    background-color: var(--button-hover-color);
-  }
+	background: var(--button-bg-color);
+	font-size: 2.5em;
+	padding: 0 1em;
+	border-radius: 0.25em;
+	border: 3px solid var(--button-border-color);
+	color: var(--button-text-color);
+	cursor: pointer;
+	font-weight: 600;
+
+	&:active {
+		border: 3px solid var(--button-bg-color);
+		background: var(--button-bg-color);
+	}
+
+	&:hover {
+		background-color: var(--button-hover-color);
+	}
 }
