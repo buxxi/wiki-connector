@@ -8,6 +8,7 @@ import type Game from '@/services/game';
 import type Article from '@/domain/article';
 import { ResultType } from '@/domain/result';
 import { ArticleState } from '@/domain/article';
+import type { Duration } from '@/domain/duration';
 
 const emit = defineEmits<{
   (e: 'won', game: Game, result: Result): void,
@@ -35,28 +36,15 @@ const timer = ref();
 
 function gameStarted(newGame: Game, newResult: Result) {
   game.value = newGame;
-  game.value.onTimeChange(duration => {
-    seconds.value = duration.seconds();
-  });
+  game.value.onTimeChange(durationChanged);
+  game.value.onResultChange(resultChanged);
   convertResult(newResult);
 }
 
 async function guessed(value: string) {
   try {
     suggestions.value.splice(0, suggestions.value.length);
-
-    let newResult = await game.value!.guess(value);
-    convertResult(newResult);
-    switch(newResult.type) {
-      case ResultType.WON:
-        clearInterval(timer.value);
-        emit("won", game.value!, newResult);
-        break;
-      case ResultType.LOST:
-        clearInterval(timer.value);
-        emit("lost", game.value!, newResult);
-        break;
-    }
+    await game.value!.guess(value);
     input.value?.clear();
   } catch (e) {
     input.value?.invalidInput();
@@ -69,9 +57,23 @@ function typed(value: string) {
   suggestions.value.push(...values);
 }
 
-function convertResult(result: Result) {
-  clearInterval(timer.value);
+function durationChanged(duration: Duration) {
+  seconds.value = duration.seconds();
+}
 
+function resultChanged(result: Result) {
+  switch(result.type) {
+    case ResultType.WON:
+      emit("won", game.value!, result);
+      break;
+    case ResultType.LOST:
+      emit("lost", game.value!, result);
+      break;
+  }
+  convertResult(result);
+}
+
+function convertResult(result: Result) {
   for (let article of result.found) {
     let i = nodes.value.map(e => e.id()).indexOf(article.id());
     if (i == -1) {

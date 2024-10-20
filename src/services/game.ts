@@ -17,6 +17,8 @@ export enum GameMode {
 
 export type DurationCallback = (duration: Duration) => void;
 
+export type ResultCallback = (result: Result) => void;
+
 export type Language = "se" | "en";
 
 type LoadResult = {
@@ -33,6 +35,7 @@ class Game {
     gameMode: GameMode;
     autoCompleter: Autocompleter;
     clock: Clock = new Clock();
+    resultCallback: ResultCallback | undefined;
 
     constructor(language: Language, difficulty: Difficulty, gameMode : GameMode) {
         this.wikipedia = new WikipediaService(language);
@@ -62,7 +65,7 @@ class Game {
         return result;
     }
 
-    async guess(title: string) : Promise<Result> {
+    async guess(title: string) : Promise<void> {
         let loadArticle = find(this.root, e => e.searchValue() == alphaNumericOnly(title));
         if (loadArticle == undefined) {
             throw new Error("No matches for title: " + title);
@@ -88,7 +91,9 @@ class Game {
 
         this.autoCompleter.reset();
 
-        return result;
+        if (this.resultCallback != undefined) {
+            this.resultCallback(result);
+        }
     }
 
     autoCompleteSuggestions(title: string) : string[] {
@@ -99,6 +104,10 @@ class Game {
 
     onTimeChange(callback: DurationCallback) {
         this.clock.setCallback((started, ended) => callback(new Duration(started, ended)));
+    }
+
+    onResultChange(callback: ResultCallback) {
+        this.resultCallback = callback;
     }
 
     async _loadArticle(id: number, title: string, state: ArticleState) : Promise<LoadResult> {
