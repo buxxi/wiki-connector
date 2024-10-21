@@ -1,5 +1,11 @@
 <script setup lang="ts">
-	import { onMounted } from "vue";
+	import { onMounted, watch } from "vue";
+
+	const MAX_FPS = 30;
+
+	const props = defineProps<{
+		animate: boolean
+	}>();
 
 	class JigsawPiece {
 		x: number;
@@ -32,7 +38,7 @@
 			this._drawBottom(context, this.x + this.size, this.y + this.size, this.bottom ? 1 : -1);
 			this._drawLeft(context, this.x, this.y + this.size, this.left ? 1 : -1);
 
-			context.fillStyle = `hsl(${this.hue}, 10%, ${20 + lightness * 10}%)`;
+			context.fillStyle = `hsl(${this.hue}, 10%, ${15 + (lightness * 10)}%)`;
 			context.fill();
 			context.strokeStyle = `hsl(${this.hue}, 0%, 10%)`;
 			context.stroke();
@@ -108,9 +114,15 @@
 		return result;
 	}
 
+	function generateShininess(size: any[][]): number[][] {
+		return size.map(row => row.map(col => (Math.random() * 2) - 1));
+	}
+
 
 	var pieces: JigsawPiece[][] = [];
+	var shininess: number[][] = [];
 	var context: CanvasRenderingContext2D;
+	var lastDraw: number = new Date().getTime() - 1000;
 
 	function recreate() {
 		let bg = document.querySelector("#background")! as HTMLCanvasElement;
@@ -119,22 +131,38 @@
 		context = bg.getContext("2d")!;
 
 		pieces = generatePieces(bg.width, bg.height);
+		shininess = generateShininess(pieces);
 
 		draw();
 	}
 
 	function draw() {
-		for (var y = 0; y < pieces.length; y++) {
-			for (var x = 0; x < pieces[y].length; x++) {
-				pieces[y][x].draw(context, 0);
+		let delta = (new Date().getTime() - lastDraw) / 1000;
+		if (delta > 1 / MAX_FPS) {
+			for (var y = 0; y < pieces.length; y++) {
+				for (var x = 0; x < pieces[y].length; x++) {
+					let s = shininess[y][x] + (delta / 3);
+					if (s > 1) {
+						s = -1;
+					}
+					pieces[y][x].draw(context, Math.abs(s));
+					shininess[y][x] = s;
+				}
 			}
+			lastDraw = new Date().getTime();
 		}
-		//window.requestAnimationFrame(draw);
+		if (props.animate) {
+			window.requestAnimationFrame(draw);
+		}
 	}
 
 	onMounted(() => {
 		recreate();
 		window.addEventListener("resize", recreate);
+	});
+
+	watch(props, () => {
+		recreate();
 	});
 
 
