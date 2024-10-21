@@ -44,7 +44,7 @@
 
 <template>
 	<main>
-		<Background :animate="true" />
+		<Background :animate="true" :won="gameState.value == GameState.WON" />
 		<GameSetup @started="gameStarted" v-if="gameState.value == 'NOT_STARTED'" />
 		<GameRunning @won="gameWon" @lost="gameLost" @restart="restartGame" ref="gameComponent" v-if="gameState.value != 'NOT_STARTED'" />
 		<GameOver @restart="restartGame" ref="gameOverComponent" v-if="gameState.value == GameState.WON || gameState.value == GameState.LOST" />

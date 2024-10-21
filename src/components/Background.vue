@@ -4,10 +4,66 @@
 	const MAX_FPS = 30;
 	const JIGSAW_PIECE_SIZE = 50;
 	const JIGSAW_HOLE_SIZE = 10;
+	const BALLOON_COUNT = 100;
+	const BALLOON_MIN_SIZE = 25;
+	const BALLOON_MAX_SIZE = 75;
+	const BALLOON_MIN_SPEED = 100;
 
 	const props = defineProps<{
-		animate: boolean
+		animate: boolean,
+		won: boolean
 	}>();
+
+	class Balloon {
+		size: number;
+		x: number;
+		y: number;
+		speed: number;
+		hue: number;
+		path: Path2D;
+
+		constructor(x: number, y: number, size: number, speed: number, hue: number) {
+			this.x = x;
+			this.y = y;
+			this.size = size;
+			this.speed = speed;
+			this.hue = hue;
+			this.path = this._generatePath();
+		}
+
+		_generatePath(): Path2D {
+			let path = new Path2D();
+			path.moveTo(0, -1.25 * this.size);
+			path.bezierCurveTo(1.5 * this.size, -1.25 * this.size, 1.5 * this.size, 0.75 * this.size, 0, 1.25 * this.size);
+			path.lineTo(0.1 * this.size, (1.4 * this.size));
+			path.lineTo(-0.1 * this.size, (1.4 * this.size));
+			path.lineTo(0, 1.25 * this.size);
+			path.bezierCurveTo(-1.5 * this.size, 0.75 * this.size, -1.5 * this.size, -1.25 * this.size, 0, -1.25 * this.size);
+			return path;
+		}
+
+		draw(context: CanvasRenderingContext2D) {
+			if (this.y < -this.size) {
+				return;
+			}
+			var gr = context.createRadialGradient(0.25 * this.size, -0.25 * this.size, 1.5 * this.size, 0.25 * this.size, -0.25 * this.size, 0.5 * this.size);
+			gr.addColorStop(0, `hsl(${this.hue}, 100%, 20%)`);
+			gr.addColorStop(1, `hsl(${this.hue}, 100%, 50%)`);
+			context.save();
+			context.translate(this.x, this.y);
+			context.fillStyle = gr;
+			context.fill(this.path);
+			context.restore();
+		}
+
+		move(delta: number) {
+			if (this.y < -this.size) {
+				return;
+			}
+			this.y = this.y - (this.speed * delta);
+		}
+	}
+
 
 	class JigsawPiece {
 		x: number;
@@ -104,7 +160,17 @@
 		}
 	}
 
+	function generateBalloons(width: number, height: number): Balloon[] {
+		return new Array(BALLOON_COUNT).fill(0).map(i => {
+			let size = BALLOON_MIN_SIZE + (Math.random() * (BALLOON_MAX_SIZE - BALLOON_MIN_SIZE));
+			let x = Math.random() * width;
+			let y = height + (Math.random() * (height));
 
+			let speed = BALLOON_MIN_SPEED + (Math.random() * size) + size;
+			let hue = Math.random() * 360;
+			return new Balloon(x, y, size, speed, hue);
+		});
+	}
 
 	function generatePieces(width: number, height: number): JigsawPiece[][] {
 		let rows = Math.ceil(height / JIGSAW_PIECE_SIZE);
@@ -133,6 +199,7 @@
 
 
 	var pieces: JigsawPiece[][] = [];
+	var balloons: Balloon[] = [];
 	var shininess: number[][] = [];
 	var context: CanvasRenderingContext2D;
 	var lastDraw: number = new Date().getTime() - 1000;
@@ -145,6 +212,7 @@
 
 		pieces = generatePieces(bg.width, bg.height);
 		shininess = generateShininess(pieces);
+		balloons = generateBalloons(bg.width, bg.height);
 
 		draw();
 	}
@@ -152,20 +220,34 @@
 	function draw() {
 		let delta = (new Date().getTime() - lastDraw) / 1000;
 		if (delta > 1 / MAX_FPS) {
-			for (var y = 0; y < pieces.length; y++) {
-				for (var x = 0; x < pieces[y].length; x++) {
-					let s = shininess[y][x] + (delta / 3);
-					if (s > 1) {
-						s = -1;
-					}
-					pieces[y][x].draw(context, Math.abs(s));
-					shininess[y][x] = s;
-				}
+			drawJigsawPieces(delta);
+			if (props.won) {
+				drawBalloons(delta);
 			}
 			lastDraw = new Date().getTime();
 		}
 		if (props.animate) {
 			window.requestAnimationFrame(draw);
+		}
+	}
+
+	function drawBalloons(delta: number) {
+		for (let balloon of balloons) {
+			balloon.draw(context);
+			balloon.move(delta);
+		}
+	}
+
+	function drawJigsawPieces(delta: number) {
+		for (var y = 0; y < pieces.length; y++) {
+			for (var x = 0; x < pieces[y].length; x++) {
+				let s = shininess[y][x] + (delta / 3);
+				if (s > 1) {
+					s = -1;
+				}
+				pieces[y][x].draw(context, Math.abs(s));
+				shininess[y][x] = s;
+			}
 		}
 	}
 
