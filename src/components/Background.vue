@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import { Vector2 } from "three";
 	import { onMounted, watch } from "vue";
 
 	const MAX_FPS = 30;
@@ -8,11 +9,53 @@
 	const BALLOON_MIN_SIZE = 25;
 	const BALLOON_MAX_SIZE = 75;
 	const BALLOON_MIN_SPEED = 100;
+	const CONFETTI_COLORS = ['red', 'white', 'blue', 'orange', 'green'];
+	const CONFETTI_COUNT = 3000;
 
 	const props = defineProps<{
 		animate: boolean,
 		won: boolean
 	}>();
+
+	class Confetti {
+		position: Vector2;
+		rotation: number;
+		rotationDirection: number;
+		rotationSpeed: number;
+		force: Vector2;
+		color: string;
+		length: number;
+		thickness: number;
+
+		constructor(position: Vector2, direction: Vector2) {
+			this.position = position;
+			this.rotation = 0;
+			this.rotationDirection = Math.random() > 0.5 ? 1 : -1;
+			this.rotationSpeed = (Math.random() * 360) + 360;
+			let speed = (Math.random() * 100) + 50;
+			this.force = direction.multiplyScalar(speed);
+			this.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+			this.length = 5 + (Math.random() * 15);
+			this.thickness = 4 + (Math.random() * 4);
+		}
+
+		draw(context: CanvasRenderingContext2D) {
+			context.save();
+			context.fillStyle = this.color;
+			context.translate(this.position.x, this.position.y);
+			context.rotate(this.rotation * (Math.PI / 180));
+			context.fillRect(-this.length, -this.thickness, this.length, this.thickness);
+			context.translate(-this.position.x, -this.position.y);
+			context.restore();
+		}
+
+		move(delta: number) {
+			this.rotation = this.rotation + (delta * this.rotationSpeed * this.rotationDirection);
+			let deltaForce = this.force.clone().multiplyScalar(delta);
+			this.position = this.position.clone().add(deltaForce);
+			this.force = this.force.clone().sub(deltaForce.divideScalar(5)).add(new Vector2(0, 10));
+		}
+	}
 
 	class Balloon {
 		size: number;
@@ -193,6 +236,20 @@
 		return result;
 	}
 
+	function generateConfetti(width: number, height: number): Confetti[] {
+		return new Array(CONFETTI_COUNT / 2).fill(0).map(i => {
+			return new Confetti(
+				new Vector2(0, height * 1.1),
+				new Vector2(Math.random() * 10, -5 - (Math.random() * 5))
+			);
+		}).concat(new Array(CONFETTI_COUNT / 2).fill(0).map(i => {
+			return new Confetti(
+				new Vector2(width, height * 1.1),
+				new Vector2(Math.random() * -10, -5 - (Math.random() * 5))
+			);
+		}));
+	}
+
 	function generateShininess(size: any[][]): number[][] {
 		return size.map(row => row.map(col => (Math.random() * 2) - 1));
 	}
@@ -200,9 +257,11 @@
 
 	var pieces: JigsawPiece[][] = [];
 	var balloons: Balloon[] = [];
+	var confetti: Confetti[] = [];
 	var shininess: number[][] = [];
 	var context: CanvasRenderingContext2D;
 	var lastDraw: number = new Date().getTime() - 1000;
+	var temp = false;
 
 	function recreate() {
 		let bg = document.querySelector("#background")! as HTMLCanvasElement;
@@ -210,9 +269,12 @@
 		bg.height = window.innerHeight;
 		context = bg.getContext("2d")!;
 
+		confetti = generateConfetti(bg.width, bg.height);
 		pieces = generatePieces(bg.width, bg.height);
 		shininess = generateShininess(pieces);
 		balloons = generateBalloons(bg.width, bg.height);
+
+		setTimeout(() => temp = true, 1500);
 
 		draw();
 	}
@@ -222,6 +284,7 @@
 		if (delta > 1 / MAX_FPS) {
 			drawJigsawPieces(delta);
 			if (props.won) {
+				drawConfetti(delta);
 				drawBalloons(delta);
 			}
 			lastDraw = new Date().getTime();
@@ -248,6 +311,13 @@
 				pieces[y][x].draw(context, Math.abs(s));
 				shininess[y][x] = s;
 			}
+		}
+	}
+
+	function drawConfetti(delta: number) {
+		for (let conf of confetti) {
+			conf.draw(context);
+			conf.move(delta);
 		}
 	}
 
