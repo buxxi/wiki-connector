@@ -35,6 +35,7 @@
 		}
 
 		move(delta: number): void {
+			//TODO: remove layer when it has nothing to move anymore?
 			this.layers.forEach(layer => layer.move(delta));
 		}
 	}
@@ -51,7 +52,7 @@
 		context = bg.getContext("2d")!;
 
 		let layerArray: Animation[] = [new JigsawPattern()];
-		if (props.won) {
+		if (props.won || true) {
 			layerArray.push(new BalloonsRising());
 			layerArray.push(new ConfettiCannon());
 		}

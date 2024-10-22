@@ -12,8 +12,9 @@ class Confetti {
 	color: string;
 	length: number;
 	thickness: number;
+	destroyWhenBelowHeight: number;
 
-	constructor(position: Vector2, direction: Vector2) {
+	constructor(position: Vector2, direction: Vector2, destroyWhenBelowHeight: number) {
 		this.position = position;
 		this.rotation = 0;
 		this.rotationDirection = Math.random() > 0.5 ? 1 : -1;
@@ -23,6 +24,7 @@ class Confetti {
 		this.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
 		this.length = 5 + (Math.random() * 15);
 		this.thickness = 4 + (Math.random() * 4);
+		this.destroyWhenBelowHeight = destroyWhenBelowHeight;
 	}
 
 	draw(context: CanvasRenderingContext2D) {
@@ -35,11 +37,12 @@ class Confetti {
 		context.restore();
 	}
 
-	move(delta: number) {
+	move(delta: number): boolean {
 		this.rotation = this.rotation + (delta * this.rotationSpeed * this.rotationDirection);
 		let deltaForce = this.force.clone().multiplyScalar(delta);
 		this.position = this.position.clone().add(deltaForce);
 		this.force = this.force.clone().sub(deltaForce.divideScalar(5)).add(new Vector2(0, 10));
+		return this.position.y < this.destroyWhenBelowHeight;
 	}
 }
 
@@ -50,26 +53,32 @@ class ConfettiCannon {
 		this.confetti = new Array(CONFETTI_COUNT / 2).fill(0).map(i => {
 			return new Confetti(
 				new Vector2(0, height * 1.1),
-				new Vector2(Math.random() * 10, -5 - (Math.random() * 5))
+				new Vector2(Math.random() * 10, -5 - (Math.random() * 5)),
+				height
 			);
 		}).concat(new Array(CONFETTI_COUNT / 2).fill(0).map(i => {
 			return new Confetti(
 				new Vector2(width, height * 1.1),
-				new Vector2(Math.random() * -10, -5 - (Math.random() * 5))
+				new Vector2(Math.random() * -10, -5 - (Math.random() * 5)),
+				height
 			);
 		}));
 	}
 
 	draw(context: CanvasRenderingContext2D): void {
-		for (let balloon of this.confetti) {
-			balloon.draw(context);
+		for (let conf of this.confetti) {
+			conf.draw(context);
 		}
 	}
 
-	move(delta: number): void {
-		for (let balloon of this.confetti) {
-			balloon.move(delta);
+	move(delta: number): boolean {
+		var i = this.confetti.length;
+		while (i--) {
+			if (!this.confetti[i].move(delta)) {
+				this.confetti.splice(i, 1);
+			}
 		}
+		return this.confetti.length > 0;
 	}
 }
 

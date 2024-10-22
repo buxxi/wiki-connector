@@ -45,11 +45,12 @@ class Balloon {
 		context.restore();
 	}
 
-	move(delta: number) {
+	move(delta: number): boolean {
 		if (this.y < -this.size) {
-			return;
+			return false;
 		}
 		this.y = this.y - (this.speed * delta);
+		return true;
 	}
 }
 
@@ -74,10 +75,14 @@ class BalloonsRising {
 		}
 	}
 
-	move(delta: number): void {
-		for (let balloon of this.balloons) {
-			balloon.move(delta);
+	move(delta: number): boolean {
+		var i = this.balloons.length;
+		while (i--) {
+			if (!this.balloons[i].move(delta)) {
+				this.balloons.splice(i, 1);
+			}
 		}
+		return this.balloons.length > 0;
 	}
 }
 

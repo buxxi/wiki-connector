@@ -130,7 +130,7 @@ class JigsawPattern {
 		}
 	}
 
-	move(delta: number): void {
+	move(delta: number): boolean {
 		for (var y = 0; y < this.pieces.length; y++) {
 			for (var x = 0; x < this.pieces[y].length; x++) {
 				let s = this.shininess[y][x] + (delta / 3);
@@ -140,6 +140,7 @@ class JigsawPattern {
 				this.shininess[y][x] = s;
 			}
 		}
+		return true;
 	}
 }
 
