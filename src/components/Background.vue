@@ -52,7 +52,7 @@
 		context = bg.getContext("2d")!;
 
 		let layerArray: Animation[] = [new JigsawPattern()];
-		if (props.won || true) {
+		if (props.won) {
 			layerArray.push(new BalloonsRising());
 			layerArray.push(new ConfettiCannon());
 		}
