@@ -16,7 +16,7 @@
 
 		draw(context: CanvasRenderingContext2D): void;
 
-		move(delta: number): void;
+		move(delta: number): boolean;
 	}
 
 	class LayeredAnimation {
@@ -34,9 +34,14 @@
 			this.layers.forEach(layer => layer.draw(context));
 		}
 
-		move(delta: number): void {
-			//TODO: remove layer when it has nothing to move anymore?
-			this.layers.forEach(layer => layer.move(delta));
+		move(delta: number): boolean {
+			var i = this.layers.length;
+			while (i--) {
+				if (!this.layers[i].move(delta)) {
+					this.layers.splice(i, 1);
+				}
+			}
+			return this.layers.length > 0;
 		}
 	}
 

@@ -54,13 +54,13 @@ class ConfettiCannon {
 			return new Confetti(
 				new Vector2(0, height * 1.1),
 				new Vector2(Math.random() * 10, -5 - (Math.random() * 5)),
-				height
+				height + 100
 			);
 		}).concat(new Array(CONFETTI_COUNT / 2).fill(0).map(i => {
 			return new Confetti(
 				new Vector2(width, height * 1.1),
 				new Vector2(Math.random() * -10, -5 - (Math.random() * 5)),
-				height
+				height + 100
 			);
 		}));
 	}
