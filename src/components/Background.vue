@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import BalloonsRising from "@/animations/balloons";
+	import BloodFlow from "@/animations/blood";
 	import ConfettiCannon from "@/animations/confetti";
 	import JigsawPattern from "@/animations/jigsaw";
 	import { onMounted, watch } from "vue";
@@ -8,7 +9,8 @@
 
 	const props = defineProps<{
 		animate: boolean,
-		won: boolean
+		won: boolean,
+		lost: boolean
 	}>();
 
 	type Animation = {
@@ -60,6 +62,8 @@
 		if (props.won) {
 			layerArray.push(new BalloonsRising());
 			layerArray.push(new ConfettiCannon());
+		} else if (props.lost) {
+			layerArray.push(new BloodFlow());
 		}
 		layers = new LayeredAnimation(layerArray);
 		layers.init(bg.width, bg.height);
