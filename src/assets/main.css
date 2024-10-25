@@ -1,3 +1,5 @@
+@import url('input.css');
+
 :root {
 	--shadow-color: rgb(0, 0, 0);
 	--bomb-color: rgb(255, 69, 0);
@@ -7,8 +9,8 @@
 	--dialog-border-color: rgb(128, 128, 128);
 	--title-underline-color: rgb(128, 128, 128);
 
-	--button-bg-color: rgb(12, 95, 204);
-	--button-border-color: rgb(7, 49, 104);
+	--button-bg-color: rgb(47, 115, 204);
+	--button-border-color: rgb(49, 93, 151);
 	--button-hover-color: rgb(12, 143, 204);
 	--button-text-color: rgb(255, 255, 255);
 
@@ -36,7 +38,7 @@
 	--correct-chain-color: var(--correct-color);
 	--highlight-chain-color: rgb(255, 226, 63);
 
-	--info-bg-color: rgb(68, 68, 68);
+	--info-bg-color: rgb(49, 93, 151);
 	--info-text-color: rgb(238, 238, 238);
 	--info-icon-shadow-color: var(--shadow-color);
 	--info-text-shadow-color: var(--shadow-color);
@@ -48,10 +50,10 @@
 	--history-won-color: var(--correct-color);
 	--history-loss-color: var(--bomb-color);
 
-	--guess-bg-color: rgb(238, 238, 238);
+	--guess-bg-color: rgba(255, 255, 255, 0.9);
 	--guess-text-color: rgb(0, 0, 0);
 	--guess-text-placeholder-color: rgb(128, 128, 128);
-	--keylegend-bg-color: rgb(221, 221, 221);
+	--keylegend-bg-color: rgb(180, 180, 180);
 	--keylegend-border-color: rgb(153, 153, 153);
 
 	--shadow-strength: 10px;
@@ -67,7 +69,8 @@ html {
 	font-weight: 400;
 }
 
-input {
+input,
+select {
 	font-family: "Open Sans", sans-serif;
 }
 
@@ -92,24 +95,4 @@ dd {
 	margin-right: 1em;
 	margin-left: 0.5em;
 
-}
-
-input[type="button"] {
-	background: var(--button-bg-color);
-	font-size: 2.5em;
-	padding: 0 1em;
-	border-radius: 0.25em;
-	border: 3px solid var(--button-border-color);
-	color: var(--button-text-color);
-	cursor: pointer;
-	font-weight: 600;
-
-	&:active {
-		border: 3px solid var(--button-bg-color);
-		background: var(--button-bg-color);
-	}
-
-	&:hover {
-		background-color: var(--button-hover-color);
-	}
 }

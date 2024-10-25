@@ -23,7 +23,7 @@
 		<tbody>
 			<tr v-for="entry in entries">
 				<td>{{ entry.date.toISOString().substring(0, 10) }}</td>
-				<td :class="{ won: entry.won, lost: !entry.won }">{{ entry.won ? '✓' : '✕' }}</td>
+				<td class="result"><span :class="{ won: entry.won, lost: !entry.won }">{{ entry.won ? '✓' : '✕' }}</span></td>
 				<td><i>{{ getDifficultySetting(entry.difficulty).smiley }}</i> {{ $t('difficulty.' + entry.difficulty)
 					}}</td>
 				<td>
@@ -60,14 +60,22 @@
 			background-color: var(--history-current-game-row-bg-color);
 		}
 
-		.won {
-			color: var(--history-won-color);
+		.result span {
+			color: white;
 			font-weight: bold;
-		}
+			border-radius: 1em;
+			width: 1.25em;
+			height: 1.25em;
+			line-height: 1.25em;
+			display: inline-block;
 
-		.lost {
-			color: var(--history-loss-color);
-			font-weight: bold;
+			&.won {
+				background-color: var(--history-won-color);
+			}
+
+			&.lost {
+				background-color: var(--history-loss-color);
+			}
 		}
 	}
 </style>

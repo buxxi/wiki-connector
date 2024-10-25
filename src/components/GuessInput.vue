@@ -89,10 +89,8 @@
 			<dd>{{ $t('keylegend.down.value') }}</dd>
 		</dl>
 		<form>
-			<input type="text" :class="classes" v-model="guess" @keydown.tab.prevent="performAutocomplete"
-				@keyup.up.prevent="previousAutocomplete" @keyup.down.prevent="nextAutocomplete"
-				@keyup.enter.prevent="makeGuess" @keyup="emitChange" @animationend="shakeEnd"
-				:placeholder="$t('guess.placeholder')" autofocus="true" />
+			<input type="text" :class="classes" v-model="guess" @keydown.tab.prevent="performAutocomplete" @keyup.up.prevent="previousAutocomplete" @keyup.down.prevent="nextAutocomplete" @keyup.enter.prevent="makeGuess" @keyup="emitChange"
+				@animationend="shakeEnd" :placeholder="$t('guess.placeholder')" autofocus="true" />
 			<input type="text" class="autocomplete" :value="autocomplete" disabled />
 		</form>
 	</div>
@@ -101,7 +99,7 @@
 <style>
 	@keyframes shake {
 		from {
-			padding-left: -1em;
+			padding-left: 1.5em;
 		}
 
 		to {
@@ -113,17 +111,19 @@
 		position: fixed;
 		bottom: 5em;
 		height: 5em;
-		left: 0;
-		right: 0;
+		left: 1em;
+		right: 1em;
 		z-index: 3;
 
 		input {
+			box-sizing: border-box;
 			border: 0;
 			width: 100%;
 			font-size: 3em;
-			padding: 0.25em 0.5em;
+			padding: 0.25em 1em;
 			font-weight: 700;
 			position: absolute;
+			border-radius: 1em;
 
 			&:focus {
 				outline: none;
@@ -132,6 +132,7 @@
 			&.user-guess {
 				z-index: 2;
 				background-color: transparent;
+				box-shadow: 0 0 var(--shadow-strength) var(--shadow-color);
 				color: var(--guess-text-color);
 
 				&.shake {

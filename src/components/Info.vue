@@ -49,8 +49,8 @@
 <style>
 	#restart {
 		position: fixed;
-		right: 0.5em;
-		bottom: 0.5em;
+		right: 0.25em;
+		bottom: 0.25em;
 		font-size: 2em;
 	}
 
@@ -58,6 +58,7 @@
 		position: fixed;
 		color: var(--info-text-color);
 		background-color: var(--info-bg-color);
+		box-shadow: 0 0 var(--shadow-strength) var(--shadow-color);
 		bottom: 0;
 		height: 5em;
 		left: 0;
@@ -72,6 +73,10 @@
 		dd {
 			text-shadow: 0 0 var(--info-text-shadow-strength) var(--info-text-shadow-color);
 			font-size: 2em;
+		}
+
+		input[type="button"] {
+			box-shadow: 0 0 var(--shadow-strength) var(--shadow-color);
 		}
 	}
 </style>

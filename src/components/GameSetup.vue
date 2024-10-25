@@ -51,23 +51,22 @@
 				</fieldset>
 				<fieldset>
 					<label for="type">{{ $t('gameMode.select') }}</label>
-					<select id="type" v-model="type">
-						<option value="curated">{{ $t('gameMode.curated') }}</option>
-						<option value="random">{{ $t('gameMode.random') }}</option>
-						<option value="popular">{{ $t('gameMode.popular') }}</option>
-					</select>
+					<div class="select-wrapper">
+						<select id="type" v-model="type">
+							<option value="curated">{{ $t('gameMode.curated') }}</option>
+							<option value="random">{{ $t('gameMode.random') }}</option>
+							<option value="popular">{{ $t('gameMode.popular') }}</option>
+						</select>
+					</div>
 				</fieldset>
 				<fieldset>
 					<label for="difficulty">{{ $t('difficulty.title') }}</label>
-					<input id="difficulty" type="range" list="difficulties" min="0" max="4"
-						v-model.number="difficulty" />
+					<input id="difficulty" type="range" list="difficulties" min="0" max="4" v-model.number="difficulty" />
 					<span class="difficulty-smiley"><i>{{ getDifficultySetting(difficulty).smiley }}</i></span> <span>{{
 						$t('difficulty.' + difficulty) }}</span>
 
 					<datalist id="difficulties">
-						<option
-							v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))"
-							:value="key">{{ value }}</option>
+						<option v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))" :value="key">{{ value }}</option>
 					</datalist>
 				</fieldset>
 			</section>
@@ -90,26 +89,10 @@
 
 <style>
 	.settings {
-		fieldset {
-			padding: 0.5em 0.25em;
-			border: 0;
-			display: flex;
-			align-items: center;
-
-			label {
-				font-weight: bold;
-				width: 8em;
-			}
-
-			.difficulty-smiley {
-				font-size: 2em;
-				line-height: 0.5em;
-				padding: 0 0.25em;
-			}
-
-			input~label {
-				font-weight: normal;
-			}
+		.difficulty-smiley {
+			font-size: 2em;
+			line-height: 0.5em;
+			padding: 0 0.25em;
 		}
 	}
 
