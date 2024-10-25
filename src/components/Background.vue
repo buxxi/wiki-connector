@@ -48,7 +48,7 @@
 	var layers = new LayeredAnimation([]);
 
 	var context: CanvasRenderingContext2D;
-	var lastDraw: number = new Date().getTime() - 1000;
+	var lastDraw: number = new Date().getTime();
 
 	function recreate() {
 		let bg = document.querySelector("#background")! as HTMLCanvasElement;
@@ -70,6 +70,7 @@
 	function draw() {
 		let delta = (new Date().getTime() - lastDraw) / 1000;
 		if (delta > 1 / MAX_FPS) {
+			context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 			layers.move(delta);
 			layers.draw(context);
 			lastDraw = new Date().getTime();

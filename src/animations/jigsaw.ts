@@ -22,13 +22,6 @@ class JigsawPiece {
 		this.path = this._generatePath();
 	}
 
-	draw(context: CanvasRenderingContext2D, lightness: number) {
-		context.fillStyle = `hsl(${this.hue}, 10%, ${15 + (lightness * 10)}%)`;
-		context.fill(this.path);
-		context.strokeStyle = `hsl(${this.hue}, 0%, 10%)`;
-		context.stroke(this.path);
-	}
-
 	_generatePath(): Path2D {
 		let path = new Path2D();
 		path.moveTo(this.x, this.y);
@@ -96,9 +89,41 @@ class JigsawPiece {
 	}
 }
 
+class ShineEffect {
+	shininess: number[] = [];
+	cols: number = 0;
+
+	init(rows: number, cols: number) {
+		this.shininess = Array.from({ length: rows * cols }, () => (Math.random() * 2) - 1);
+		this.cols = cols;
+	}
+
+	draw(context: CanvasRenderingContext2D, piece: JigsawPiece) {
+		let lightness = Math.abs(this.shininess[this._index(piece.y, piece.x)]);
+		context.fillStyle = `hsl(${piece.hue}, 10%, ${15 + (lightness * 10)}%)`;
+		context.fill(piece.path);
+		context.strokeStyle = `hsl(${piece.hue}, 0%, 10%)`;
+		context.stroke(piece.path);
+	}
+
+	move(delta: number, piece: JigsawPiece): boolean {
+		let s = this.shininess[this._index(piece.y, piece.x)] + (delta / 3);
+		if (s > 1) {
+			s = -1;
+		}
+		this.shininess[this._index(piece.y, piece.x)] = s;
+		return true;
+	}
+
+	_index(y: number, x: number): number {
+		return ((y / JIGSAW_PIECE_SIZE) * this.cols) + (x / JIGSAW_PIECE_SIZE);
+	}
+}
+
 class JigsawPattern {
-	pieces: JigsawPiece[][] = [];
+	pieces: JigsawPiece[] = [];
 	shininess: number[][] = [];
+	effect: ShineEffect = new ShineEffect();
 
 	init(width: number, height: number): void {
 		let rows = Math.ceil(height / JIGSAW_PIECE_SIZE);
@@ -118,29 +143,22 @@ class JigsawPattern {
 			currentRow = [];
 		}
 
-		this.pieces = result;
-		this.shininess = result.map(row => row.map(col => (Math.random() * 2) - 1));
+		this.pieces = result.flatMap(e => e);
+		this.effect.init(rows, cols);
 	}
 
 	draw(context: CanvasRenderingContext2D): void {
-		for (var y = 0; y < this.pieces.length; y++) {
-			for (var x = 0; x < this.pieces[y].length; x++) {
-				this.pieces[y][x].draw(context, Math.abs(this.shininess[y][x]));
-			}
-		}
+		this.pieces.forEach(piece => this.effect.draw(context, piece));
 	}
 
 	move(delta: number): boolean {
-		for (var y = 0; y < this.pieces.length; y++) {
-			for (var x = 0; x < this.pieces[y].length; x++) {
-				let s = this.shininess[y][x] + (delta / 3);
-				if (s > 1) {
-					s = -1;
-				}
-				this.shininess[y][x] = s;
+		var i = this.pieces.length;
+		while (i--) {
+			if (!this.effect.move(delta, this.pieces[i])) {
+				this.pieces.splice(i, 1);
 			}
 		}
-		return true;
+		return this.pieces.length > 0;
 	}
 }
 
