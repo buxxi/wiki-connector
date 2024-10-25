@@ -1,7 +1,7 @@
 import { Vector2 } from "three";
 
 const CONFETTI_COLORS = ['red', 'white', 'blue', 'orange', 'green'];
-const CONFETTI_COUNT = 3000;
+const CONFETTI_COUNT = 1000;
 
 class Confetti {
 	position: Vector2;
