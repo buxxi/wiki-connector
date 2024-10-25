@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { nextTick, onMounted, useTemplateRef } from 'vue';
+
 	export type NodeEvent = {
 		target: EventTarget | undefined;
 		x: number;
@@ -14,6 +16,8 @@
 		(e: 'click', value: { target: EventTarget, x: number, y: number }): void
 		(e: 'drop', value: { target: EventTarget, x: number, y: number }): void
 	}>();
+
+	const titleElem = useTemplateRef("titleElem");
 
 	const props = defineProps<{
 		title: string,
@@ -38,13 +42,20 @@
 	function onMouseOver(event: MouseEvent) {
 		emit("hover", { target: event.target!, x: event.clientX, y: event.clientY });
 	}
+
+	onMounted(async () => {
+		let size = 1;
+		while (size > 0.5 && titleElem.value!.scrollWidth > titleElem.value!.offsetWidth) {
+			size -= 0.05;
+			titleElem.value!.querySelector("span")!.style.fontSize = `${size}em`;
+			await nextTick();
+		}
+	});
 </script>
 
 <template>
-	<div :class="['node', style]"
-		:style="{ backgroundImage: 'url(' + thumbnail + ')', left: `${position.x}px`, top: `${position.y}px` }"
-		draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
-		<h3 :title="title">{{ title }}</h3>
+	<div :class="['node', style]" :style="{ backgroundImage: 'url(' + thumbnail + ')', left: `${position.x}px`, top: `${position.y}px` }" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
+		<h3 :title="title" ref="titleElem"><span>{{ title }}</span></h3>
 		<p :title="$t('article.connections', { linkCount: linkCount })">{{ linkCount }}</p>
 	</div>
 </template>
@@ -106,6 +117,10 @@
 
 
 		h3 {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 1.4em;
 			font-size: 1em;
 			margin-top: 5em;
 			margin-bottom: 0;
@@ -116,6 +131,10 @@
 			text-wrap: nowrap;
 			overflow: hidden;
 			box-shadow: 0 0 var(--node-inner-shadow-strength) var(--normal-node-inner-shadow-color);
+
+			span {
+				padding: 0 1em;
+			}
 		}
 
 		p {
