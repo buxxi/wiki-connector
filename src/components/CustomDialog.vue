@@ -4,6 +4,7 @@
 	const props = defineProps<{
 		title: string;
 		closeable?: boolean;
+		locked?: boolean;
 	}>();
 
 	let open = ref<boolean>(true);
@@ -15,7 +16,7 @@
 </script>
 
 <template>
-	<dialog :open="open">
+	<dialog :open="open" :class="locked ? 'locked' : undefined">
 		<a @click="closeModal" v-if="closeable" class="close">✕</a>
 		<h1><i>{{ title }}</i></h1>
 		<form>
@@ -95,6 +96,10 @@
 		.buttons {
 			display: flex;
 			justify-content: space-around;
+		}
+
+		&.locked {
+			animation: none;
 		}
 	}
 </style>

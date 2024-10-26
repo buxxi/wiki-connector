@@ -78,5 +78,8 @@ export default {
 			name: '↓',
 			value: 'Visa nästa'
 		}
+	},
+	animate: {
+		title: 'Animationer'
 	}
 }

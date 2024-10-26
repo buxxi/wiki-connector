@@ -4,6 +4,7 @@
 	import { ArticleState } from "@/domain/article";
 	import { Vector2 } from 'three';
 	import Chain from "./Chain.vue";
+	import DrawLoop from "@/util/drawloop";
 
 	export type GraphNode = {
 		id: () => number;
@@ -30,8 +31,7 @@
 	const FORCE_STRENGHT = 150;
 
 	const graph = ref<DomGraph | undefined>(undefined);
-
-	var lastDraw: (number | undefined) = undefined;
+	const drawLoop = new DrawLoop(draw, MAX_FPS);
 
 	class DomGraphLine {
 		id: string;
@@ -261,33 +261,29 @@
 		graph.value!.resize();
 	}
 
-	function drawLoop() {
-		if (lastDraw != undefined) {
-			let before = lastDraw;
-			let after = new Date().getTime();
-			let delta = (after - before) / 1000;
-			if (delta > 1 / MAX_FPS) {
-				lastDraw = after;
-				graph.value?.reposition(delta);
+	function draw(delta: number, animate: boolean) {
+		if (animate) {
+			graph.value?.reposition(delta);
+		} else {
+			for (var i = 0; i < 20; i++) {
+				graph.value?.reposition(0.5);
 			}
-			window.requestAnimationFrame(drawLoop);
 		}
 	}
 
 	onMounted(() => {
 		graph.value = new DomGraph();
 		window.addEventListener("resize", resized);
-		lastDraw = new Date().getTime();
-		drawLoop();
+		drawLoop.start(false);
 	});
 
 	onUnmounted(() => {
 		window.removeEventListener("resize", resized);
-		lastDraw = undefined;
 	});
 
 	watch(props.nodes, () => {
 		graph.value!.recreateNodesAndLines();
+		drawLoop.forceDraw();
 	});
 
 	function dragNode(node: DOMGraphNode, e: NodeEvent): void {
@@ -302,16 +298,20 @@
 		graph.value!.highlightNode = e.target != undefined ? node : undefined;
 	}
 
+	function animationStart() {
+		drawLoop.start(true);
+	}
+
+	function animationEnd() {
+		drawLoop.stop();
+	}
+
 </script>
 
 <template>
-	<div id="graph" @dragover="onDragOver">
-		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()"
-			:toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)"
-			v-for="line in graph?.lines" />
-		<Node :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()"
-			:linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)"
-			@drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes" />
+	<div id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd">
+		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines" />
+		<Node :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes" />
 	</div>
 </template>
 

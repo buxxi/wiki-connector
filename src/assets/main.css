@@ -11,6 +11,7 @@
 
 	--button-bg-color: rgb(47, 115, 204);
 	--button-border-color: rgb(49, 93, 151);
+	--button-disable-color: rgb(128, 128, 128);
 	--button-hover-color: rgb(12, 143, 204);
 	--button-text-color: rgb(255, 255, 255);
 
@@ -95,4 +96,18 @@ dd {
 	margin-right: 1em;
 	margin-left: 0.5em;
 
+}
+
+main:not(.animated) * {
+	animation: none !important;
+}
+
+@keyframes nothing {
+	from {
+		transform: scale(1);
+	}
+
+	to {
+		transform: scale(1);
+	}
 }

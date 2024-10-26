@@ -3,12 +3,12 @@
 	import BloodFlow from "@/animations/blood";
 	import ConfettiCannon from "@/animations/confetti";
 	import JigsawPattern from "@/animations/jigsaw";
+	import DrawLoop from "@/util/drawloop";
 	import { onMounted, watch } from "vue";
 
 	const MAX_FPS = 30;
 
 	const props = defineProps<{
-		animate: boolean,
 		won: boolean,
 		lost: boolean
 	}>();
@@ -50,10 +50,11 @@
 	var layers = new LayeredAnimation([]);
 
 	var context: CanvasRenderingContext2D;
-	var lastDraw: number = new Date().getTime();
+	var drawLoop = new DrawLoop(draw, MAX_FPS);
 
 	function recreate() {
 		let bg = document.querySelector("#background")! as HTMLCanvasElement;
+
 		bg.width = window.innerWidth;
 		bg.height = window.innerHeight;
 		context = bg.getContext("2d")!;
@@ -67,25 +68,25 @@
 		}
 		layers = new LayeredAnimation(layerArray);
 		layers.init(bg.width, bg.height);
-
-		draw();
 	}
 
-	function draw() {
-		let delta = (new Date().getTime() - lastDraw) / 1000;
-		if (delta > 1 / MAX_FPS) {
-			context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-			layers.move(delta);
-			layers.draw(context);
-			lastDraw = new Date().getTime();
-		}
-		if (props.animate) {
-			window.requestAnimationFrame(draw);
-		}
+	function draw(delta: number, animate: boolean) {
+		context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+		layers.move(delta);
+		layers.draw(context);
+	}
+
+	function animationStart() {
+		drawLoop.start(true);
+	}
+
+	function animationEnd() {
+		drawLoop.stop();
 	}
 
 	onMounted(() => {
 		recreate();
+		drawLoop.start(false);
 		window.addEventListener("resize", recreate);
 	});
 
@@ -97,7 +98,7 @@
 </script>
 
 <template>
-	<canvas id="background"></canvas>
+	<canvas id="background" @animationstart="animationStart" @:animationcancel="animationEnd"></canvas>
 </template>
 
 <style>
@@ -109,5 +110,6 @@
 		bottom: 0;
 		width: 100%;
 		height: 100%;
+		animation: 0.5s ease normal nothing infinite;
 	}
 </style>

@@ -78,5 +78,8 @@ export default {
 			name: '↓',
 			value: 'Show next'
 		}
+	},
+	animate: {
+		title: 'Animations'
 	}
 }

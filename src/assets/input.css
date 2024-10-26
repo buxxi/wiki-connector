@@ -14,10 +14,6 @@ fieldset {
 		margin-right: 2em;
 		border-bottom: 3px solid transparent;
 	}
-
-	input:checked+label {
-		border-bottom: 3px solid var(--button-bg-color);
-	}
 }
 
 .select-wrapper {
@@ -50,6 +46,40 @@ fieldset {
 
 input[type="radio"] {
 	display: none;
+
+	&:checked+label {
+		border-bottom: 3px solid var(--button-bg-color);
+	}
+}
+
+input[type="checkbox"] {
+	display: none;
+
+	&+label {
+		display: flex;
+		border: 1px solid var(--button-border-color);
+		border-radius: 1em;
+		width: 2.5em;
+		height: 1.5em;
+		padding: 0.0em 0.25em;
+		align-items: center;
+		justify-content: left;
+		background-color: var(--button-disable-color);
+
+		&:after {
+			display: inline-block;
+			content: " ";
+			width: 1em;
+			height: 1em;
+			border-radius: 1em;
+			background-color: var(--button-text-color);
+		}
+	}
+
+	&:checked+label {
+		justify-content: right;
+		background-color: var(--button-bg-color);
+	}
 }
 
 input[type="range"] {

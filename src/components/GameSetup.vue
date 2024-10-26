@@ -5,15 +5,18 @@
 	import { Difficulty, getDifficultySetting } from '@/domain/difficulty.ts';
 	import { useI18n } from 'vue-i18n';
 	import { onMounted } from 'vue';
+	import SettingsService from '@/services/settings.ts';
 
-
+	const settings = new SettingsService();
 	const emit = defineEmits<{
 		(e: 'started', game: Game, result: Result): void
+		(e: 'animateChanged', value: boolean): void
 	}>();
 
 	const language = defineModel<string>('language', { default: 'en' });
 	const type = defineModel<string>('type', { default: 'curated' });
 	const difficulty = defineModel<number>('difficulty', { default: 2 });
+	const animate = defineModel<boolean>('animate', { default: false });
 	const i18n = useI18n();
 
 	function languageChanged() {
@@ -22,6 +25,7 @@
 
 	onMounted(() => {
 		language.value = i18n.locale.value;
+		animate.value = settings.read().animate;
 	});
 
 	async function startGame() {
@@ -37,7 +41,7 @@
 
 
 <template>
-	<CustomDialog :title="$t('title')">
+	<CustomDialog :title="$t('title')" :locked="true">
 		<template v-slot:content>
 			<section class="settings">
 				<h2>{{ $t('settings') }}</h2>
@@ -68,6 +72,11 @@
 					<datalist id="difficulties">
 						<option v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))" :value="key">{{ value }}</option>
 					</datalist>
+				</fieldset>
+				<fieldset>
+					<label for="animate">{{ $t('animate.title') }}</label>
+					<input id="animate" type="checkbox" v-model="animate" @change="emit('animateChanged', animate)" />
+					<label for="animate"></label>
 				</fieldset>
 			</section>
 			<section class="rules">
