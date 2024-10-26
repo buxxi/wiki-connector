@@ -92,6 +92,7 @@
 
 	watch(props, () => {
 		recreate();
+		drawLoop.forceDraw();
 	});
 
 
