@@ -110,6 +110,10 @@ class Game {
 		this.resultCallback = callback;
 	}
 
+	guessingEnabled() {
+		return this.clock.ended == undefined;
+	}
+
 	async _loadArticle(id: number, title: string, state: ArticleState): Promise<LoadResult> {
 		let [thumbnail, links] = await Promise.all([this.wikipedia.getThumbnail(id), this.wikipedia.getAllLinks(id)]);
 

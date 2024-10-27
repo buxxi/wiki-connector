@@ -32,7 +32,6 @@
 	});
 
 	const seconds = ref<number>(0);
-	const timer = ref();
 
 	function gameStarted(newGame: Game, newResult: Result) {
 		game.value = newGame;
@@ -94,8 +93,7 @@
 <template>
 	<div>
 		<Graph :nodes="nodes" v-if="nodes.length > 0" />
-		<GuessInput :suggestions="suggestions" @guess="guessed" @type="typed" ref="input" />
-		<Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs"
-			:time="seconds" @restart="emit('restart')" />
+		<GuessInput :suggestions="suggestions" @guess="guessed" @type="typed" ref="input" v-if="game?.guessingEnabled()" />
+		<Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs" :time="seconds" @restart="emit('restart')" />
 	</div>
 </template>
