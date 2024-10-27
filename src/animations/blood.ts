@@ -56,7 +56,6 @@ class BloodFlow {
 				point.speed -= delta * SPEED_CHANGE;
 			}
 			if (point.speed - point.targetSpeed < SPEED_CHANGE) {
-				console.log("change speed");
 				point.targetSpeed = this._generateSpeed();
 			}
 		}

@@ -21,7 +21,8 @@
 	}
 
 	const props = defineProps<{
-		nodes: GraphNode[]
+		nodes: GraphNode[],
+		showLinks: boolean
 	}>();
 
 	const NODE_FORCE_FIELD_SIZE = 200;
@@ -85,6 +86,10 @@
 			this.drawPosition = position;
 			this.physicsPosition = position;
 			this.force = force;
+		}
+
+		id() {
+			return this.node.id();
 		}
 
 		title() {
@@ -311,7 +316,8 @@
 <template>
 	<div id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd">
 		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines" />
-		<Node :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)" v-for="node in graph?.nodes" />
+		<Node :id="node.id()" :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)"
+			:showLink="showLinks" v-for="node in graph?.nodes" />
 	</div>
 </template>
 

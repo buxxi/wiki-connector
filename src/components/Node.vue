@@ -20,11 +20,13 @@
 	const titleElem = useTemplateRef("titleElem");
 
 	const props = defineProps<{
+		id: number,
 		title: string,
 		thumbnail: string,
 		linkCount: number,
 		style: string,
-		position: Position
+		position: Position,
+		showLink: boolean
 	}>();
 
 	function onClick(event: MouseEvent) {
@@ -44,6 +46,9 @@
 	}
 
 	onMounted(async () => {
+		if (props.showLink) {
+			return;
+		}
 		let size = 1;
 		while (size > 0.5 && titleElem.value!.scrollWidth > titleElem.value!.offsetWidth) {
 			size -= 0.05;
@@ -55,7 +60,10 @@
 
 <template>
 	<div :class="['node', style]" :style="{ backgroundImage: 'url(' + thumbnail + ')', left: `${position.x}px`, top: `${position.y}px` }" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
-		<h3 :title="title" ref="titleElem"><span>{{ title }}</span></h3>
+		<h3 :title="title" ref="titleElem">
+			<span v-if="!showLink">{{ title }}</span>
+			<a v-if="showLink" :href="`https://en.wikipedia.org/?curid=${id}`">{{ title }}</a>
+		</h3>
 		<p :title="$t('article.connections', { linkCount: linkCount })">{{ linkCount }}</p>
 	</div>
 </template>
@@ -86,6 +94,7 @@
 		background-position: center center;
 		box-shadow: 0 0 var(--node-outer-shadow-strength) var(--normal-node-outer-shadow-color), inset 0 0 var(--node-inner-shadow-strength) var(--normal-node-inner-shadow-color);
 		animation: 0.5s ease normal zoom;
+		cursor: move;
 
 		&.start {
 			border-color: var(--start-node-color);
@@ -134,6 +143,20 @@
 
 			span {
 				padding: 0 1em;
+			}
+
+			a {
+				color: var(--node-link-color);
+				text-decoration: none;
+				padding: 0 1em;
+
+				&:before {
+					display: inline-block;
+					content: "⎋";
+					padding-left: 0.25em;
+					transform: scaleX(-1);
+					font-weight: normal;
+				}
 			}
 		}
 

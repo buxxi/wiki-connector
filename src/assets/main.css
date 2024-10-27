@@ -18,6 +18,7 @@
 	/* In case on transparent background images */
 	--node-bg-color: rgb(255, 255, 255);
 
+	--node-link-color: rgb(0, 0, 0);
 
 	--normal-node-color: rgb(255, 255, 255);
 	--normal-node-outer-shadow-color: var(--shadow-color);

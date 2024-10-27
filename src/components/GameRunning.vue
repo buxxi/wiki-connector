@@ -92,7 +92,7 @@
 
 <template>
 	<div>
-		<Graph :nodes="nodes" v-if="nodes.length > 0" />
+		<Graph :nodes="nodes" v-if="nodes.length > 0" :showLinks="!game?.guessingEnabled()" />
 		<GuessInput :suggestions="suggestions" @guess="guessed" @type="typed" ref="input" v-if="game?.guessingEnabled()" />
 		<Info :start="counts.start" :found="counts.found" :possibleLinks="counts.links" :bombs="counts.bombs" :time="seconds" @restart="emit('restart')" />
 	</div>
