@@ -1,6 +1,32 @@
 export const MAX_FPS = 30;
+export const NODE_FORCE_FIELD_SIZE = 200;
+export const BORDER_FORCE_FIELD_SIZE = 64;
+export const MOVE_SLOW_RATIO = 1.25;
+export const NODE_FORCE_STRENGTH = 150;
+export const BALLOON_COUNT = 30;
+export const BALLOON_MIN_SIZE = 25;
+export const BALLOON_MAX_SIZE = 75;
+export const BALLOON_MIN_SPEED = 100;
+export const BLOOD_POINT_SPACING = 50;
+export const BLOOD_RANDOM_Y_OFFSET = 100;
+export const BLOOD_MINIMUM_SPEED = 100;
+export const BLOOD_MAXIMUM_SPEED = 200;
+export const BLOOD_SPEED_CHANGE = 2;
+export const JIGSAW_PIECE_SIZE = 50;
+export const JIGSAW_HOLE_SIZE = 10;
+export const CONFETTI_COLORS = ['red', 'white', 'blue', 'orange', 'green'];
+export const CONFETTI_COUNT = 1000;
+export const CONFETTI_MAX_ROTATION_SPEED = 720;
+export const CONFETTI_MIN_ROTATION_SPEED = 360;
+export const CONFETTI_MAX_SPEED = 150;
+export const CONFETTI_MIN_SPEED = 50;
+export const CONFETTI_GRAVITY = 10;
+export const CONFETTI_MAX_LENGTH = 20;
+export const CONFETTI_MIN_LENGTH = 5;
+export const CONFETTI_MAX_THICKNESS = 8;
+export const CONFETTI_MIN_THICKNESS = 4;
 
-export default {
+export const WIKI_ARTICLES = {
 	curated: {
 		en: [
 			"Bamse", "Snoopy", "Asterix (character)", "Goku", "Tintin (character)", //Cartoons

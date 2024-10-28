@@ -1,7 +1,4 @@
-const BALLOON_COUNT = 30;
-const BALLOON_MIN_SIZE = 25;
-const BALLOON_MAX_SIZE = 75;
-const BALLOON_MIN_SPEED = 100;
+import { BALLOON_COUNT, BALLOON_MAX_SIZE, BALLOON_MIN_SIZE, BALLOON_MIN_SPEED } from "@/config";
 
 class Balloon {
 	size: number;

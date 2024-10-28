@@ -3,7 +3,7 @@ import { unique, findAll, find, linksTo, type NodeId } from "../util/graph";
 import Article, { ArticleState } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { alphaNumericOnly } from "@/util/text";
-import config from '@/config.ts';
+import { WIKI_ARTICLES } from '@/config.ts';
 import { getDifficultySetting, type Difficulty } from "@/domain/difficulty";
 import Autocompleter from "@/util/autocomplete";
 import { Clock } from "@/util/clock";
@@ -153,10 +153,10 @@ class Game {
 			case GameMode.Curated:
 				switch (this.wikipedia!.language) {
 					case "sv":
-						pages = await this.wikipedia.getPages(config.curated.sv.slice(0));
+						pages = await this.wikipedia.getPages(WIKI_ARTICLES.curated.sv.slice(0));
 						break;
 					case "en":
-						pages = await this.wikipedia.getPages(config.curated.en.slice(0));
+						pages = await this.wikipedia.getPages(WIKI_ARTICLES.curated.en.slice(0));
 						break;
 				}
 				break;

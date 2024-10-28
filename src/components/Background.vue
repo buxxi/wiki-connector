@@ -5,7 +5,7 @@
 	import JigsawPattern from "@/animations/jigsaw";
 	import { MAX_FPS } from "@/config";
 	import DrawLoop from "@/util/drawloop";
-	import { onMounted, watch, ref } from "vue";
+	import { onMounted, ref, useTemplateRef, watch } from "vue";
 
 	const props = defineProps<{
 		won: boolean,
@@ -92,10 +92,13 @@
 	}
 
 	const drawLoop = ref<AnimationLoop>(new AnimationLoop());
-	const background = ref<HTMLCanvasElement>();
+	const background = useTemplateRef("background");
 
 	function recreate() {
-		let bg = background.value!;
+		let bg = background.value;
+		if (bg == undefined) {
+			return;
+		}
 		bg.width = window.innerWidth;
 		bg.height = window.innerHeight;
 		let context = bg.getContext("2d")!;

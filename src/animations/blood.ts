@@ -1,8 +1,4 @@
-const POINT_SPACING = 50;
-const RANDOM_Y_OFFSET = 100;
-const MINIMUM_SPEED = 100;
-const MAXIMUM_SPEED = 200;
-const SPEED_CHANGE = 2;
+import { BLOOD_MAXIMUM_SPEED, BLOOD_MINIMUM_SPEED, BLOOD_POINT_SPACING, BLOOD_RANDOM_Y_OFFSET, BLOOD_SPEED_CHANGE } from "@/config";
 
 class BloodPoint {
 	x: number;
@@ -35,7 +31,7 @@ class BloodFlow {
 
 		for (let point of this.points) {
 			//TODO: this could be smoother
-			context.bezierCurveTo(point.x - (POINT_SPACING / 2), point.y - (POINT_SPACING / 2), point.x - (POINT_SPACING / 2), point.y + (POINT_SPACING / 2), point.x, point.y);
+			context.bezierCurveTo(point.x - (BLOOD_POINT_SPACING / 2), point.y - (BLOOD_POINT_SPACING / 2), point.x - (BLOOD_POINT_SPACING / 2), point.y + (BLOOD_POINT_SPACING / 2), point.x, point.y);
 		}
 
 		context.lineTo(this.width, 0);
@@ -51,11 +47,11 @@ class BloodFlow {
 			}
 			point.y += delta * point.speed;
 			if (point.speed < point.targetSpeed) {
-				point.speed += delta * SPEED_CHANGE;
+				point.speed += delta * BLOOD_SPEED_CHANGE;
 			} else {
-				point.speed -= delta * SPEED_CHANGE;
+				point.speed -= delta * BLOOD_SPEED_CHANGE;
 			}
-			if (point.speed - point.targetSpeed < SPEED_CHANGE) {
+			if (point.speed - point.targetSpeed < BLOOD_SPEED_CHANGE) {
 				point.targetSpeed = this._generateSpeed();
 			}
 		}
@@ -63,12 +59,12 @@ class BloodFlow {
 	}
 
 	_generatePoints(): BloodPoint[] {
-		let count = Math.ceil(this.width / POINT_SPACING) + 1;
-		return Array.from({ length: count }).map((_, i) => new BloodPoint(i * POINT_SPACING, - Math.random() * RANDOM_Y_OFFSET, this._generateSpeed()));
+		let count = Math.ceil(this.width / BLOOD_POINT_SPACING) + 1;
+		return Array.from({ length: count }).map((_, i) => new BloodPoint(i * BLOOD_POINT_SPACING, - Math.random() * BLOOD_RANDOM_Y_OFFSET, this._generateSpeed()));
 	}
 
 	_generateSpeed(): number {
-		return MINIMUM_SPEED + (Math.random() * (MAXIMUM_SPEED - MINIMUM_SPEED));
+		return BLOOD_MINIMUM_SPEED + (Math.random() * (BLOOD_MAXIMUM_SPEED - BLOOD_MINIMUM_SPEED));
 	}
 }
 

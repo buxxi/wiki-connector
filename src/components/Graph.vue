@@ -5,7 +5,7 @@
 	import { Vector2 } from 'three';
 	import Chain from "./Chain.vue";
 	import DrawLoop from "@/util/drawloop";
-	import { MAX_FPS } from "@/config";
+	import { BORDER_FORCE_FIELD_SIZE, NODE_FORCE_STRENGTH, MAX_FPS, MOVE_SLOW_RATIO, NODE_FORCE_FIELD_SIZE } from "@/config";
 
 	export type GraphNode = {
 		id: () => number;
@@ -25,11 +25,6 @@
 		nodes: GraphNode[],
 		showLinks: boolean
 	}>();
-
-	const NODE_FORCE_FIELD_SIZE = 200;
-	const BORDER_FORCE_FIELD_SIZE = 64;
-	const MOVE_SLOW_RATIO = 1.25;
-	const FORCE_STRENGHT = 150;
 
 	const graph = ref<DomGraph | undefined>(undefined);
 	const drawLoop = new DrawLoop(draw, MAX_FPS);
@@ -250,7 +245,7 @@
 						force = force.add(diffForce.normalize());
 					}
 				}
-				force = force.normalize().multiplyScalar(FORCE_STRENGHT).multiplyScalar(delta);
+				force = force.normalize().multiplyScalar(NODE_FORCE_STRENGTH).multiplyScalar(delta);
 				node.force = node.force.add(force);
 				if (node.force.length() > 0.1) {
 					anyForce = true;

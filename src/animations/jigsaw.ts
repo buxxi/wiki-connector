@@ -1,5 +1,4 @@
-const JIGSAW_PIECE_SIZE = 50;
-const JIGSAW_HOLE_SIZE = 10;
+import { JIGSAW_HOLE_SIZE, JIGSAW_PIECE_SIZE } from "@/config";
 
 class JigsawPiece {
 	x: number;

@@ -1,7 +1,5 @@
+import { CONFETTI_COLORS, CONFETTI_COUNT, CONFETTI_GRAVITY, CONFETTI_MAX_LENGTH, CONFETTI_MAX_ROTATION_SPEED, CONFETTI_MAX_SPEED, CONFETTI_MAX_THICKNESS, CONFETTI_MIN_LENGTH, CONFETTI_MIN_ROTATION_SPEED, CONFETTI_MIN_SPEED, CONFETTI_MIN_THICKNESS } from "@/config";
 import { Vector2 } from "three";
-
-const CONFETTI_COLORS = ['red', 'white', 'blue', 'orange', 'green'];
-const CONFETTI_COUNT = 1000;
 
 class Confetti {
 	position: Vector2;
@@ -18,12 +16,12 @@ class Confetti {
 		this.position = position;
 		this.rotation = 0;
 		this.rotationDirection = Math.random() > 0.5 ? 1 : -1;
-		this.rotationSpeed = (Math.random() * 360) + 360;
-		let speed = (Math.random() * 100) + 50;
+		this.rotationSpeed = CONFETTI_MIN_ROTATION_SPEED + (Math.random() * (CONFETTI_MAX_ROTATION_SPEED - CONFETTI_MIN_ROTATION_SPEED));
+		let speed = CONFETTI_MIN_SPEED + (Math.random() * (CONFETTI_MAX_SPEED - CONFETTI_MIN_SPEED));
 		this.force = direction.multiplyScalar(speed);
 		this.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
-		this.length = 5 + (Math.random() * 15);
-		this.thickness = 4 + (Math.random() * 4);
+		this.length = CONFETTI_MIN_LENGTH + (Math.random() * (CONFETTI_MAX_LENGTH - CONFETTI_MIN_LENGTH));
+		this.thickness = CONFETTI_MAX_THICKNESS + (Math.random() * (CONFETTI_MAX_THICKNESS - CONFETTI_MIN_THICKNESS));
 		this.destroyWhenBelowHeight = destroyWhenBelowHeight;
 	}
 
@@ -41,7 +39,7 @@ class Confetti {
 		this.rotation = this.rotation + (delta * this.rotationSpeed * this.rotationDirection);
 		let deltaForce = this.force.clone().multiplyScalar(delta);
 		this.position = this.position.clone().add(deltaForce);
-		this.force = this.force.clone().sub(deltaForce.divideScalar(5)).add(new Vector2(0, 10));
+		this.force = this.force.clone().sub(deltaForce.divideScalar(5)).add(new Vector2(0, CONFETTI_GRAVITY));
 		return this.position.y < this.destroyWhenBelowHeight;
 	}
 }

@@ -1,4 +1,4 @@
-import config from "@/config";
+import { WIKI_ARTICLES } from "@/config";
 
 const RANDOM_URL = 'https://{language}.wikipedia.org/w/api.php?action=query&list=random&format=json&rnnamespace=0&rnlimit={count}&origin=*';
 const POPULAR_URL = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/top/{language}.wikipedia/all-access/{year}/{month}/{day}';
@@ -203,13 +203,13 @@ class WikipediaService {
 
 	_filterPages(article: WikipediaArticle): boolean {
 		let page = article.title;
-		if (config.blacklist.articles.includes(page)) {
+		if (WIKI_ARTICLES.blacklist.articles.includes(page)) {
 			return false;
 		}
 		let m = /(.*?):.*/;
 		let r = m.exec(page);
 		if (r != null) {
-			if (config.blacklist.prefix.includes(r[1])) {
+			if (WIKI_ARTICLES.blacklist.prefix.includes(r[1])) {
 				return false;
 			} else {
 				// nothing for now
