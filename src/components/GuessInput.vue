@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { computed, reactive, ref, watch } from 'vue';
+	import { computed, ref, watch } from 'vue';
 
 	const props = defineProps<{
 		suggestions: string[]
@@ -13,7 +13,7 @@
 		invalidInput: shake
 	});
 	const guess = defineModel<string>('guess');
-	const index = reactive({ value: 0 });
+	const index = ref<number>(0);
 	const classes = ref<string[]>(['user-guess']);
 
 	const autocomplete = computed(() => {
