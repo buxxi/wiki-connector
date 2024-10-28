@@ -109,7 +109,7 @@ class ShineEffect {
 	move(delta: number, piece: JigsawPiece): boolean {
 		let s = this.shininess[this._index(piece.y, piece.x)] + (delta / 3);
 		if (s > 1) {
-			s = -1;
+			s = -1 + (s % 1);
 		}
 		this.shininess[this._index(piece.y, piece.x)] = s;
 		return true;
