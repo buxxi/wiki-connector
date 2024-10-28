@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import { LayeredAnimation, type Animation } from "@/animations/animation";
 	import BalloonsRising from "@/animations/balloons";
 	import BloodFlow from "@/animations/blood";
 	import ConfettiCannon from "@/animations/confetti";
@@ -11,40 +12,6 @@
 		won: boolean,
 		lost: boolean
 	}>();
-
-	type Animation = {
-		init(width: number, height: number): void;
-
-		draw(context: CanvasRenderingContext2D): void;
-
-		move(delta: number): boolean;
-	}
-
-	class LayeredAnimation {
-		layers: Animation[];
-
-		constructor(layers: Animation[]) {
-			this.layers = layers;
-		}
-
-		init(width: number, height: number): void {
-			this.layers.forEach(layer => layer.init(width, height));
-		}
-
-		draw(context: CanvasRenderingContext2D): void {
-			this.layers.forEach(layer => layer.draw(context));
-		}
-
-		move(delta: number): boolean {
-			var i = this.layers.length;
-			while (i--) {
-				if (!this.layers[i].move(delta)) {
-					this.layers.splice(i, 1);
-				}
-			}
-			return this.layers.length > 0;
-		}
-	}
 
 	class AnimationLoop {
 		layers: Animation;

@@ -1,4 +1,5 @@
 import { JIGSAW_HOLE_SIZE, JIGSAW_PIECE_SIZE } from "@/config";
+import type { Animation } from "./animation";
 
 class JigsawPiece {
 	x: number;
@@ -119,7 +120,7 @@ class ShineEffect {
 	}
 }
 
-class JigsawPattern {
+class JigsawPattern implements Animation {
 	pieces: JigsawPiece[] = [];
 	shininess: number[][] = [];
 	effect: ShineEffect = new ShineEffect();

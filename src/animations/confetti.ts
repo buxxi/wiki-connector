@@ -1,5 +1,6 @@
 import { CONFETTI_COLORS, CONFETTI_COUNT, CONFETTI_GRAVITY, CONFETTI_MAX_LENGTH, CONFETTI_MAX_ROTATION_SPEED, CONFETTI_MAX_SPEED, CONFETTI_MAX_THICKNESS, CONFETTI_MIN_LENGTH, CONFETTI_MIN_ROTATION_SPEED, CONFETTI_MIN_SPEED, CONFETTI_MIN_THICKNESS } from "@/config";
 import { Vector2 } from "three";
+import type { Animation } from "./animation";
 
 class Confetti {
 	position: Vector2;
@@ -44,7 +45,7 @@ class Confetti {
 	}
 }
 
-class ConfettiCannon {
+class ConfettiCannon implements Animation {
 	confetti: Confetti[] = [];
 
 	init(width: number, height: number): void {

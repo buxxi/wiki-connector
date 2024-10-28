@@ -1,4 +1,5 @@
 import { BLOOD_MAXIMUM_SPEED, BLOOD_MINIMUM_SPEED, BLOOD_POINT_SPACING, BLOOD_RANDOM_Y_OFFSET, BLOOD_SPEED_CHANGE } from "@/config";
+import type { Animation } from "./animation";
 
 class BloodPoint {
 	x: number;
@@ -14,7 +15,7 @@ class BloodPoint {
 	}
 }
 
-class BloodFlow {
+class BloodFlow implements Animation {
 	width: number = 0;
 	height: number = 0;
 	points: BloodPoint[] = [];

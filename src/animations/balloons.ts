@@ -1,4 +1,5 @@
 import { BALLOON_COUNT, BALLOON_MAX_SIZE, BALLOON_MIN_SIZE, BALLOON_MIN_SPEED } from "@/config";
+import type { Animation } from "./animation";
 
 class Balloon {
 	size: number;
@@ -51,7 +52,7 @@ class Balloon {
 	}
 }
 
-class BalloonsRising {
+class BalloonsRising implements Animation {
 	balloons: Balloon[] = [];
 
 	init(width: number, height: number): void {
