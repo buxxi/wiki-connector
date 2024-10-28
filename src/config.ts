@@ -1,3 +1,5 @@
+export const MAX_FPS = 30;
+
 export default {
 	curated: {
 		en: [

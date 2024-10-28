@@ -3,10 +3,9 @@
 	import BloodFlow from "@/animations/blood";
 	import ConfettiCannon from "@/animations/confetti";
 	import JigsawPattern from "@/animations/jigsaw";
+	import { MAX_FPS } from "@/config";
 	import DrawLoop from "@/util/drawloop";
-	import { onMounted, watch } from "vue";
-
-	const MAX_FPS = 30;
+	import { onMounted, watch, ref } from "vue";
 
 	const props = defineProps<{
 		won: boolean,
@@ -47,59 +46,87 @@
 		}
 	}
 
-	var layers = new LayeredAnimation([]);
+	class AnimationLoop {
+		layers: Animation;
+		drawLoop: DrawLoop;
+		context: (CanvasRenderingContext2D | undefined) = undefined;
 
-	var context: CanvasRenderingContext2D;
-	var drawLoop = new DrawLoop(draw, MAX_FPS);
-
-	function recreate() {
-		let bg = document.querySelector("#background")! as HTMLCanvasElement;
-
-		bg.width = window.innerWidth;
-		bg.height = window.innerHeight;
-		context = bg.getContext("2d")!;
-
-		let layerArray: Animation[] = [new JigsawPattern()];
-		if (props.won) {
-			layerArray.push(new BalloonsRising());
-			layerArray.push(new ConfettiCannon());
-		} else if (props.lost) {
-			layerArray.push(new BloodFlow());
+		constructor() {
+			this.layers = new LayeredAnimation([]);
+			this.drawLoop = new DrawLoop((delta, animate) => this.draw(delta, animate), MAX_FPS);
 		}
-		layers = new LayeredAnimation(layerArray);
-		layers.init(bg.width, bg.height);
+
+		init(width: number, height: number, context: CanvasRenderingContext2D): void {
+			let layerArray: Animation[] = [new JigsawPattern()];
+			if (props.won) {
+				layerArray.push(new BalloonsRising());
+				layerArray.push(new ConfettiCannon());
+			} else if (props.lost) {
+				layerArray.push(new BloodFlow());
+			}
+			this.context = context;
+			this.layers = new LayeredAnimation(layerArray);
+			this.layers.init(width, height);
+		}
+
+		draw(delta: number, animate: boolean): void {
+			if (this.context == undefined) {
+				return;
+			}
+			this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+			this.layers.move(delta);
+			this.layers.draw(this.context);
+		}
+
+		start(animate: boolean): void {
+			this.drawLoop.start(animate);
+		}
+
+		stop(): void {
+			this.drawLoop.stop();
+		}
+
+		forceDraw(): void {
+			this.drawLoop.forceDraw();
+		}
 	}
 
-	function draw(delta: number, animate: boolean) {
-		context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-		layers.move(delta);
-		layers.draw(context);
+	const drawLoop = ref<AnimationLoop>(new AnimationLoop());
+	const background = ref<HTMLCanvasElement>();
+
+	function recreate() {
+		let bg = background.value!;
+		bg.width = window.innerWidth;
+		bg.height = window.innerHeight;
+		let context = bg.getContext("2d")!;
+		drawLoop.value.init(bg.width, bg.height, context);
+
 	}
 
 	function animationStart() {
-		drawLoop.start(true);
+		drawLoop.value.start(true);
 	}
 
 	function animationEnd() {
-		drawLoop.stop();
+		drawLoop.value.stop();
 	}
 
 	onMounted(() => {
 		recreate();
-		drawLoop.start(false);
+		drawLoop.value.start(false);
 		window.addEventListener("resize", recreate);
 	});
 
 	watch(props, () => {
 		recreate();
-		drawLoop.forceDraw();
+		drawLoop.value.forceDraw();
 	});
 
 
 </script>
 
 <template>
-	<canvas id="background" @animationstart="animationStart" @:animationcancel="animationEnd"></canvas>
+	<canvas id="background" ref="background" @animationstart="animationStart" @:animationcancel="animationEnd"></canvas>
 </template>
 
 <style>

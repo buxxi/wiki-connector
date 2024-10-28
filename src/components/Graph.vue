@@ -5,6 +5,7 @@
 	import { Vector2 } from 'three';
 	import Chain from "./Chain.vue";
 	import DrawLoop from "@/util/drawloop";
+	import { MAX_FPS } from "@/config";
 
 	export type GraphNode = {
 		id: () => number;
@@ -28,7 +29,6 @@
 	const NODE_FORCE_FIELD_SIZE = 200;
 	const BORDER_FORCE_FIELD_SIZE = 64;
 	const MOVE_SLOW_RATIO = 1.25;
-	const MAX_FPS = 30;
 	const FORCE_STRENGHT = 150;
 
 	const graph = ref<DomGraph | undefined>(undefined);
