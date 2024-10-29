@@ -73,7 +73,7 @@ class BalloonsRising implements Animation {
 		}
 	}
 
-	move(delta: number): boolean {
+	update(delta: number): boolean {
 		var i = this.balloons.length;
 		while (i--) {
 			if (!this.balloons[i].move(delta)) {
@@ -81,6 +81,10 @@ class BalloonsRising implements Animation {
 			}
 		}
 		return this.balloons.length > 0;
+	}
+
+	resize(width: number, height: number): void {
+		this.init(width, height);
 	}
 }
 

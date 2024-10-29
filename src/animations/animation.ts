@@ -3,7 +3,9 @@ export type Animation = {
 
 	draw(context: CanvasRenderingContext2D): void;
 
-	move(delta: number): boolean;
+	update(delta: number): boolean;
+
+	resize(width: number, height: number): void;
 }
 
 export class LayeredAnimation implements Animation {
@@ -21,13 +23,17 @@ export class LayeredAnimation implements Animation {
 		this.layers.forEach(layer => layer.draw(context));
 	}
 
-	move(delta: number): boolean {
+	update(delta: number): boolean {
 		var i = this.layers.length;
 		while (i--) {
-			if (!this.layers[i].move(delta)) {
+			if (!this.layers[i].update(delta)) {
 				this.layers.splice(i, 1);
 			}
 		}
 		return this.layers.length > 0;
+	}
+
+	resize(width: number, height: number): void {
+		this.layers.forEach(layer => layer.resize(width, height));
 	}
 }

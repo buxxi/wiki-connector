@@ -41,7 +41,7 @@ class BloodFlow implements Animation {
 		context.fill();
 	}
 
-	move(delta: number): boolean {
+	update(delta: number): boolean {
 		for (let point of this.points) {
 			if (point.y > this.height) {
 				continue;
@@ -57,6 +57,10 @@ class BloodFlow implements Animation {
 			}
 		}
 		return true;
+	}
+
+	resize(width: number, height: number): void {
+		this.init(width, height);
 	}
 
 	_generatePoints(): BloodPoint[] {

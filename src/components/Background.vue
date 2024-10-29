@@ -36,12 +36,16 @@
 			this.layers.init(width, height);
 		}
 
+		resize(width: number, height: number): void {
+			this.layers.resize(width, height);
+		}
+
 		draw(delta: number, animate: boolean): void {
 			if (this.context == undefined) {
 				return;
 			}
 			this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-			this.layers.move(delta);
+			this.layers.update(delta);
 			this.layers.draw(this.context);
 		}
 
@@ -70,7 +74,16 @@
 		bg.height = window.innerHeight;
 		let context = bg.getContext("2d")!;
 		drawLoop.value.init(bg.width, bg.height, context);
+	}
 
+	function resize() {
+		let bg = background.value;
+		if (bg == undefined) {
+			return;
+		}
+		bg.width = window.innerWidth;
+		bg.height = window.innerHeight;
+		drawLoop.value.resize(bg.width, bg.height);
 	}
 
 	function animationStart() {
@@ -84,7 +97,7 @@
 	onMounted(() => {
 		recreate();
 		drawLoop.value.start(false);
-		window.addEventListener("resize", recreate);
+		window.addEventListener("resize", resize);
 	});
 
 	watch(props, () => {

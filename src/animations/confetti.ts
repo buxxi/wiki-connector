@@ -70,7 +70,7 @@ class ConfettiCannon implements Animation {
 		}
 	}
 
-	move(delta: number): boolean {
+	update(delta: number): boolean {
 		var i = this.confetti.length;
 		while (i--) {
 			if (!this.confetti[i].move(delta)) {
@@ -78,6 +78,10 @@ class ConfettiCannon implements Animation {
 			}
 		}
 		return this.confetti.length > 0;
+	}
+
+	resize(width: number, height: number): void {
+		this.init(width, height);
 	}
 }
 

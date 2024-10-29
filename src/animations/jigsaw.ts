@@ -151,7 +151,7 @@ class JigsawPattern implements Animation {
 		this.pieces.forEach(piece => this.effect.draw(context, piece));
 	}
 
-	move(delta: number): boolean {
+	update(delta: number): boolean {
 		var i = this.pieces.length;
 		while (i--) {
 			if (!this.effect.move(delta, this.pieces[i])) {
@@ -159,6 +159,10 @@ class JigsawPattern implements Animation {
 			}
 		}
 		return this.pieces.length > 0;
+	}
+
+	resize(width: number, height: number): void {
+		this.init(width, height);
 	}
 }
 
