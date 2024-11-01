@@ -8,12 +8,27 @@ export function pairs<T>(input: T[]): T[][] {
 	return result;
 }
 
-export function singleDirectionPermutations<T>(input: T[]): T[][] {
+export type EqualityFunction<E> = (a: E, b: E) => boolean;
+
+export function singleDirectionPermutations<T>(input: T[], eqFunc: EqualityFunction<T>): T[][] {
 	let result: T[][] = [];
+
+	const arrayEquals = (a: T[], b: T[]) => {
+		if (a.length != b.length) {
+			return false;
+		}
+		return a.every((val, i) => eqFunc(val, b[i]));
+	}
+
+	const reverseExists = (arr: T[]) => {
+		return result.some(org => arrayEquals(org, arr.slice().reverse()));
+	}
 
 	const permute = (arr: T[], m: T[] = []) => {
 		if (arr.length === 0) {
-			result.push(m);
+			if (!reverseExists(m)) {
+				result.push(m);
+			}
 		} else {
 			for (let i = 0; i < arr.length; i++) {
 				let curr = arr.slice();
@@ -24,17 +39,6 @@ export function singleDirectionPermutations<T>(input: T[]): T[][] {
 	}
 
 	permute(input);
-
-	/* TODO: handle better that is not dependent on toString()
-	for (var i = 0; i < result.length; i++) {
-		let rev = result[i].slice().reverse();
-		for (var j = 0; j < result.length; j++) {
-			if (rev.toString() == result[j].toString()) {
-				result.splice(j, 1);
-			}
-		}
-	}
-	*/
 
 	return result;
 }

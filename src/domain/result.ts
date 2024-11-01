@@ -25,7 +25,7 @@ function _findCompleteSingleConnection(foundArticles: Article[]): Article[] | un
 		links.set(linkKey(pair, 0), link);
 	}
 
-	let permutationLinks = singleDirectionPermutations(startArticles);
+	let permutationLinks = singleDirectionPermutations(startArticles, (a, b) => a.id() == b.id());
 
 	var result: (Article[] | undefined) = undefined;
 
