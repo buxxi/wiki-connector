@@ -311,10 +311,22 @@
 		drawLoop.stop();
 	}
 
+	function zoom(change: number) {
+		let current = graphElement.value!.style.fontSize;
+		let m = /([0-9\.]+)em/.exec(current);
+		let val = parseFloat(m![1]) + change;
+		graphElement.value!.style.fontSize = `${val}em`;
+		resized();
+	}
+
 </script>
 
 <template>
-	<div ref="graphElement" id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd">
+	<div id="zoom">
+		<input type="button" value="+" @click="zoom(0.1)" />
+		<input type="button" value="-" @click="zoom(-0.1)" />
+	</div>
+	<div ref="graphElement" id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd" style="font-size: 1em">
 		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines" />
 		<Node :id="node.id()" :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)"
 			:showLink="showLinks" v-for="node in graph?.nodes" />
@@ -322,12 +334,25 @@
 </template>
 
 <style>
+	#zoom {
+		position: fixed;
+		top: 1em;
+		right: 1em;
+		z-index: 10;
+		display: flex;
+		flex-direction: column;
+
+		input[type="button"] {
+			margin: 0.25em;
+			font-size: 1em;
+		}
+	}
+
 	#graph {
 		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 10em;
-
 	}
 </style>
