@@ -1,15 +1,14 @@
-import { BLOOD_MAXIMUM_SPEED, BLOOD_MINIMUM_SPEED, BLOOD_POINT_SPACING, BLOOD_RANDOM_Y_OFFSET, BLOOD_SPEED_CHANGE } from "@/config";
+import { BLOOD_MAXIMUM_SPEED, BLOOD_MINIMUM_SPEED, BLOOD_POINT_SPACING, BLOOD_RANDOM_Y_OFFSET } from "@/config";
 import type { Animation } from "./animation";
+import { Vector2 } from "three";
 
 class BloodPoint {
-	x: number;
-	y: number;
+	position: Vector2;
 	speed: number;
 	targetSpeed: number;
 
 	constructor(x: number, y: number, speed: number) {
-		this.x = x;
-		this.y = y;
+		this.position = new Vector2(x, y);
 		this.speed = speed;
 		this.targetSpeed = speed;
 	}
@@ -27,15 +26,24 @@ class BloodFlow implements Animation {
 	}
 
 	draw(context: CanvasRenderingContext2D): void {
+		let screen = new Vector2(this.width, this.height);
+		let halfSpacing = BLOOD_POINT_SPACING * this.width / 2;
 		context.beginPath();
 		context.moveTo(0, 0);
 
 		for (let point of this.points) {
+			let drawPosition = point.position.clone().multiply(screen);
 			//TODO: this could be smoother
-			context.bezierCurveTo(point.x - (BLOOD_POINT_SPACING / 2), point.y - (BLOOD_POINT_SPACING / 2), point.x - (BLOOD_POINT_SPACING / 2), point.y + (BLOOD_POINT_SPACING / 2), point.x, point.y);
+			context.bezierCurveTo(
+				drawPosition.x - halfSpacing,
+				drawPosition.y - halfSpacing,
+				drawPosition.x - halfSpacing,
+				drawPosition.y + halfSpacing,
+				drawPosition.x, drawPosition.y
+			);
 		}
 
-		context.lineTo(this.width, 0);
+		context.lineTo(this.width + BLOOD_POINT_SPACING, 0);
 		context.lineTo(0, 0);
 		context.fillStyle = 'rgba(200, 0, 0, 0.75)';
 		context.fill();
@@ -43,29 +51,26 @@ class BloodFlow implements Animation {
 
 	update(delta: number): boolean {
 		for (let point of this.points) {
-			if (point.y > this.height) {
+			if (point.position.y > 1.1) {
 				continue;
 			}
-			point.y += delta * point.speed;
-			if (point.speed < point.targetSpeed) {
-				point.speed += delta * BLOOD_SPEED_CHANGE;
-			} else {
-				point.speed -= delta * BLOOD_SPEED_CHANGE;
-			}
-			if (point.speed - point.targetSpeed < BLOOD_SPEED_CHANGE) {
-				point.targetSpeed = this._generateSpeed();
-			}
+			point.position.y += delta * point.speed;
 		}
 		return true;
 	}
 
 	resize(width: number, height: number): void {
-		this.init(width, height);
+		this.width = width;
+		this.height = height;
 	}
 
 	_generatePoints(): BloodPoint[] {
-		let count = Math.ceil(this.width / BLOOD_POINT_SPACING) + 1;
-		return Array.from({ length: count }).map((_, i) => new BloodPoint(i * BLOOD_POINT_SPACING, - Math.random() * BLOOD_RANDOM_Y_OFFSET, this._generateSpeed()));
+		let count = Math.ceil(this.width * BLOOD_POINT_SPACING) + 1;
+		return Array.from({ length: count }).map((_, i) => this._generatePoint(i));
+	}
+
+	private _generatePoint(i: number): BloodPoint {
+		return new BloodPoint(i * BLOOD_POINT_SPACING, -Math.random() * BLOOD_RANDOM_Y_OFFSET, this._generateSpeed());
 	}
 
 	_generateSpeed(): number {

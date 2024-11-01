@@ -22,9 +22,7 @@ class DrawLoop {
 	}
 
 	forceDraw() {
-		if (!this.animate) {
-			this._draw();
-		}
+		this.drawFunc(0, this.animate);
 	}
 
 	_draw() {

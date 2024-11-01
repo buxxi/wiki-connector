@@ -122,12 +122,11 @@ class ShineEffect {
 
 class JigsawPattern implements Animation {
 	pieces: JigsawPiece[] = [];
-	shininess: number[][] = [];
 	effect: ShineEffect = new ShineEffect();
 
 	init(width: number, height: number): void {
-		let rows = Math.ceil(height / JIGSAW_PIECE_SIZE);
-		let cols = Math.ceil(width / JIGSAW_PIECE_SIZE);
+		let rows = Math.ceil((height / JIGSAW_PIECE_SIZE) + JIGSAW_PIECE_SIZE);
+		let cols = Math.ceil((width / JIGSAW_PIECE_SIZE) + JIGSAW_PIECE_SIZE);
 		let result: JigsawPiece[][] = [];
 		var currentRow: JigsawPiece[] = [];
 		for (var y = 0; y < rows; y++) {
@@ -162,7 +161,11 @@ class JigsawPattern implements Animation {
 	}
 
 	resize(width: number, height: number): void {
-		this.init(width, height);
+		let rows = Math.ceil((height / JIGSAW_PIECE_SIZE) + JIGSAW_PIECE_SIZE);
+		let cols = Math.ceil((width / JIGSAW_PIECE_SIZE) + JIGSAW_PIECE_SIZE);
+		if ((rows * cols) != this.pieces.length) {
+			this.init(width, height);
+		}
 	}
 }
 

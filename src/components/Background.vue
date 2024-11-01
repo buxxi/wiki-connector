@@ -81,9 +81,10 @@
 		if (bg == undefined) {
 			return;
 		}
+		drawLoop.value.resize(bg.width, bg.height);
 		bg.width = window.innerWidth;
 		bg.height = window.innerHeight;
-		drawLoop.value.resize(bg.width, bg.height);
+		drawLoop.value.forceDraw();
 	}
 
 	function animationStart() {
