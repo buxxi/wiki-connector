@@ -1,12 +1,12 @@
 type Pixel = number;
 type Degree = number;
 type ScreenRelative = number;
+type SizeRelative = number;
 
 export const MAX_FPS = 30;
-export const NODE_FORCE_FIELD_SIZE: Pixel = 200;
-export const BORDER_FORCE_FIELD_SIZE: Pixel = 64;
+export const NODE_FORCE_FIELD_SIZE: SizeRelative = 1.5;
+export const BORDER_FORCE_FIELD_SIZE: SizeRelative = 0.5;
 export const MOVE_SLOW_RATIO = 1.25;
-export const NODE_FORCE_STRENGTH: Pixel = 150;
 export const BALLOON_COUNT = 30;
 export const BALLOON_MIN_SIZE: Pixel = 25;
 export const BALLOON_MAX_SIZE: Pixel = 75;

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-	import { onMounted, onUnmounted, ref, watch } from "vue";
+	import { onMounted, onUnmounted, ref, useTemplateRef, watch } from "vue";
 	import Node, { type NodeEvent } from "./Node.vue";
 	import { ArticleState } from "@/domain/article";
 	import { Vector2 } from 'three';
 	import Chain from "./Chain.vue";
 	import DrawLoop from "@/util/drawloop";
-	import { BORDER_FORCE_FIELD_SIZE, NODE_FORCE_STRENGTH, MAX_FPS, MOVE_SLOW_RATIO, NODE_FORCE_FIELD_SIZE } from "@/config";
+	import { BORDER_FORCE_FIELD_SIZE, MAX_FPS, MOVE_SLOW_RATIO, NODE_FORCE_FIELD_SIZE } from "@/config";
 
 	export type GraphNode = {
 		id: () => number;
@@ -28,6 +28,7 @@
 
 	const graph = ref<DomGraph | undefined>(undefined);
 	const drawLoop = new DrawLoop(draw, MAX_FPS);
+	const graphElement = useTemplateRef("graphElement");
 
 	class DomGraphLine {
 		id: string;
@@ -129,22 +130,26 @@
 	}
 
 	class DomGraph {
-		elem: HTMLElement;
 		nodes: DOMGraphNode[] = [];
 		lines: DomGraphLine[] = [];
 		highlightNode: DOMGraphNode | undefined;
 		width: number = 0;
 		height: number = 0;
+		nodeSize: number = 0;
 
 		constructor() {
-			this.elem = document.querySelector("#graph")!;
 			this.resize();
 			this.recreateNodesAndLines();
 		}
 
 		resize() {
-			this.width = this.elem.getBoundingClientRect().width;
-			this.height = this.elem.getBoundingClientRect().height;
+			this.width = graphElement.value!.getBoundingClientRect().width;
+			this.height = graphElement.value!.getBoundingClientRect().height;
+			let tempNode = document.createElement("div");
+			tempNode.classList.add("node");
+			graphElement.value!.appendChild(tempNode);
+			this.nodeSize = Math.max(tempNode.clientWidth, tempNode.clientHeight);
+			graphElement.value!.removeChild(tempNode);
 		}
 
 		recreateNodesAndLines() {
@@ -222,14 +227,14 @@
 				let node = this.nodes[i];
 				var force = new Vector2(0, 0);
 				let position = node.getPhysicsPosition();
-				if (position.x < BORDER_FORCE_FIELD_SIZE) {
+				if (position.x < (this.nodeSize * BORDER_FORCE_FIELD_SIZE)) {
 					force = force.add(new Vector2(1, 0));
-				} else if (position.x > width - BORDER_FORCE_FIELD_SIZE) {
+				} else if (position.x > width - (this.nodeSize * BORDER_FORCE_FIELD_SIZE)) {
 					force = force.add(new Vector2(-1, 0));
 				}
-				if (position.y < BORDER_FORCE_FIELD_SIZE) {
+				if (position.y < (this.nodeSize * BORDER_FORCE_FIELD_SIZE)) {
 					force = force.add(new Vector2(0, 1));
-				} else if (position.y > height - BORDER_FORCE_FIELD_SIZE) {
+				} else if (position.y > height - (this.nodeSize * BORDER_FORCE_FIELD_SIZE)) {
 					force = force.add(new Vector2(0, -1));
 				}
 				for (let j in this.nodes) {
@@ -241,11 +246,11 @@
 					let diffForce = new Vector2(position.x - otherPosition.x, position.y - otherPosition.y);
 					if (diffForce.length() < 1) {
 						force = force.add(i < j ? new Vector2(-1, 0) : new Vector2(1, 0));
-					} else if (diffForce.length() < NODE_FORCE_FIELD_SIZE) {
+					} else if (diffForce.length() < (this.nodeSize * NODE_FORCE_FIELD_SIZE)) {
 						force = force.add(diffForce.normalize());
 					}
 				}
-				force = force.normalize().multiplyScalar(NODE_FORCE_STRENGTH).multiplyScalar(delta);
+				force = force.normalize().multiplyScalar(this.nodeSize).multiplyScalar(delta);
 				node.force = node.force.add(force);
 				if (node.force.length() > 0.1) {
 					anyForce = true;
@@ -309,7 +314,7 @@
 </script>
 
 <template>
-	<div id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd">
+	<div ref="graphElement" id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd">
 		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines" />
 		<Node :id="node.id()" :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)"
 			:showLink="showLinks" v-for="node in graph?.nodes" />
