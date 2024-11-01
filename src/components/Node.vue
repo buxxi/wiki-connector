@@ -33,8 +33,26 @@
 		emit("click", { target: event.target!, x: event.clientX, y: event.clientY });
 	}
 
-	function onDrop(event: MouseEvent) {
+	function onMouseDragStart(event: DragEvent) {
+		let emptyImage = document.createElement('img');
+		emptyImage.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+		event.dataTransfer!.setDragImage(emptyImage, 0, 0);
+	}
+
+	function onMouseDrag(event: DragEvent) {
 		emit("drop", { target: event.target!, x: event.clientX, y: event.clientY });
+	}
+
+	function onTouchStart(event: TouchEvent) {
+		emit("hover", { target: event.target!, x: event.targetTouches[0].clientX, y: event.targetTouches[0].clientY });
+	}
+
+	function onTouchEnd(event: TouchEvent) {
+		emit("hover", { target: undefined, x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY });
+	}
+
+	function onTouchDrag(event: TouchEvent) {
+		emit("drop", { target: event.target!, x: event.targetTouches[0].clientX, y: event.targetTouches[0].clientY });
 	}
 
 	function onMouseOut(event: MouseEvent) {
@@ -59,7 +77,8 @@
 </script>
 
 <template>
-	<div :class="['node', style]" :style="{ backgroundImage: 'url(' + thumbnail + ')', left: `${position.x}px`, top: `${position.y}px` }" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragend="onDrop">
+	<div :class="['node', style]" :style="{ backgroundImage: 'url(' + thumbnail + ')', left: `${position.x}px`, top: `${position.y}px` }" draggable="true" @mouseover="onMouseOver" @mouseout="onMouseOut" @click="onClick" @dragstart="onMouseDragStart"
+		@dragover="onMouseDrag" @touchstart="onTouchStart" @touchend="onTouchEnd" @touchmove="onTouchDrag">
 		<h3 :title="title" ref="titleElem">
 			<span v-if="!showLink">{{ title }}</span>
 			<a v-if="showLink" :href="`https://en.wikipedia.org/?curid=${id}`">{{ title }}</a>
@@ -135,8 +154,8 @@
 			margin-bottom: 0;
 			padding: 0;
 			border-top: 3px solid var(--normal-node-color);
-			border-bottom: 3px solid var(--normal-node-color);
-			background-color: var(--node-label-bg-color);
+			border-bottom: 1px solid var(--normal-node-color);
+			background-color: var(--node-label-hover-bg-color);
 			text-wrap: nowrap;
 			overflow: hidden;
 			box-shadow: 0 0 var(--node-inner-shadow-strength) var(--normal-node-inner-shadow-color);
@@ -161,7 +180,7 @@
 		}
 
 		p {
-			opacity: 0;
+			opacity: 1;
 			border-bottom: 3px solid var(--normal-node-color);
 			margin: 0;
 			background-color: var(--node-label-hover-bg-color);
@@ -171,15 +190,17 @@
 				content: "🔗 ";
 			}
 		}
+	}
 
-		&:hover {
+	@media(hover: hover) {
+		.node:not(:hover) {
 			p {
-				opacity: 1;
+				opacity: 0;
 			}
 
 			h3 {
-				background-color: var(--node-label-hover-bg-color);
-				border-bottom-width: 1px;
+				border-bottom: 3px solid var(--normal-node-color);
+				background-color: var(--node-label-bg-color);
 			}
 		}
 	}

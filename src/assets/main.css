@@ -69,6 +69,8 @@
 html {
 	font-family: "Open Sans", sans-serif;
 	font-weight: 400;
+	overflow: hidden;
+	overscroll-behavior: none;
 }
 
 input,
@@ -94,7 +96,7 @@ dl {
 
 dd {
 	font-weight: bold;
-	margin-right: 1em;
+	margin-right: 0.5em;
 	margin-left: 0.5em;
 
 }

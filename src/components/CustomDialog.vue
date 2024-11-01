@@ -66,7 +66,7 @@
 			margin: 0;
 			border-bottom: 1px solid var(--title-underline-color);
 			text-align: center;
-			font-size: 4em;
+			font-size: 3em;
 		}
 
 		h2 {

@@ -125,4 +125,21 @@
 			font-style: italic;
 		}
 	}
+
+	@media (max-width: 650px) {
+		.settings {
+			fieldset {
+				display: block;
+			}
+
+			label:nth-child(1) {
+				font-weight: bold;
+				width: 8em;
+			}
+		}
+
+		.rules div {
+			flex-direction: column-reverse;
+		}
+	}
 </style>

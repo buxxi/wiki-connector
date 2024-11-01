@@ -52,6 +52,7 @@
 		right: 0.25em;
 		bottom: 0.25em;
 		font-size: 2em;
+		display: none;
 	}
 
 	#info {
@@ -63,6 +64,7 @@
 		height: 5em;
 		left: 0;
 		right: 0;
+		font-size: 0.75em;
 
 		dt {
 			font-family: "Noto Color Emoji";
@@ -73,10 +75,18 @@
 		dd {
 			text-shadow: 0 0 var(--info-text-shadow-strength) var(--info-text-shadow-color);
 			font-size: 2em;
+			margin-right: 0;
 		}
 
 		input[type="button"] {
 			box-shadow: 0 0 var(--shadow-strength) var(--shadow-color);
+		}
+	}
+
+	@media (max-width: 650px) {
+		#info {
+			font-size: 0.6em;
+			padding-bottom: 0.5em;
 		}
 	}
 </style>

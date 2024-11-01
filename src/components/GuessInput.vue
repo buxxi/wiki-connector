@@ -109,8 +109,8 @@
 
 	#guess {
 		position: fixed;
-		bottom: 5em;
-		height: 5em;
+		bottom: 3.5em;
+		height: 3.5em;
 		left: 1em;
 		right: 1em;
 		z-index: 3;
@@ -119,7 +119,7 @@
 			box-sizing: border-box;
 			border: 0;
 			width: 100%;
-			font-size: 3em;
+			font-size: 2em;
 			padding: 0.25em 1em;
 			font-weight: 700;
 			position: absolute;
@@ -156,7 +156,7 @@
 			position: absolute;
 			z-index: 3;
 			right: 0;
-			margin-top: 0.5em;
+			margin-top: -0.25em;
 
 			dt {
 				font-weight: bold;
@@ -171,6 +171,12 @@
 			dd {
 				font-weight: normal;
 			}
+		}
+	}
+
+	@media (max-aspect-ratio: 1/1) {
+		#keylegend {
+			display: none;
 		}
 	}
 
