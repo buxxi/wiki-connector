@@ -48,10 +48,12 @@
 				<fieldset>
 					<label for="language-en">{{ $t('language.select') }}</label>
 
-					<input type="radio" v-model="language" id="language-en" value="en" @change="languageChanged">
-					<label for="language-en"><i>🇺🇸</i> {{ $t('language.en') }}</label>
-					<input type="radio" v-model="language" id="language-sv" value="sv" @change="languageChanged">
-					<label for="language-sv"><i>🇸🇪</i> {{ $t('language.sv') }}</label>
+					<div>
+						<input type="radio" v-model="language" id="language-en" value="en" @change="languageChanged">
+						<label for="language-en"><i>🇺🇸</i> {{ $t('language.en') }}</label>
+						<input type="radio" v-model="language" id="language-sv" value="sv" @change="languageChanged">
+						<label for="language-sv"><i>🇸🇪</i> {{ $t('language.sv') }}</label>
+					</div>
 				</fieldset>
 				<fieldset>
 					<label for="type">{{ $t('gameMode.select') }}</label>
@@ -65,13 +67,15 @@
 				</fieldset>
 				<fieldset>
 					<label for="difficulty">{{ $t('difficulty.title') }}</label>
-					<input id="difficulty" type="range" list="difficulties" min="0" max="4" v-model.number="difficulty" />
-					<span class="difficulty-smiley"><i>{{ getDifficultySetting(difficulty).smiley }}</i></span> <span>{{
-						$t('difficulty.' + difficulty) }}</span>
+					<div>
+						<input id="difficulty" type="range" list="difficulties" min="0" max="4" v-model.number="difficulty" />
+						<span class="difficulty-smiley"><i>{{ getDifficultySetting(difficulty).smiley }}</i></span> <span>{{
+							$t('difficulty.' + difficulty) }}</span>
 
-					<datalist id="difficulties">
-						<option v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))" :value="key">{{ value }}</option>
-					</datalist>
+						<datalist id="difficulties">
+							<option v-for="([value, key], idx) in Object.entries(Difficulty).filter(([_, k]) => Number.isInteger(k))" :value="key">{{ value }}</option>
+						</datalist>
+					</div>
 				</fieldset>
 				<fieldset>
 					<label for="animate">{{ $t('animate.title') }}</label>
