@@ -17,7 +17,7 @@
 <template>
 	<div id="info">
 		<form>
-			<input type="button" id="restart" :value="$t('button.restart')" @click="emit('restart')" />
+			<input type="button" id="restart" :value="$t('⟳')" :title="$t('button.restart')" @click="emit('restart')" />
 		</form>
 		<div>
 			<dl>
@@ -51,8 +51,10 @@
 		position: fixed;
 		right: 0.25em;
 		bottom: 0.25em;
-		font-size: 2em;
-		display: none;
+
+		&:hover {
+			background: linear-gradient(var(--bomb-color), var(--bomb-node-outer-shadow-color));
+		}
 	}
 
 	#info {

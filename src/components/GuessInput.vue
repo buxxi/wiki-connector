@@ -109,8 +109,8 @@
 
 	#guess {
 		position: fixed;
-		bottom: 3.5em;
-		height: 3.5em;
+		bottom: 4em;
+		height: 4em;
 		left: 1em;
 		right: 1em;
 		z-index: 3;
