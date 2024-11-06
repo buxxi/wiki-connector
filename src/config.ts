@@ -68,7 +68,12 @@ export const WIKI_ARTICLES = {
 			"C", "Morse code", "Å", "Z", "Infinity symbol", //Symbols
 			"Swedish riksdaler", "Dollar", "Japanese yen", "Rupee", "Dubloon", //Money
 			"Lassie", "Laika", "Hachikō", "Scooby-Doo", "Balto", //Dogs
-			"Whisky", "Bloody Mary (cocktail)", "Tea", "Eggnog", "Dr Pepper" //Drinks
+			"Whisky", "Bloody Mary (cocktail)", "Tea", "Eggnog", "Dr Pepper", //Drinks
+			"Atom", "Virus", "Bacteria", "Magnetism", "Electricity", //Invisible
+			"Biryani", "Surströmming", "Sauerkraut", "Fish_and_chips", "Hamburger", //Food
+			"Skateboard", "Pogo_stick", "Wheelchair", "Ice_skate", "Unicycle", //Transportation
+			"Ganges", "Mississippi_River", "Göta älv", "River_Thames", "Nile", //Rivers
+			"Buoy", "Sail", "Rudder", "Nautical_chart", "Sextant" //Sailing
 		],
 		sv: [
 			"Bamse", "Snobben", "Asterix", "Son-Goku", "Tintin", //Cartoons
@@ -106,7 +111,12 @@ export const WIKI_ARTICLES = {
 			"C", "Morsealfabetet", "Å", "Z", "Lemniskata", //Symbols
 			"Riksdaler", "Dollar", "Yen", "Rupie", "Guldmynt", //Money
 			"Lassie", "Lajka", "Hachikō", "Scooby-Doo", "Balto", //Dogs
-			"Whisky", "Bloody Mary (drink)", "Te", "Äggtoddy", "Dr Pepper" //Drinks
+			"Whisky", "Bloody Mary (drink)", "Te", "Äggtoddy", "Dr Pepper", //Drinks
+			"Atom", "Virus", "Bakterier", "Magnetism", "Elektricitet", //Invisible
+			"Biryani", "Surströmming", "Surkål", "Fish_and_chips", "Hamburgare", //Food
+			"Skateboard", "Hoppstylta", "Rullstol", "Skridskor", "Enhjuling", //Transportation
+			"Ganges", "Mississippifloden", "Göta älv", "Themsen", "Nilen", //Rivers
+			"Boj", "Segel", "Roder", "Sjökort", "Sextant" //Sailing
 		]
 	},
 	blacklist: {
