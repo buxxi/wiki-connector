@@ -1,5 +1,5 @@
 import WikipediaService, { type WikipediaArticle } from "./wikipedia";
-import { unique, findAll, find, linksTo, type NodeId } from "../util/graph";
+import { unique, findByIds, linksTo, type NodeId } from "../util/graph";
 import Article, { ArticleState } from "../domain/article";
 import Result, { ResultType } from "../domain/result";
 import { alphaNumericOnly } from "@/util/text";
@@ -66,23 +66,22 @@ class Game {
 	}
 
 	async guess(title: string): Promise<void> {
-		let loadArticle = find(this.root, e => e.searchValue() == alphaNumericOnly(title));
-		if (loadArticle == undefined) {
+		let loadArticles = unique(this.root, e => e.searchValue() == alphaNumericOnly(title) && e.state == ArticleState.NOT_FOUND);
+		if (loadArticles.length == 0) {
 			throw new Error("No matches for title: " + title);
 		}
-		if (loadArticle.state != ArticleState.NOT_FOUND) {
-			throw new Error("Can only guess on not found articles");
+
+		for (let loadArticle of loadArticles) {
+			let fromArticles = loadArticle.links.concat(linksTo(this.root, loadArticle.id()));
+
+			let loadResult = await this._loadArticle(loadArticle.id(), loadArticle.title, ArticleState.FOUND);
+
+			//Connect the ones that linked to this new article
+			for (let fromArticle of fromArticles) {
+				fromArticle.connect(loadResult.article);
+			}
+			this._connect(loadResult.article, loadResult.links);
 		}
-
-		let fromArticles = loadArticle.links.concat(linksTo(this.root, loadArticle.id()));
-
-		let loadResult = await this._loadArticle(loadArticle.id(), loadArticle.title, ArticleState.FOUND);
-
-		//Connect the ones that linked to this new article
-		for (let fromArticle of fromArticles) {
-			fromArticle.connect(loadResult.article);
-		}
-		this._connect(loadResult.article, loadResult.links);
 
 		let result = this._generateResult();
 		if ((result.type == ResultType.WON || result.type == ResultType.LOST) && this.clock.ended == undefined) {
@@ -140,7 +139,7 @@ class Game {
 	}
 
 	_connect(fromArticle: Article, links: WikipediaArticle[]): void {
-		let toArticles: Article[] = findAll(this.root, links.map(link => link.id as NodeId))
+		let toArticles: Article[] = findByIds(this.root, links.map(link => link.id as NodeId))
 			.map((link, i) => link != undefined ? link : new Article(links[i].id, links[i].title, "", [], 0, ArticleState.NOT_FOUND));
 		for (let toArticle of toArticles) {
 			fromArticle.connect(toArticle);

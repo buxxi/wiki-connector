@@ -63,7 +63,6 @@ class Article {
 		_connect(article, this);
 	}
 
-	//TODO: now that I clean titles, duplicates may exist, how to handle in guessing?
 	_cleanTitle(input: string) {
 		let m = /(.*) \(.*\)/.exec(input);
 		if (m != undefined) {

@@ -40,11 +40,7 @@ export function linksTo<T extends GraphNode<T>>(root: T, childId: NodeId): T[] {
 	return unique(root, parent => parent.connections().map(c => c.id()).includes(childId));
 }
 
-export function find<T extends GraphNode<T>>(root: T, predicate: Predicate<T>): (T | undefined) {
-	return unique(root, predicate).find(() => true);
-}
-
-export function findAll<T extends GraphNode<T>>(root: T, ids: NodeId[]): (T | undefined)[] {
+export function findByIds<T extends GraphNode<T>>(root: T, ids: NodeId[]): (T | undefined)[] {
 	let cache = new Map();
 	for (let item of unique(root, e => true)) {
 		cache.set(item.id(), item);
