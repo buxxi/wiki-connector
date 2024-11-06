@@ -44,6 +44,10 @@
 	<CustomDialog :title="$t('title')" :locked="true">
 		<template v-slot:content>
 			<section class="settings">
+				<i18n-t keypath="disclaimer.text" tag="span" scope="global" class="disclaimer">
+					<template v-slot:creator>BuXXi</template>
+					<template v-slot:url><a href="https://github.com/buxxi/wiki-connector">GitHub</a></template>
+				</i18n-t>
 				<h2>{{ $t('settings') }}</h2>
 				<fieldset>
 					<label for="language-en">{{ $t('language.select') }}</label>
@@ -101,6 +105,17 @@
 </template>
 
 <style>
+	.disclaimer {
+		color: var(--button-disable-color);
+		text-align: center;
+		display: block;
+		font-size: 0.8em;
+
+		a {
+			color: var(--button-bg-color);
+		}
+	}
+
 	.settings {
 		.difficulty-smiley {
 			font-size: 2em;

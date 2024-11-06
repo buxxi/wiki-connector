@@ -25,6 +25,9 @@ export default {
 		restart: 'Restart',
 		new: 'New game'
 	},
+	disclaimer: {
+		text: 'A game made by {creator}, source code {\'@\'} {url}'
+	},
 	instructions: {
 		title: 'How to play',
 		text: 'You\'ll get {articles} articles from Wikipedia (green circles).\nEach of these pages has links to other pages.\nFind the links between all these pages.\nThere\'s also {bombs} articles that you can\'t link to (red circles).\nIf you do, you\'ll lose!'

@@ -71,6 +71,7 @@
 
 		h2 {
 			border-bottom: 1px dashed var(--title-underline-color);
+			margin: 0.5em 0 0 0;
 		}
 
 		.close {
