@@ -33,47 +33,47 @@ export const CONFETTI_MIN_THICKNESS: Pixel = 4;
 export const WIKI_ARTICLES = {
 	curated: {
 		en: [
-			"Bamse", "Snoopy", "Asterix (character)", "Goku", "Tintin (character)", //Cartoons
-			"Saturn", "International Space Station", "Hubble Space Telescope", "Milky Way", "Comet", //Space
-			"Charlie Chaplin", "Laurel and Hardy", "Mr. Bean (character)", "Abbott and Costello", "Benny Hill", //Slapstick
-			"Jesus", "Moses", "Muhammad", "The Buddha", "L. Ron Hubbard", //Religion
-			"Foot", "Tail", "Eye", "Beak", "Heart", //Body parts
-			"Red panda", "Platypus", "Hammerhead shark", "Meerkat", "Rabbit", //Animals
-			"Telephone", "Wheel", "Steam engine", "Computer", "Tesla coil", //Inventions
-			"Ruby", "Diamond", "Aquamarine (gem)", "Sapphire", "Emerald", //Gemstones
-			"Al Capone", "Edmund Kemper", "Charles Manson", "Christer Pettersson", "Pablo Escobar", //Criminals
-			"Mathematics", "Physics", "Astronomy", "Chemistry", "Language", //School subjects
-			"Floorball", "Karate", "Rallying", "Cricket", "American football", //Sports
-			"Europe", "Asia", "Africa", "North America", "Australia", //Continents
-			"Midas", "Carl XVI Gustaf", "Louis XVI", "Henry VIII", "Ramesses II", //Kings
-			"Three Laws of Robotics", "Moore's law", "Newton's laws of motion", "Destiny", "Murphy's law", //Not really laws
-			"Scarlett Johansson", "Izabella Scorupco", "Marilyn Monroe", "Judi Dench", "Michelle Yeoh", //Actresses
-			"Lego", "Coca-Cola", "Adidas", "Samsung", "IKEA", //Brands
-			"Nixie (folklore)", "Chupacabra", "Bigfoot", "Unicorn", "Leprechaun", //Folklore
-			"Boten Anna", "I'm Gonna Be (500 Miles)", "Nothing Else Matters", "Gangnam Style", "What a Wonderful World", //Singles
-			"Uluru", "Mount Fuji", "Grand Canyon", "Skogskyrkogården", "Victoria Falls", //Nature
-			"Aftonbladet", "YouTube", "BBC", "Fox News", "Snapchat", //Online media
-			"Battle of Poltava", "Battle of Gettysburg", "Normandy landings", "Battle of Hastings", "Siege of Baghdad", //Battles
-			"Plumber", "Mechanic", "Chef", "Aircraft pilot", "Programmer", //Professions
-			"Sock", "Raincoat", "Sandal", "Sombrero", "Kimono", //Clothes
-			"Sweden", "India", "United Kingdom", "United States", "Turkey", //Countries
-			"Monty Python's Life of Brian", "Let the Right One In (film)", "Forrest Gump", "Train to Busan", "Dangal (2016 film)", //Movies
-			"Little Boy", "Sabre", "AK-47", "Nunchaku", "Bow and arrow", //Weapons
-			"MS-DOS", "Amiga 500", "Apple II", "Commodore 64", "Vectrex", //Retro computing
-			"Pokémon", "Super Mario", "Half-Life (series)", "Fallout (franchise)", "Tomb Raider", //Video game franchises
-			"St Edward's Crown", "Wedding ring", "Necklace", "Body piercing", "Fabergé egg", //Jewelry
-			"Coachella", "Super Bowl", "Saint Patrick's Day", "Diwali", "Midsummer", //Events
-			"Wolfgang Amadeus Mozart", "Koji Kondo", "Hans Zimmer", "Antonio Vivaldi", "Ravi Shankar",  //Composers
-			"Kiwifruit", "Mango", "Apple", "Lime (fruit)", "Pumpkin", //Fruits
-			"C", "Morse code", "Å", "Z", "Infinity symbol", //Symbols
-			"Swedish riksdaler", "Dollar", "Japanese yen", "Rupee", "Dubloon", //Money
-			"Lassie", "Laika", "Hachikō", "Scooby-Doo", "Balto", //Dogs
-			"Whisky", "Bloody Mary (cocktail)", "Tea", "Eggnog", "Dr Pepper", //Drinks
-			"Atom", "Virus", "Bacteria", "Magnetism", "Electricity", //Invisible
-			"Biryani", "Surströmming", "Sauerkraut", "Fish_and_chips", "Hamburger", //Food
-			"Skateboard", "Pogo_stick", "Wheelchair", "Ice_skate", "Unicycle", //Transportation
-			"Ganges", "Mississippi_River", "Göta älv", "River_Thames", "Nile", //Rivers
-			"Buoy", "Sail", "Rudder", "Nautical_chart", "Sextant" //Sailing
+			"Bamse", "Snoopy", "Asterix (character)", "Goku", "Tintin (character)", "Yogi Bear", "Pelle Svanslös", "Doraemon", "Eric Cartman", "Peppa Pig",   //Cartoons
+			"Saturn", "International Space Station", "Hubble Space Telescope", "Milky Way", "Comet", "Apollo 11", "Black hole", "Sun", "Satellite", "Alien abduction",    //Space
+			"Charlie Chaplin", "Laurel and Hardy", "Mr. Bean (character)", "Abbott and Costello", "Benny Hill", "Ace Ventura", "Buster Keaton", "The Three Stooges", "Steve Martin",  //Slapstick
+			"Jesus", "Moses", "Muhammad", "The Buddha", "L. Ron Hubbard", "Judas Iscariot", "Noah", "Joseph Smith", "Guru Nanak", "Adam and Eve",    //Religion
+			"Foot", "Tail", "Eye", "Beak", "Heart", "Tongue", "Thumb", "Knee", "Kidney", "Hair",  //Body parts
+			"Red panda", "Platypus", "Hammerhead shark", "Meerkat", "Rabbit", "Narwhal", "King cobra", "Coccinellidae", "Rat", "Kangaroo",    //Animals
+			"Telephone", "Wheel", "Steam engine", "Computer", "Tesla coil", "Paper", "Electric light", "Antibiotic", "Concrete", "Blimp",  //Inventions
+			"Ruby", "Diamond", "Aquamarine (gem)", "Sapphire", "Emerald", "Opal", "Pearl", "Amethyst", "Moonstone (gemstone)", "Topaz",   //Gemstones
+			"Al Capone", "Edmund Kemper", "Charles Manson", "Christer Pettersson", "Pablo Escobar", "Jack the Ripper", "John Dillinger", "Jeffrey Dahmer", "Clark Olofsson", "Donald Trump",    //Criminals
+			"Mathematics", "Physics", "Astronomy", "Chemistry", "Language", "Woodworking", "Physical education", "Geography", "Painting", "Civics",   //School subjects
+			"Floorball", "Karate", "Rallying", "Cricket", "American football", "Wrestling", "Badminton", "Curling", "Baseball", "Polo",    //Sports
+			"Europe", "Asia", "Africa", "North America", "South America", "Australia", "Antarctica", //Continents
+			"Midas", "Carl XVI Gustaf", "Louis XVI", "Henry VIII", "Ramesses II", "Leopold II of Belgium", "Cyrus the Great", "Richard I of England", "Akbar", "Emperor Meiji",  //Kings
+			"Three Laws of Robotics", "Moore's law", "Newton's laws of motion", "Destiny", "Murphy's law", "Occam's razor", "Pareto principle", "Godwin's law", "Streisand effect", "Peter principle", //Not really laws
+			"Scarlett Johansson", "Izabella Scorupco", "Marilyn Monroe", "Judi Dench", "Michelle Yeoh", "Audrey Hepburn", "Ana de Armas", "Madhubala", "Alicia Vikander", "Kate Winslet",   //Actresses
+			"Lego", "Coca-Cola", "Adidas", "Samsung", "IKEA", "Thums up", "Kikkoman", "Saab Automobile", "Marmite", "Spendrups",  //Brands
+			"Nixie (folklore)", "Chupacabra", "Bigfoot", "Unicorn", "Leprechaun", "Quetzalcōātl", "Storsjöodjuret", "Loch Ness Monster", "Garuda", "Slender Man", //Folklore
+			"Boten Anna", "I'm Gonna Be (500 Miles)", "Nothing Else Matters", "Gangnam Style", "What a Wonderful World", "Africa (song)", "Oops!... I Did It Again (song)", "Naatu Naatu", "Du hast", "Cotton Eye Joe (Rednex song)", //Singles
+			"Uluru", "Mount Fuji", "Grand Canyon", "Skogskyrkogården", "Victoria Falls", "Mount Everest", "Gobi Desert", "Goa", "Machu Picchu", "Mariana Trench", //Nature
+			"Aftonbladet", "YouTube", "BBC", "Fox News", "Snapchat", "Myspace", "ICQ", "The Guardian", "Napster", "Internet Archive", //Online media
+			"Battle of Poltava", "Battle of Gettysburg", "Normandy landings", "Battle of Hastings", "Siege of Baghdad", "Battle of Thermopylae", "Battle of Waterloo", "Battle of Midway", "Battle of Stalingrad", "Kargil War", //Battles
+			"Plumber", "Mechanic", "Chef", "Aircraft pilot", "Programmer", "Barber", "Teacher", "Bus driver", "Copywriting", "Butler", //Professions
+			"Sock", "Raincoat", "Sandal", "Sombrero", "Kimono", "Monocle", "Kerchief", "Sari", "Boot", "Jeans", //Clothes
+			"Sweden", "India", "United Kingdom", "United States", "Turkey", "Paraguay", "Jamaica", "France", "Cambodia", "Rwanda", //Countries
+			"Monty Python's Life of Brian", "Let the Right One In (film)", "Forrest Gump", "Train to Busan", "Dangal (2016 film)", "A Man Called Ove (film)", "RRR", "A Clockwork Orange (film)", "Pretty Woman", "Seven Samurai", //Movies
+			"Little Boy", "Sabre", "AK-47", "Nunchaku", "Bow and arrow", "Bazooka", "Flail (weapon)", "Torpedo", "Thompson submachine gun", "Stiletto", //Weapons
+			"MS-DOS", "Amiga 500", "Apple II", "Commodore 64", "Vectrex", "Vic-20", "IBM PC Series", "Macintosh 128K", "BBC Micro", "ZX Spectrum", //Retro computing
+			"Pokémon", "Super Mario", "Half-Life (series)", "Fallout (franchise)", "Tomb Raider", "Minecraft (franchise)", "Uncharted", "FIFA (video game series)", "Grand Theft Auto", "Final Fantasy",  //Video game franchises
+			"St Edward's Crown", "Wedding ring", "Necklace", "Body piercing", "Fabergé egg", "Tiara", "Earring", "Bangle", "Sceptre", "Crown of Erik XIV", //Jewelry
+			"Coachella", "Super Bowl", "Saint Patrick's Day", "Diwali", "Midsummer", "Spiel", "Wimbledon Championships", "Kumbh Mela", "Cherry blossom", "Olympic Games", //Events
+			"Wolfgang Amadeus Mozart", "Koji Kondo", "Hans Zimmer", "Antonio Vivaldi", "Ravi Shankar", "John Williams", "Danny Elfman", "Nobuo Uematsu", "Antonio Vivaldi", "Wilhelm Stenhammar",  //Composers
+			"Kiwifruit", "Mango", "Apple", "Lime (fruit)", "Pumpkin", "Watermelon", "Banana", "Cherry", "Papaya", "Yuzu", //Fruits
+			"C", "Morse code", "Å", "Z", "Infinity symbol", "Emoji", "Space (punctuation)", "Om", "Egyptian hieroglyphs", "Stop sign", //Symbols
+			"Swedish riksdaler", "Dollar", "Japanese yen", "Rupee", "Dubloon", "Ancient drachma", "Coin", "Gold bar", "Deutsche Mark", "Banknote", //Money
+			"Lassie", "Laika", "Hachikō", "Scooby-Doo", "Balto", "Bluey (TV series)", "Rin Tin Tin", "Doge (meme)", "Pluto (Disney)", "Huckleberry Hound", //Dogs
+			"Whisky", "Bloody Mary (cocktail)", "Tea", "Eggnog", "Dr Pepper", "Water", "Sambuca", "Milk", "Cider", "Juice", //Drinks
+			"Atom", "Virus", "Bacteria", "Magnetism", "Electricity", "Ultraviolet", "Radiation", "Gravity", "Dark matter", "Wi-Fi", //Invisible
+			"Biryani", "Surströmming", "Sauerkraut", "Fish and chips", "Hamburger", "Chicken tikka masala", "Sushi", "Barbecue", "Pancake", "Pizza", //Food
+			"Skateboard", "Pogo_stick", "Wheelchair", "Ice skate", "Unicycle", "Hovercraft", "Sled", "Tram", "Hot air balloon", "Elevator", //Transportation
+			"Ganges", "Mississippi_River", "Göta älv", "River_Thames", "Nile", "Dalälven", "Shinano River", "Amazon River", "Danube", "Mekong", //Rivers
+			"Buoy", "Sail", "Rudder", "Nautical_chart", "Sextant", "Anchor", "Compass", "Oar", "Knot", "Mast (sailing)" //Sailing
 		],
 		sv: [
 			"Bamse", "Snobben", "Asterix", "Son-Goku", "Tintin", //Cartoons
