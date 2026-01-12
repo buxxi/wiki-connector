@@ -10,18 +10,19 @@ export function levenshteinDistance(a: AlphaNumeric, b: AlphaNumeric) {
 			continue;
 		}
 		for (var j = 0; j <= a.length; j++) {
-			m[0][j] = j;
+			m[0]![j] = j;
 			if (j === 0) {
 				continue;
 			}
-			m[i][j] = b[i - 1] == a[j - 1] ? m[i - 1][j - 1] : Math.min(
-				m[i - 1][j - 1] + 1,
-				m[i][j - 1] + 1,
-				m[i - 1][j] + 1
+			// @ts-ignore
+			m[i][j] = b[i - 1] == a[j - 1] ? m[i - 1]![j - 1] : Math.min(
+				m[i - 1]![j - 1]! + 1,
+				m[i]![j - 1]! + 1,
+				m[i - 1]![j]! + 1
 			);
 		}
 	}
-	return m[b.length][a.length];
+	return m[b.length]![a.length]!;
 }
 
 export type AlphaNumeric = Brand<string, "AlphaNumeric">

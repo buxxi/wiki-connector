@@ -99,7 +99,7 @@ class ShineEffect {
 	}
 
 	draw(context: CanvasRenderingContext2D, piece: JigsawPiece) {
-		let lightness = Math.abs(this.shininess[this._index(piece.y, piece.x)]);
+		let lightness = Math.abs(this.shininess[this._index(piece.y, piece.x)]!);
 		context.fillStyle = `hsl(${piece.hue}, 10%, ${15 + (lightness * 10)}%)`;
 		context.fill(piece.path);
 		context.strokeStyle = `hsl(${piece.hue}, 0%, 10%)`;
@@ -107,7 +107,7 @@ class ShineEffect {
 	}
 
 	move(delta: number, piece: JigsawPiece): boolean {
-		let s = this.shininess[this._index(piece.y, piece.x)] + (delta / 3);
+		let s = this.shininess[this._index(piece.y, piece.x)]! + (delta / 3);
 		if (s > 1) {
 			s = -1 + (s % 1);
 		}
@@ -132,10 +132,10 @@ class JigsawPattern implements Animation {
 		for (var y = 0; y < rows; y++) {
 			result.push(currentRow);
 			for (var x = 0; x < cols; x++) {
-				let up = y == 0 || !result[y - 1][x].bottom;
+				let up = y == 0 || !result[y - 1]![x]!.bottom;
 				let right = Math.random() < 0.5;
 				let bottom = Math.random() < 0.5;
-				let left = x == 0 || !result[y][x - 1].right;
+				let left = x == 0 || !result[y]![x - 1]!.right;
 				let hue = Math.floor(Math.random() * 360);
 				currentRow.push(new JigsawPiece(x * JIGSAW_PIECE_SIZE, y * JIGSAW_PIECE_SIZE, up, right, bottom, left, hue));
 			}
@@ -153,7 +153,7 @@ class JigsawPattern implements Animation {
 	update(delta: number): boolean {
 		var i = this.pieces.length;
 		while (i--) {
-			if (!this.effect.move(delta, this.pieces[i])) {
+			if (!this.effect.move(delta, this.pieces[i]!)) {
 				this.pieces.splice(i, 1);
 			}
 		}

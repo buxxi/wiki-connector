@@ -5,6 +5,7 @@ export function pairs<T>(input: T[]): T[][] {
 			result.push([input[i], input[j]]);
 		}
 	}
+	// @ts-ignore
 	return result;
 }
 
@@ -17,7 +18,7 @@ export function singleDirectionPermutations<T>(input: T[], eqFunc: EqualityFunct
 		if (a.length != b.length) {
 			return false;
 		}
-		return a.every((val, i) => eqFunc(val, b[i]));
+		return a.every((val, i) => eqFunc(val, b[i]!));
 	}
 
 	const reverseExists = (arr: T[]) => {

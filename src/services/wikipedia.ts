@@ -134,7 +134,7 @@ class WikipediaService {
 			.replace('{day}', "" + day);
 
 		let data: WikipediaPopularResponse = await this._fetchJson(url);
-		return this.getPages(data.items[0].articles.map(e => this._parseTitle(e.article)));
+		return this.getPages(data.items[0]!.articles.map(e => this._parseTitle(e.article)));
 	}
 
 	async getPages(titles: string[]): Promise<WikipediaArticle[]> {
@@ -182,8 +182,8 @@ class WikipediaService {
 
 		let data: WikipediaThumbnailResponse = await this._fetchJson(url);
 		let pages = Object.values(data.query.pages);
-		if (pages.length > 0 && pages[0].thumbnail) {
-			return pages[0].thumbnail.source;
+		if (pages.length > 0 && pages[0]!.thumbnail) {
+			return pages[0]!.thumbnail.source;
 		} else {
 			return MISSING_THUMBNAIL_URL;
 		}
@@ -209,7 +209,7 @@ class WikipediaService {
 		let m = /(.*?):.*/;
 		let r = m.exec(page);
 		if (r != null) {
-			if (WIKI_ARTICLES.blacklist.prefix.includes(r[1])) {
+			if (WIKI_ARTICLES.blacklist.prefix.includes(r[1]!)) {
 				return false;
 			} else {
 				// nothing for now

@@ -78,7 +78,7 @@ class BalloonsRising implements Animation {
 	update(delta: number): boolean {
 		var i = this.balloons.length;
 		while (i--) {
-			if (!this.balloons[i].move(delta, this.height)) {
+			if (!this.balloons[i]!.move(delta, this.height)) {
 				this.balloons.splice(i, 1);
 			}
 		}

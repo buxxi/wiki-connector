@@ -66,7 +66,7 @@ class Article {
 	_cleanTitle(input: string) {
 		let m = /(.*) \(.*\)/.exec(input);
 		if (m != undefined) {
-			return m[1];
+			return m[1]!;
 		}
 		return input;
 	}

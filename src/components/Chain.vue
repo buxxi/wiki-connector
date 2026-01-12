@@ -7,7 +7,7 @@
 		fromY: number;
 		toX: number;
 		toY: number;
-		class: string;
+		className: string;
 	}>();
 </script>
 <template>
@@ -25,10 +25,10 @@
 		</defs>
 
 		<!-- segments whose hole is visible, with holes cut out using mask-->
-		<use :href="`#chain-path-${id}`" class="hole" :class="class" :mask="`url(#holes-${id})`" />
+		<use :href="`#chain-path-${id}`" class="hole" :class="className" :mask="`url(#holes-${id})`" />
 
 		<!-- segments whose hole isn't visible -->
-		<use :href="`#chain-path-${id}`" :class="class" />
+		<use :href="`#chain-path-${id}`" :class="className" />
 	</svg>
 </template>
 

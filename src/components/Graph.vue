@@ -161,12 +161,12 @@
 
 			let links = props.nodes.map(from => from.links.map(to => [from, to])).flatMap(e => e);
 			this.lines = links.map(link => {
-				let fromIndex = props.nodes.map(e => e.id()).indexOf(link[0].id());
-				let toIndex = props.nodes.map(e => e.id()).indexOf(link[1].id());
+				let fromIndex = props.nodes.map(e => e.id()).indexOf(link[0]!.id());
+				let toIndex = props.nodes.map(e => e.id()).indexOf(link[1]!.id());
 				return { fromIndex: fromIndex, toIndex: toIndex };
 			}).filter(e => e.fromIndex > e.toIndex).map(e => {
-				let fromNode = this.nodes[e.fromIndex];
-				let toNode = this.nodes[e.toIndex];
+				let fromNode = this.nodes[e.fromIndex]!;
+				let toNode = this.nodes[e.toIndex]!;
 				let id = `${e.fromIndex}-${e.toIndex}`;
 				return new DomGraphLine(id, fromNode, toNode);
 			});
@@ -178,8 +178,8 @@
 
 			var previousPosition = { x: graphWidth / 2, y: graphHeight / 2 };
 			for (var j = 0; j < i; j++) {
-				if (props.nodes[j].links.map(l => l.id()).includes(props.nodes[i].id()) && j < this.nodes.length) {
-					previousPosition = this.nodes[j].getPhysicsPosition();
+				if (props.nodes[j]!.links.map(l => l.id()).includes(props.nodes[i]!.id()) && j < this.nodes.length) {
+					previousPosition = this.nodes[j]!.getPhysicsPosition();
 				}
 			}
 
@@ -224,7 +224,7 @@
 		calculateForces(width: number, height: number, delta: number): boolean {
 			var anyForce = false;
 			for (let i in this.nodes) {
-				let node = this.nodes[i];
+				let node = this.nodes[i]!;
 				var force = new Vector2(0, 0);
 				let position = node.getPhysicsPosition();
 				if (position.x < (this.nodeSize * BORDER_FORCE_FIELD_SIZE)) {
@@ -241,7 +241,7 @@
 					if (i == j) {
 						continue;
 					}
-					let otherNode = this.nodes[j];
+					let otherNode = this.nodes[j]!;
 					let otherPosition = otherNode.getPhysicsPosition();
 					let diffForce = new Vector2(position.x - otherPosition.x, position.y - otherPosition.y);
 					if (diffForce.length() < 1) {
@@ -314,7 +314,7 @@
 	function zoom(change: number) {
 		let current = graphElement.value!.style.fontSize;
 		let m = /([0-9\.]+)em/.exec(current);
-		let val = parseFloat(m![1]) + change;
+		let val = parseFloat(m![1]!) + change;
 		graphElement.value!.style.fontSize = `${val}em`;
 		resized();
 	}
@@ -327,7 +327,7 @@
 		<input type="button" value="-" @click="zoom(-0.1)" />
 	</div>
 	<div ref="graphElement" id="graph" @dragover="onDragOver" @animationstart="animationStart" @:animationcancel="animationEnd" style="font-size: 1em">
-		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :class="line.classes(graph?.highlightNode)" v-for="line in graph?.lines" />
+		<Chain :id="line.id" :width="graph!.width" :height="graph!.height" :fromX="line.fromX()" :fromY="line.fromY()" :toX="line.toX()" :toY="line.toY()" :className="line.classes(graph?.highlightNode)" v-for="line in graph?.lines" />
 		<Node :id="node.id()" :position="node.drawPosition" :title="node.title()" :thumbnail="node.thumbnail()" :linkCount="node.linkCount()" :style="node.class()" @hover="(e) => onHover(node, e)" @drop="(e) => dragNode(node, e)"
 			:showLink="showLinks" v-for="node in graph?.nodes" />
 	</div>

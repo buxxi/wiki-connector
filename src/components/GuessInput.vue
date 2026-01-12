@@ -21,7 +21,7 @@
 		if (!guess.value || suggestions.length == 0) {
 			return "";
 		}
-		if (suggestions[index.value].startsWith(guess.value)) {
+		if (suggestions[index.value]!.startsWith(guess.value)) {
 			return `${suggestions[index.value]} (${index.value + 1}/${suggestions.length})`;
 		} else {
 			return `${guess.value} → ${suggestions[index.value]} (${index.value + 1}/${suggestions.length})`;

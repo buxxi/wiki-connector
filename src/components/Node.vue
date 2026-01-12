@@ -44,15 +44,15 @@
 	}
 
 	function onTouchStart(event: TouchEvent) {
-		emit("hover", { target: event.target!, x: event.targetTouches[0].clientX, y: event.targetTouches[0].clientY });
+		emit("hover", { target: event.target!, x: event.targetTouches[0]!.clientX, y: event.targetTouches[0]!.clientY });
 	}
 
 	function onTouchEnd(event: TouchEvent) {
-		emit("hover", { target: undefined, x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY });
+		emit("hover", { target: undefined, x: event.changedTouches[0]!.clientX, y: event.changedTouches[0]!.clientY });
 	}
 
 	function onTouchDrag(event: TouchEvent) {
-		emit("drop", { target: event.target!, x: event.targetTouches[0].clientX, y: event.targetTouches[0].clientY });
+		emit("drop", { target: event.target!, x: event.targetTouches[0]!.clientX, y: event.targetTouches[0]!.clientY });
 	}
 
 	function onMouseOut(event: MouseEvent) {

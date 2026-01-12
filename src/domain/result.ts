@@ -14,11 +14,11 @@ function _findCompleteSingleConnection(foundArticles: Article[]): Article[] | un
 	let links = new Map();
 
 	const linkKey = function (list: Article[], index: number) {
-		return list[index].id() + "-" + list[index + 1].id();
+		return list[index]!.id() + "-" + list[index + 1]!.id();
 	}
 
 	for (let pair of pairs(startArticles)) {
-		let link = findLink(pair[0], pair[1]);
+		let link = findLink(pair[0]!, pair[1]!);
 		if (!link) {
 			return undefined;
 		}
@@ -113,8 +113,8 @@ class Result {
 		}
 		let links = new Map();
 		for (var i = 0; i < path.length - 1; i++) {
-			let id1 = path[i].id();
-			let id2 = path[i + 1].id();
+			let id1 = path[i]!.id();
+			let id2 = path[i + 1]!.id();
 			let key = id1 > id2 ? id1 + "-" + id2 : id2 + "-" + id1;
 			links.set(key, true);
 		}

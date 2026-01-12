@@ -19,7 +19,7 @@ class Confetti {
 		this.rotationSpeed = CONFETTI_MIN_ROTATION_SPEED + (Math.random() * (CONFETTI_MAX_ROTATION_SPEED - CONFETTI_MIN_ROTATION_SPEED));
 		let speed = CONFETTI_MIN_SPEED + (Math.random() * (CONFETTI_MAX_SPEED - CONFETTI_MIN_SPEED));
 		this.force = direction.multiplyScalar(speed);
-		this.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+		this.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)]!;
 		this.length = CONFETTI_MIN_LENGTH + (Math.random() * (CONFETTI_MAX_LENGTH - CONFETTI_MIN_LENGTH));
 		this.thickness = CONFETTI_MAX_THICKNESS + (Math.random() * (CONFETTI_MAX_THICKNESS - CONFETTI_MIN_THICKNESS));
 	}
@@ -75,7 +75,7 @@ class ConfettiCannon implements Animation {
 	update(delta: number): boolean {
 		var i = this.confetti.length;
 		while (i--) {
-			if (!this.confetti[i].move(delta)) {
+			if (!this.confetti[i]!.move(delta)) {
 				this.confetti.splice(i, 1);
 			}
 		}

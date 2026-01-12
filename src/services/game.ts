@@ -130,9 +130,9 @@ class Game {
 		let foundArticles = unique(this.root, a => a.found()).map(e => new Article(e.id(), e.title, e.thumbnail, e.links, e.linkCount, e.state));
 
 		for (var i = 0; i < foundArticles.length; i++) {
-			let e = foundArticles[i];
+			let e = foundArticles[i]!;
 			let links: (Article | undefined)[] = e.links.map(l => foundArticles.find(al => al.id() == l.id()));
-			foundArticles[i].links = links.filter(e => e != undefined).map(e => e!);
+			foundArticles[i]!.links = links.filter(e => e != undefined).map(e => e!);
 		}
 
 		return foundArticles;
@@ -140,7 +140,7 @@ class Game {
 
 	_connect(fromArticle: Article, links: WikipediaArticle[]): void {
 		let toArticles: Article[] = findByIds(this.root, links.map(link => link.id as NodeId))
-			.map((link, i) => link != undefined ? link : new Article(links[i].id, links[i].title, "", [], 0, ArticleState.NOT_FOUND));
+			.map((link, i) => link != undefined ? link : new Article(links[i]!.id, links[i]!.title, "", [], 0, ArticleState.NOT_FOUND));
 		for (let toArticle of toArticles) {
 			fromArticle.connect(toArticle);
 		}
@@ -170,9 +170,9 @@ class Game {
 	}
 
 	_random(input: WikipediaArticle[], count: number): WikipediaArticle[] {
-		let result = [];
+		let result: WikipediaArticle[] = [];
 		while (result.length < count) {
-			result.push(input.splice(Math.floor(Math.random() * input.length), 1)[0]);
+			result.push(input.splice(Math.floor(Math.random() * input.length), 1)[0]!);
 		}
 		return result;
 	}

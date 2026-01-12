@@ -26,7 +26,7 @@ export class LayeredAnimation implements Animation {
 	update(delta: number): boolean {
 		var i = this.layers.length;
 		while (i--) {
-			if (!this.layers[i].update(delta)) {
+			if (!this.layers[i]!.update(delta)) {
 				this.layers.splice(i, 1);
 			}
 		}

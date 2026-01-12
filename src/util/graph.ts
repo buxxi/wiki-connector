@@ -60,14 +60,14 @@ export function findLink<T extends GraphNode<T>>(from: T, to: T): T[] | undefine
 	while (queue.length > 0) {
 		let path = queue.shift()!;
 		let [last] = path.slice(-1);
-		if (!checkIds.includes(last.id())) {
-			if (last.id() == to.id()) {
+		if (!checkIds.includes(last!.id())) {
+			if (last!.id() == to.id()) {
 				return path;
 			}
 
-			checkIds.push(last.id());
+			checkIds.push(last!.id());
 
-			for (let c of last.connections()) {
+			for (let c of last!.connections()) {
 				queue.push(path.concat([c]));
 			}
 		}
